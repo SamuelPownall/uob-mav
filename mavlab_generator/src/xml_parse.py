@@ -18,8 +18,20 @@ for elem in root:
             print("Message ID: %s | Function: %s" % (msg.attrib.get("id"),msg.attrib.get("name")))
             desc = msg.find("description")
             
+            string = "../output/mavlink_message_" + str.lower(msg.attrib.get("name")) + ".m"
+            fo = open(string, "w")
+            
             if desc != None:
-                print("Description: %s" % desc.text)
+                fo.write("Description: %s\n" % desc.text)
+                
+            fo.write("    --------------\n")
             
             fields = msg.findall("field")
             
+            for field in fields:
+                fo.write("    Field: %s\n" % field.attrib.get("name"))
+                fo.write("    Data Type: %s\n" % field.attrib.get("type"))
+                fo.write("    Description: %s\n" % field.text)
+                fo.write("    --------------\n")
+                
+            fo.close()
