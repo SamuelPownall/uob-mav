@@ -41,16 +41,16 @@ def class_from_msg(msg_path, msg):
         else:
             desc = "N/A"
             
+        #Generate the class header and summary
+        fo.write('classdef mavlink_msg_%s\n' % name)
+        fo.write('    %%MAVLINK Message Class\n    %%Name: %s    ID: %s\n    %%Description: %s\n\n' % (name, id, desc))
+            
         #Get message fields
         fields = []
         for field in msg.findall('field'):
             fields.append({'type' : str.lower(field.attrib.get('type')), 
                            'name' : str.lower(field.attrib.get('name')), 
                            'desc' : field.text})
-        
-        #Generate the class header and summary
-        fo.write('classdef mavlink_msg_%s\n' % name)
-        fo.write('    %%MAVLINK Message Class\n    %%Name: %s    ID: %s\n    %%Description: %s\n\n' % (name, id, desc))
         
         #Generate the class properties
         fo.write('    properties\n')
@@ -59,6 +59,7 @@ def class_from_msg(msg_path, msg):
         fo.write('    end\n\n')
         
         fo.write('end')
+                
     
 def generate(xml_path, mavlab_path):
     
@@ -85,13 +86,10 @@ def generate(xml_path, mavlab_path):
         
     if not os.path.exists('%s/mavlab/msg_classes' % mavlab_path):
         os.makedirs('%s/mavlab/msg_classes' % mavlab_path)
-        
-    if not os.path.exists('%s/mavlab/enums' % mavlab_path):
-        os.makedirs('%s/mavlab/enums' % mavlab_path)
     
     #Find the message list and generate a MATLAB class file for each message
     msg_list = root.find('messages')
     for msg in msg_list.findall('message'):
         class_from_msg('%s/mavlab/msg_classes' % mavlab_path, msg)
-    
+        
 generate('../data/common.xml', '../')
