@@ -6,9 +6,9 @@ Created on 23 Jun 2017
 
 #Import the ElementTree XML module using the C implementation if available 
 try:
-    import xml.etree.cElementTree as etree
+    import xml.etree.cElementTree as ET
 except ImportError:
-    import xml.etree.ElementTree as etree
+    import xml.etree.ElementTree as ET
     
 #Import the OS of the system
 import os
@@ -29,7 +29,7 @@ def class_from_msg(msg_path, msg):
     """
     
     #Get top level message attributes
-    id = msg.attrib.get('id')
+    msgid = msg.attrib.get('id')
     name = str.lower(msg.attrib.get('name'))
     
     #Create the message class file and generate MATLAB code
@@ -42,8 +42,12 @@ def class_from_msg(msg_path, msg):
             desc = "N/A"
             
         #Generate the class header and summary
-        fo.write('classdef mavlink_msg_%s\n' % name)
-        fo.write('    %%MAVLINK Message Class\n    %%Name: %s    ID: %s\n    %%Description: %s\n\n' % (name, id, desc))
+        fo.write('\n'.join((
+        'classdef mavlink_msg_%s < handle',
+        '%%MAVLINK Message Class',
+        '%%Name: %s\tID: %s',
+        '%%Description: %s\n',
+        )) % (name, name, msgid, desc))
             
         #Get message fields
         fields = []
@@ -58,11 +62,25 @@ def class_from_msg(msg_path, msg):
                       'char' : 4, 'uint8_t_mavlink_version' : 4}
         fields.sort(key = lambda k: sort_mapping[k['type'].split('[')[0]])
         
-        #Generate the class properties
-        fo.write('    properties\n')
+        #Generate class properties
+        fo.write('\tproperties\n')
         for field in fields:
-            fo.write('        %s    %%%s\n' % (field['name'], field['desc']))
-        fo.write('    end\n\n')
+            fo.write('\t\t%s\t%%%s\n' % (field['name'], field['desc']))
+        fo.write('\tend\n\n')
+        
+        #Start of methods
+        fo.write('\tmethods\n\n')
+        
+        #Generate class constructor without arguments
+        fo.write('\n'.join((
+        '\t\tfunction obj = mavlink_msg_%s()',
+        '\t\t\tobj;',
+        '\t\tend\n\n'
+        )) % name)
+        
+        #Generate class constructor with arguments
+        
+        #Generate message pack function
         
         #End of class
         fo.write('end')
@@ -84,7 +102,7 @@ def generate(xml_path, mavlab_path):
     """
     
     #Load the MAVLINK message definition XML document and get the root
-    tree = etree.parse(xml_path)
+    tree = ET.parse(xml_path)
     root = tree.getroot()
     
     #Create the folder system at the output path
