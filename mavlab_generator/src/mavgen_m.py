@@ -64,6 +64,7 @@ def class_from_msg(msg_path, msg):
             fo.write('        %s    %%%s\n' % (field['name'], field['desc']))
         fo.write('    end\n\n')
         
+        #End of class
         fo.write('end')
                 
     
