@@ -51,6 +51,12 @@ def class_from_msg(msg_path, msg):
             fields.append({'type' : str.lower(field.attrib.get('type')), 
                            'name' : str.lower(field.attrib.get('name')), 
                            'desc' : field.text})
+            
+        #Sort message fields
+        sort_mapping = {'double' : 0, 'int64_t' : 0, 'uint64_t': 0, 'int32_t' : 1, 'uint32_t': 1,
+                      'float' : 2, 'int16_t' : 3, 'uint16_t': 3, 'int8_t' : 4, 'uint8_t': 4,
+                      'char' : 4, 'uint8_t_mavlink_version' : 4}
+        fields.sort(key = lambda k: sort_mapping[k['type'].split('[')[0]])
         
         #Generate the class properties
         fo.write('    properties\n')
