@@ -33,7 +33,6 @@ def accumulate(crc, buf):
     """        
     
     byte_array = array.array('B')
-    
     if isinstance(buf, array.array):
         byte_array.extend(buf)
     else:
@@ -41,9 +40,8 @@ def accumulate(crc, buf):
         
     for byte in byte_array:
         tmp = byte ^ (crc & 0xff)
-        tmp = (tmp ^ (tmp<<4)) & 0xFF
-        crc = (crc>>8) ^ (tmp<<8) ^ (tmp<<3) ^ (tmp>>4)
-        crc = crc & 0xFFFF
+        tmp = (tmp ^ (tmp<<4)) & 0xff
+        crc = ((crc>>8) & 0xff) ^ (tmp<<8) ^ (tmp<<3) ^ ((tmp>>4) & 0xf)
         
     return crc
 
@@ -108,7 +106,11 @@ classdef %s < mavlink_message
             else:
                 array_size = 1
                 
+            if field_type == 'uint8_t_mavlink_version':
+                field_type = 'uint8_t'
+                
             msglen += type_size[field_type]*array_size
+            
             fields.append({'type' : field_type, 
                            'name' : field.attrib.get('name'), 
                            'desc' : field.text,
@@ -119,15 +121,12 @@ classdef %s < mavlink_message
         
         #Calculate the XML checksum for this message using original XML
         crc = 0xffff
-        crc = accumulate(crc,name + ' ')
+        crc = accumulate(crc,name.upper() + ' ')
         
         for field in fields:
-            if field['size'] == 1:
-                crc = accumulate(crc,field['type'] + ' ')
-                crc = accumulate(crc,field['name'] + ' ')
+            crc = accumulate(crc,field['type'] + ' ')
+            crc = accumulate(crc,field['name'] + ' ')
             if field['size'] > 1:
-                crc = accumulate(crc,'%s[%s] ' % (field['type'], field['size']))
-                crc = accumulate(crc,field['name'] + ' ')
                 crc = accumulate(crc,chr(field['size']))
                 
         crc = (crc&0xFF) ^ (crc>>8)
@@ -137,8 +136,8 @@ classdef %s < mavlink_message
             field['type'] = field['type'].split('_')[0]
             field['name'] = field['name'].lower()
         
-            if field_type == 'char':
-                field_type = 'uint8'
+            if field['type'] == 'char':
+                field['type'] = 'uint8'
         
         #Generate class properties
         fo.write('''\
@@ -220,12 +219,12 @@ classdef %s < mavlink_message
                 fo.write('''\
             
             for i = 1:%s
-                obj.%s(i) = packet.payload.get%s();
+                obj.%s(i) = payload.get%s();
             end
             \
                 ''' % (field['size'], field['name'], field['type'].upper()))
             else:
-                fo.write('\n\t\t\tobj.%s = packet.payload.get%s();\n' % (field['name'], field['type'].upper()))
+                fo.write('\n\t\t\tobj.%s = payload.get%s();\n' % (field['name'], field['type'].upper()))
                 
         fo.write('\n\t\tend\n')
         
@@ -356,10 +355,11 @@ classdef mavlink_packet < handle
         end
         
         %%Function: Encode the packet into a byte buffer for transmission
-        function byteBuffer = encodePacket(obj)
+        function byteBuffer = encode(obj)
+            obj.seq = 1;
             obj.generateCRC();
             byteBuffer = cat(1,uint8(obj.STX),uint8(obj.len),uint8(obj.seq),uint8(obj.sysid),...
-                uint8(obj.compid),uint8(obj.msgid),obj.payload.getByteBuffer(),obj.crc.getLSB(), obj.crc.getLSB());
+                uint8(obj.compid),uint8(obj.msgid),obj.payload.getByteBuffer(),obj.crc.getLSB(), obj.crc.getMSB());
         end
         
         %%Getter: isPayloadFull
@@ -413,6 +413,7 @@ def copy_fixed_classes(main_path):
     copyfile('../matlab/mavlink_payload.m','%s/mavlink_payload.m' % main_path)
     copyfile('../matlab/mavlink_parser.m','%s/mavlink_parser.m' % main_path)
     copyfile('../matlab/mavlink_monitor.m','%s/mavlink_monitor.m' % main_path)
+    copyfile('../matlab/mavlink.m','%s/mavlink.m' % main_path)
     
     
 def generate_message_classes(message_path, msg_list):
@@ -435,7 +436,8 @@ def generate_message_classes(message_path, msg_list):
     
     #Generate a class for each message entry
     for msg in msg_list.findall('message'):
-        parsed_msg_list.append(generate_class_from_msg(message_path, msg))
+        parsed_msg = generate_class_from_msg(message_path, msg)
+        parsed_msg_list.insert(int(parsed_msg['msgid']), parsed_msg)
         
     return parsed_msg_list
 
@@ -454,6 +456,97 @@ def generate_crc_class(main_path, parsed_msg_list):
     ----------
     
     """
+    
+    #Sort parsed message list by message ID and initialise the CRC list
+    parsed_msg_list.sort(key = lambda k: int(k['msgid']))
+    crc_list = [0] * 255
+    
+    for parsed_msg in parsed_msg_list:
+        crc_list.insert(int(parsed_msg['msgid']), parsed_msg['crc'])
+    
+    #Write the MAVLINK CRC class
+    with open('%s/mavlink_crc.m' % main_path, 'w') as fo:
+        
+        #Write class definition and start of properties
+        fo.write('''\
+\
+classdef mavlink_crc < handle
+    %%MAVLINK CRC Class
+    %%Handles the crc x.25 checksum system used by MAVLINK
+    
+    properties(Constant)\
+\
+        ''')
+        
+        #Write the MAVLINK CRC array
+        fo.write('\n\t\tMAVLINK_MESSAGE_CRCS = uint8([...\n\t\t\t')
+        char_count = 0
+        for crc in crc_list:
+            char_count += len(str(crc)) + 1
+            if char_count > 80:
+                fo.write('...\n\t\t\t')
+                char_count = 0
+            fo.write('%d,' % crc)  
+        fo.write('0]);\n')
+        
+        #Write the rest of the MAVLINK CRC class
+        fo.write('''\
+\
+        CRC_INIT_VALUE = uint16(hex2dec('ffff'));
+    end
+    
+    properties
+        crcValue;
+    end
+    
+    methods
+        
+        %%Constructor: mavlink_crc
+        function obj = mavlink_crc()
+            obj.startChecksum();
+        end
+        
+        function updateChecksum(obj, char)
+            if isa(char,'uint8')
+                crcBytes = typecast(uint16(obj.crcValue),'uint8');
+                temp = bitxor(char,crcBytes(1));
+                temp = bitxor(temp,bitshift(temp,4));
+                crcAccum = bitxor(uint16(crcBytes(2)),bitshift(uint16(temp),8));
+                crcAccum = bitxor(crcAccum,bitshift(uint16(temp),3));
+                crcAccum = bitxor(crcAccum,bitshift(uint16(temp),-4));
+                obj.crcValue = crcAccum;
+            else
+                disp('ERROR(mavlink_crc.updateChecksum): Input "char" is not of type "uint8"');
+            end
+        end
+        
+        %%Function: Initialises the checksum value
+        function startChecksum(obj)
+            obj.crcValue = obj.CRC_INIT_VALUE;
+        end
+        
+        %%Function: Hash the checksum with the mavlink message CRC
+        function finishChecksum(obj, msgid)
+           obj.updateChecksum(obj.MAVLINK_MESSAGE_CRCS(msgid + 1)) 
+        end
+        
+        %%Getter: MSB
+        function msb = getMSB(obj)
+            crcBytes = typecast(uint16(obj.crcValue),'uint8');
+            msb = crcBytes(2);
+        end
+        
+        %%Getter: LSB
+        function lsb = getLSB(obj)
+            crcBytes = typecast(uint16(obj.crcValue),'uint8');
+            lsb = crcBytes(1);
+        end
+        
+    end
+    
+end\
+        
+        ''')
                 
     
 def generate(xml_path, output_path):
@@ -493,7 +586,6 @@ def generate(xml_path, output_path):
     #Find the message list and generate a MATLAB class file for each message
     msg_list = root.find('messages')
     parsed_msg_list = generate_message_classes(message_path, msg_list)
-    print(parsed_msg_list)
         
     #Generate the enumeration class for this XML file
     enum_list = root.find('enums')

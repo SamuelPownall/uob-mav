@@ -4,7 +4,7 @@ classdef mavlink
     
     properties(Constant)
         SYSID = 255;
-        COMPID = 0;
+        COMPID = 1;
     end
     
 end

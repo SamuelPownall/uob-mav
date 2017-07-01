@@ -86,7 +86,6 @@ classdef mavlink_parser < handle
                     case obj.STATE_GOT_PAYLOAD
                         obj.packet.generateCRC();
                         if char ~= obj.packet.crc.getLSB()
-                            fprintf('FAILURE:\tID\t%d\t\tLEN\t%d\t\tSEQ\t%d\n',obj.packet.msgid,obj.packet.len,obj.packet.seq);
                             obj.state = obj.STATE_IDLE;
                             if char == mavlink_packet.STX
                                 obj.state = obj.STATE_GOT_STX;
@@ -99,7 +98,6 @@ classdef mavlink_parser < handle
                     case obj.STATE_GOT_CRC1
                         if char ~= obj.packet.crc.getMSB()
                             obj.state = obj.STATE_IDLE;
-                            fprintf('FAILURE:\tID\t%d\t\tLEN\t%d\t\tSEQ\t%d\n',obj.packet.msgid,obj.packet.len,obj.packet.seq);
                             if char == mavlink_packet.STX
                                 obj.state = obj.STATE_GOT_STX;
                             end
