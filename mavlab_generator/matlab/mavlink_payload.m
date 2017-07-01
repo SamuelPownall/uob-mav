@@ -172,23 +172,23 @@ classdef mavlink_payload < handle
             end
         end
         
-        %Getter: Next 4 bytes as type float
-        function value = getFloat(obj)
+        %Getter: Next 4 bytes as type single
+        function value = getSINGLE(obj)
             if obj.index + 3 <= obj.length
                 value = typecast(obj.byteBuffer(obj.index:obj.index+3),'single');
                 obj.incrementIndex(4);
             else
-                disp('ERROR(mavlink_payload.getFloat): Current index will lead to overflow')
+                disp('ERROR(mavlink_payload.getSINGLE): Current index will lead to overflow')
             end
         end
         
         %Getter: Next 8 bytes as type double
-        function value = getDouble(obj)
+        function value = getDOUBLE(obj)
             if obj.index + 7 <= obj.length
                 value = typecast(obj.byteBuffer(obj.index:obj.index+7),'double');
                 obj.incrementIndex(8);
             else
-                disp('ERROR(mavlink_payload.getDouble): Current index will lead to overflow')
+                disp('ERROR(mavlink_payload.getDOUBLE): Current index will lead to overflow')
             end
         end
         
@@ -324,8 +324,8 @@ classdef mavlink_payload < handle
             end
         end
         
-        %Putter: Place a float in the next 4 bytes
-        function putFloat(obj, value)
+        %Putter: Place a single in the next 4 bytes
+        function putSINGLE(obj, value)
             if obj.index + 3 <= obj.length
                 if isa(value,'single')
                     data = typecast(value, 'uint8');
@@ -334,15 +334,15 @@ classdef mavlink_payload < handle
                     obj.add(data(3));
                     obj.add(data(4));
                 else
-                    disp('ERROR(mavlink_payload.putFloat): Input "value" is not of type "float"')
+                    disp('ERROR(mavlink_payload.putSINGLE): Input "value" is not of type "single"')
                 end
             else
-                disp('ERROR(mavlink_payload.putFloat): Current index will lead to overflow')
+                disp('ERROR(mavlink_payload.putSINGLE): Current index will lead to overflow')
             end
         end
         
         %Putter: Place a double in the next 8 bytes
-        function putDouble(obj, value)
+        function putDOUBLE(obj, value)
             if obj.index + 7 <= obj.length
                 if isa(value,'double')
                     data = typecast(value, 'uint8');
@@ -355,10 +355,10 @@ classdef mavlink_payload < handle
                     obj.add(data(7));
                     obj.add(data(8));
                 else
-                    disp('ERROR(mavlink_payload.putDouble): Input "value" is not of type "double"')
+                    disp('ERROR(mavlink_payload.putDOUBLE): Input "value" is not of type "double"')
                 end
             else
-                disp('ERROR(mavlink_payload.putDouble): Current index will lead to overflow')
+                disp('ERROR(mavlink_payload.putDOUBLE): Current index will lead to overflow')
             end
         end
         

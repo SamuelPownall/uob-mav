@@ -10,10 +10,45 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET
     
-#Import the OS of the system
+#Import modules needed for file system
 import os
+import array
+from os.path import basename
+from shutil import copyfile
 
-def class_from_msg(msg_path, msg):
+
+def accumulate(crc, buf):
+    
+    """
+    Accumulate bytes into a CRC
+    
+    Parameters
+    ----------
+    crc: integer
+        The CRC which bytes are being accumulated in to
+    buf: byte buffer
+        Buffer containing bytes to be accumulated
+    ----------
+    
+    """        
+    
+    byte_array = array.array('B')
+    
+    if isinstance(buf, array.array):
+        byte_array.extend(buf)
+    else:
+        byte_array.fromstring(buf)
+        
+    for byte in byte_array:
+        tmp = byte ^ (crc & 0xff)
+        tmp = (tmp ^ (tmp<<4)) & 0xFF
+        crc = (crc>>8) ^ (tmp<<8) ^ (tmp<<3) ^ (tmp>>4)
+        crc = crc & 0xFFFF
+        
+    return crc
+
+
+def generate_class_from_msg(msg_path, msg):
     
     """
     Generate a MATLAB class from an XML message definition
@@ -31,62 +66,397 @@ def class_from_msg(msg_path, msg):
     #Get top level message attributes
     msgid = msg.attrib.get('id')
     name = str.lower(msg.attrib.get('name'))
+    class_name = 'msg_' + name
     
     #Create the message class file and generate MATLAB code
-    with open('%s/mavlink_msg_%s.m' % (msg_path, name), 'w') as fo:
+    with open('%s/%s.m' % (msg_path, class_name), 'w') as fo:
         
         #Get message description if available
         if msg.find('description') != None:
             desc = msg.find('description').text
         else:
-            desc = "N/A"
+            desc = "None"
             
         #Generate the class header and summary
-        fo.write('\n'.join((
-        'classdef mavlink_msg_%s < handle',
-        '%%MAVLINK Message Class',
-        '%%Name: %s\tID: %s',
-        '%%Description: %s\n',
-        )) % (name, name, msgid, desc))
+        fo.write('''\
+\
+classdef %s < mavlink_message
+    %%MAVLINK Message Class
+    %%Name: %s\tID: %s
+    %%Description: %s
+\
+        ''' % (class_name, name, msgid, desc))
+        
+        #Look-up dictionaries
+        type_size = {'double' : 8, 'int64_t' : 8, 'uint64_t': 8, 'int32_t' : 4, 'uint32_t': 4,
+                      'float' : 4, 'int16_t' : 2, 'uint16_t': 2, 'int8_t' : 1, 'uint8_t': 1,
+                      'char' : 1, 'uint8_t_mavlink_version' : 1}
+        
+        sort_mapping = {'double' : 0, 'int64_t' : 0, 'uint64_t': 0, 'int32_t' : 1, 'uint32_t': 1,
+                      'float' : 2, 'int16_t' : 3, 'uint16_t': 3, 'int8_t' : 4, 'uint8_t' : 4,
+                      'char' : 4, 'uint8_t_mavlink_version' : 4}
             
         #Get message fields
         fields = []
+        msglen = 0;
+        
         for field in msg.findall('field'):
-            fields.append({'type' : str.lower(field.attrib.get('type')), 
-                           'name' : str.lower(field.attrib.get('name')), 
-                           'desc' : field.text})
+            
+            field_type = field.attrib.get('type').split('[')[0]
+            if '[' in field.attrib.get('type'):
+                array_size = int(field.attrib.get('type').split('[')[1].split(']')[0])
+            else:
+                array_size = 1
+                
+            msglen += type_size[field_type]*array_size
+            fields.append({'type' : field_type, 
+                           'name' : field.attrib.get('name'), 
+                           'desc' : field.text,
+                           'size' : array_size})
             
         #Sort message fields
-        sort_mapping = {'double' : 0, 'int64_t' : 0, 'uint64_t': 0, 'int32_t' : 1, 'uint32_t': 1,
-                      'float' : 2, 'int16_t' : 3, 'uint16_t': 3, 'int8_t' : 4, 'uint8_t': 4,
-                      'char' : 4, 'uint8_t_mavlink_version' : 4}
-        fields.sort(key = lambda k: sort_mapping[k['type'].split('[')[0]])
+        fields.sort(key = lambda k: sort_mapping[k['type']])
+        
+        #Calculate the XML checksum for this message using original XML
+        crc = 0xffff
+        crc = accumulate(crc,name + ' ')
+        
+        for field in fields:
+            if field['size'] == 1:
+                crc = accumulate(crc,field['type'] + ' ')
+                crc = accumulate(crc,field['name'] + ' ')
+            if field['size'] > 1:
+                crc = accumulate(crc,'%s[%s] ' % (field['type'], field['size']))
+                crc = accumulate(crc,field['name'] + ' ')
+                crc = accumulate(crc,chr(field['size']))
+                
+        crc = (crc&0xFF) ^ (crc>>8)
+        
+        #Re-format field strings
+        for field in fields:
+            field['type'] = field['type'].split('_')[0]
+            field['name'] = field['name'].lower()
+        
+            if field_type == 'char':
+                field_type = 'uint8'
         
         #Generate class properties
-        fo.write('\tproperties\n')
+        fo.write('''\
+    
+    properties(Constant)
+        ID = %s
+        LEN = %s
+    end
+    
+    properties\
+    \
+    ''' % (msgid, msglen))
+        
+        #Insert a variable per field
         for field in fields:
-            fo.write('\t\t%s\t%%%s\n' % (field['name'], field['desc']))
-        fo.write('\tend\n\n')
+            fo.write('\n\t\t%s\t%%%s (%s[%s])' % (field['name'], field['desc'], field['type'], field['size']))
+        fo.write('\n\tend\n\n')
         
-        #Start of methods
-        fo.write('\tmethods\n\n')
+        #Generate class constructors
+        fo.write('''\
+    
+    methods
         
-        #Generate class constructor without arguments
-        fo.write('\n'.join((
-        '\t\tfunction obj = mavlink_msg_%s()',
-        '\t\t\tobj;',
-        '\t\tend\n\n'
-        )) % name)
+        %%Constructor: %s
+        %%packet should be a fully constructed MAVLINK packet
+        function obj = %s(packet)
         
-        #Generate class constructor with arguments
+            obj.msgid = obj.ID;
+            if nargin > 0
+                obj.sysid = packet.sysid;
+                obj.compid = packet.compid;
+                obj.unpack(packet.payload)
+            end
+            
+        end
+        \
+        ''' % (class_name, class_name))
         
         #Generate message pack function
+        fo.write('''\
+        
+        %%Function: Packs this MAVLINK message into a packet for transmission
+        function packet = pack(obj)
+        
+            packet = mavlink_packet(%s.LEN);
+            packet.sysid = mavlink.SYSID;
+            packet.compid = mavlink.COMPID;
+            packet.msgid = %s.ID;
+        \
+        ''' % (class_name, class_name))
+        
+        for field in fields:
+            
+            if field['size'] > 1:
+                fo.write('''\
+            
+            for i = 1:%s
+                packet.payload.put%s(%s(obj.%s(i)));
+            end
+            \
+                ''' % (field['size'], field['type'].upper(), field['type'], field['name']))
+            else:
+                fo.write('\n\t\t\tpacket.payload.put%s(%s(obj.%s));\n' % (field['type'].upper(), field['type'], field['name']))
+        
+        fo.write('\n\t\tend\n')
+        
+        #Generate message unpack function
+        fo.write('''\
+        
+        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+        function unpack(obj, payload)
+        
+            payload.resetIndex();
+        ''')
+        
+        for field in fields:
+            
+            if field['size'] > 1:
+                fo.write('''\
+            
+            for i = 1:%s
+                obj.%s(i) = packet.payload.get%s();
+            end
+            \
+                ''' % (field['size'], field['name'], field['type'].upper()))
+            else:
+                fo.write('\n\t\t\tobj.%s = packet.payload.get%s();\n' % (field['name'], field['type'].upper()))
+                
+        fo.write('\n\t\tend\n')
         
         #End of class
-        fo.write('end')
+        fo.write('\tend\nend')
+        
+        #Return a parsed message
+        parsed_msg = {'name' : name, 'msgid' : msgid, 'crc' : crc}
+        return parsed_msg
+    
+
+def generate_enum_class(message_path, xml_name, enum_list):
+    
+    """
+    Generate a class to store all enumerators in the current XML file
+    
+    Parameters
+    ----------
+    message_path: string
+        Path to the generation location for the enumerator class
+    xml_name: string
+        Name of the current MAVLINK XML being parsed
+    enum_list: XML elements
+        List of enumerators from the XML file
+    ----------
+    
+    """
+    
+    with open('%s/%s.m' % (message_path, xml_name), 'w') as fo:
+        
+        fo.write('''\
+\
+classdef %s < uint16
+    %%MAVLINK Enumeration Class
+    %%Contains enumerators for the %s MAVLINK XML file
+            
+    enumeration\
+\
+        ''' % (xml_name, xml_name))
+        
+        for enum in enum_list.findall('enum'):
+            enum_counter = 0
+            for entry in enum.findall('entry'):
+            
+                name = entry.attrib.get('name').upper()
+                value = entry.attrib.get('value')
+                
+                if value == None:
+                    value = enum_counter
+                    enum_counter += 1
+            
+                if entry.find('description') != None:
+                    desc = entry.find('description').text
+                else:
+                    desc = "None"
+                    
+                fo.write('\n\t\t%s (%s) %%%s' % (name, value, desc))
+            
+        fo.write('\n\tend\n\nend')
+        
+        
+def generate_packet_class(main_path, parsed_msg_list):
+    
+    """
+    Generate the MAVLINK packet class
+    
+    Parameters
+    ----------
+    main_path: string
+        Path to the generation location for main classes
+    parsed_msg_list: dictionary list
+        List of parsed MAVLINK messages
+    """
+    
+    with open('%s/mavlink_packet.m' % main_path, 'w') as fo:
+        
+        fo.write('''\
+\
+classdef mavlink_packet < handle
+    %%MAVLINK_PACKET Class
+    %%Used to encode and decode MAVLINK packets
+    
+    %%Constant public variables
+    properties(Constant)
+        STX = 254;  %The 'magic' byte
+    end
+    
+    %%Private variables
+    properties
+        len;        %%Length of the packet payload
+        seq;        %%Sequence number of the current packet
+        sysid;      %%ID of the sending system
+        compid;     %%ID of the sending component
+        msgid;      %%ID of the message type contained in the payload
+        payload;    %%The packet payload
+        crc;        %%The crc object for this packet
+    end
+    
+    %%Publically accessible object variables
+    methods
+        
+        %%Constructor: mavlink_packet
+        %%payloadLength should be an integer between 0 and MAX_PAYLOAD_SIZE
+        function obj = mavlink_packet(payloadLength)
+            obj.len = payloadLength;
+            obj.payload = mavlink_payload(payloadLength);
+        end
+        
+        %%Function: Generate the CRC checksum for the packet
+        function generateCRC(obj)   
+            if isempty(obj.crc)
+                obj.crc = mavlink_crc();
+            else
+                obj.crc.start_checksum();
+            end
+            
+            obj.crc.updateChecksum(uint8(obj.len));
+            obj.crc.updateChecksum(uint8(obj.seq));
+            obj.crc.updateChecksum(uint8(obj.sysid));
+            obj.crc.updateChecksum(uint8(obj.compid));
+            obj.crc.updateChecksum(uint8(obj.msgid));
+            
+            obj.payload.resetIndex();
+            for i = 1:1:obj.payload.getLength()
+                obj.crc.updateChecksum(obj.payload.getUINT8())
+            end
+            obj.crc.finishChecksum(uint8(obj.msgid))
+        end
+        
+        %%Function: Encode the packet into a byte buffer for transmission
+        function byteBuffer = encodePacket(obj)
+            obj.generateCRC();
+            byteBuffer = cat(1,uint8(obj.STX),uint8(obj.len),uint8(obj.seq),uint8(obj.sysid),...
+                uint8(obj.compid),uint8(obj.msgid),obj.payload.getByteBuffer(),obj.crc.getLSB(), obj.crc.getLSB());
+        end
+        
+        %%Getter: isPayloadFull
+        function fillStatus = isPayloadFull(obj)
+            fillStatus = obj.payload.isPayloadFull();
+        end
+        
+        %%Function: Unpack the payload and return the correct message type
+        function message = unpack(obj)
+            message = [];
+            switch obj.msgid\
+\
+        ''')
+        
+        for parsed_msg in parsed_msg_list:
+            fo.write('''
+                
+                case %s
+                    message = msg_%s(obj);\
+                \
+            ''' % (parsed_msg['msgid'], parsed_msg['name']))
+            
+        fo.write('''
+\
+            end
+            
+        end
+        
+    end
+    
+end
+\
+        ''')
+        
+
+def copy_fixed_classes(main_path):
+    
+    """
+    Copy the fixed classes that do not generation into the main folder of MAVLAB
+    
+    Parameters
+    ----------
+    main_path: string
+        Path to the generation location for main classes
+    ----------
+    
+    """
+    
+    #Copy fixed classes
+    copyfile('../matlab/mavlink_message.m','%s/mavlink_message.m' % main_path)
+    copyfile('../matlab/mavlink_payload.m','%s/mavlink_payload.m' % main_path)
+    copyfile('../matlab/mavlink_parser.m','%s/mavlink_parser.m' % main_path)
+    copyfile('../matlab/mavlink_monitor.m','%s/mavlink_monitor.m' % main_path)
+    
+    
+def generate_message_classes(message_path, msg_list):
+    
+    """
+    Generate a MATLAB class for each message in the current XML file
+    
+    Parameters
+    ----------
+    message_path: string
+        Path to the generation location for message classes
+    msg_list: XML element list
+        List of message elements from the current XML file
+    ----------
+    
+    """
+    
+    #Create an empty list for parsed messages
+    parsed_msg_list = []
+    
+    #Generate a class for each message entry
+    for msg in msg_list.findall('message'):
+        parsed_msg_list.append(generate_class_from_msg(message_path, msg))
+        
+    return parsed_msg_list
+
+
+def generate_crc_class(main_path, parsed_msg_list):
+    
+    """
+    Generate a MATLAB class to handle the checksum process
+    
+    Parameters
+    ----------
+    main_path: string
+        Path to the generation location for main classes
+    parsed_msg_list: dictionary list
+        List of parsed MAVLINK messages
+    ----------
+    
+    """
                 
     
-def generate(xml_path, mavlab_path):
+def generate(xml_path, output_path):
     
     """
     Generate the full MATLAB implementation of the MAVLINK protocol from an XML source file
@@ -95,7 +465,7 @@ def generate(xml_path, mavlab_path):
     ----------
     xml_path: string
         Path to the MAVLINK XML source file
-    mavlab_path: string
+    output_path: string
         Path to the generation location for MAVLAB
     ----------
     
@@ -104,17 +474,38 @@ def generate(xml_path, mavlab_path):
     #Load the MAVLINK message definition XML document and get the root
     tree = ET.parse(xml_path)
     root = tree.getroot()
+    xml_name = basename(xml_path).split('.')[0]
     
     #Create the folder system at the output path
-    if not os.path.exists('%s/mavlab' % mavlab_path):
-        os.makedirs('%s/mavlab' % mavlab_path)
+    mavlab_path = '%s/mavlab' % output_path
+    message_path = '%s/%s' % (mavlab_path, xml_name)
+    main_path = '%s/main' % mavlab_path
+    
+    if not os.path.exists(mavlab_path):
+        os.makedirs(mavlab_path)
         
-    if not os.path.exists('%s/mavlab/msg_classes' % mavlab_path):
-        os.makedirs('%s/mavlab/msg_classes' % mavlab_path)
+    if not os.path.exists(message_path):
+        os.makedirs(message_path)
+        
+    if not os.path.exists(main_path):
+        os.makedirs(main_path)
     
     #Find the message list and generate a MATLAB class file for each message
     msg_list = root.find('messages')
-    for msg in msg_list.findall('message'):
-        class_from_msg('%s/mavlab/msg_classes' % mavlab_path, msg)
+    parsed_msg_list = generate_message_classes(message_path, msg_list)
+    print(parsed_msg_list)
+        
+    #Generate the enumeration class for this XML file
+    enum_list = root.find('enums')
+    generate_enum_class(message_path, xml_name, enum_list)
+    
+    #Generate the MAVLINK packet class
+    generate_packet_class(main_path, parsed_msg_list)
+    
+    #Generate the MAVLINK CRC class
+    generate_crc_class(main_path, parsed_msg_list)
+        
+    #Copy fixed classes into the main folder
+    copy_fixed_classes(main_path)
         
 generate('../data/common.xml', '../')

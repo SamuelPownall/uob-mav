@@ -1,5 +1,5 @@
 clear;
-tclient = tcpclient('127.0.0.1',14551);
+tclient = tcpclient('127.0.0.1',14552);
 parser = mavlink_parser();
 msg = [];
 messages = 0;
