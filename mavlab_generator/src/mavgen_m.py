@@ -378,9 +378,9 @@ classdef mavlink_packet < handle
             
             obj.payload.resetIndex();
             for i = 1:1:obj.payload.getLength()
-                obj.crc.updateChecksum(obj.payload.getUINT8())
+                obj.crc.updateChecksum(obj.payload.getUINT8());
             end
-            obj.crc.finishChecksum(uint8(obj.msgid))
+            obj.crc.finishChecksum(uint8(obj.msgid));
         end
         
         %%Function: Encode the packet into a byte buffer for transmission
@@ -537,7 +537,7 @@ classdef mavlink_crc < handle
         
         function updateChecksum(obj, char)
             if char == uint8(char)
-                char = uint8(char)
+                char = uint8(char);
                 crcBytes = typecast(uint16(obj.crcValue),'uint8');
                 temp = bitxor(char,crcBytes(1));
                 temp = bitxor(temp,bitshift(temp,4));

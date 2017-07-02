@@ -33,7 +33,7 @@ classdef mavlink_crc < handle
         
         function updateChecksum(obj, char)
             if char == uint8(char)
-                char = uint8(char)
+                char = uint8(char);
                 crcBytes = typecast(uint16(obj.crcValue),'uint8');
                 temp = bitxor(char,crcBytes(1));
                 temp = bitxor(temp,bitshift(temp,4));

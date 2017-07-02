@@ -7,7 +7,7 @@ msg = [];
 messages = 0;
 
 tmsg = msg_distance_sensor();
-tmsg.time_boot_ms = 452;
+tmsg.time_boot_ms = 166;
 tmsg.min_distance = 22;
 tmsg.max_distance = 122;
 tmsg.current_distance = 77;
