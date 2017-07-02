@@ -138,6 +138,9 @@ classdef %s < mavlink_message
         
             if field['type'] == 'char':
                 field['type'] = 'uint8'
+                
+            if field['type'] == 'float':
+                field['type'] = 'single'
         
         #Generate class properties
         fo.write('''\
@@ -166,7 +169,7 @@ classdef %s < mavlink_message
         function obj = %s(packet)
         
             obj.msgid = obj.ID;
-            if nargin > 0
+            if nargin == 1
                 obj.sysid = packet.sysid;
                 obj.compid = packet.compid;
                 obj.unpack(packet.payload)
@@ -195,12 +198,12 @@ classdef %s < mavlink_message
                 fo.write('''\
             
             for i = 1:%s
-                packet.payload.put%s(%s(obj.%s(i)));
+                packet.payload.put%s(obj.%s(i));
             end
             \
-                ''' % (field['size'], field['type'].upper(), field['type'], field['name']))
+                ''' % (field['size'], field['type'].upper(), field['name']))
             else:
-                fo.write('\n\t\t\tpacket.payload.put%s(%s(obj.%s));\n' % (field['type'].upper(), field['type'], field['name']))
+                fo.write('\n\t\t\tpacket.payload.put%s(obj.%s);\n' % (field['type'].upper(), field['name']))
         
         fo.write('\n\t\tend\n')
         
@@ -228,8 +231,34 @@ classdef %s < mavlink_message
                 
         fo.write('\n\t\tend\n')
         
+        #Generate setters for integer message fields
+        for field in fields:
+            
+            if field['type'] == 'double' or field['type'] == 'single':
+                fo.write('''\
+        
+        function set.%s(obj,value)
+            obj.%s = %s(value);
+        end
+        \
+                ''' % (field['name'], field['name'], field['type']))        
+            
+            else:
+                
+                fo.write('''\
+            
+        function set.%s(obj,value)
+            if value == %s(value)
+                obj.%s = %s(value);
+            else
+                fprintf(2,'MAVLAB-ERROR | %s.set.%s()\\n\\t Input "value" is not of type "%s"\\n');
+            end
+        end
+        \
+                ''' % (field['name'], field['type'], field['name'], field['type'], name, field['name'], field['type']))
+        
         #End of class
-        fo.write('\tend\nend')
+        fo.write('\n\tend\nend')
         
         #Return a parsed message
         parsed_msg = {'name' : name, 'msgid' : msgid, 'crc' : crc}
@@ -507,7 +536,8 @@ classdef mavlink_crc < handle
         end
         
         function updateChecksum(obj, char)
-            if isa(char,'uint8')
+            if char == uint8(char)
+                char = uint8(char)
                 crcBytes = typecast(uint16(obj.crcValue),'uint8');
                 temp = bitxor(char,crcBytes(1));
                 temp = bitxor(temp,bitshift(temp,4));
@@ -516,7 +546,7 @@ classdef mavlink_crc < handle
                 crcAccum = bitxor(crcAccum,bitshift(uint16(temp),-4));
                 obj.crcValue = crcAccum;
             else
-                disp('ERROR(mavlink_crc.updateChecksum): Input "char" is not of type "uint8"');
+                fprintf(2,'MAVLAB-ERROR | mavlink_crc.updateChecksum()\\n\\t Input "char" is not of type "uint8"\\n');
             end
         end
         
