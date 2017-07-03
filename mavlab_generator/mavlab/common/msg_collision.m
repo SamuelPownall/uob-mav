@@ -9,15 +9,14 @@ classdef msg_collision < mavlink_message
     end
     
     properties        
-		id	%Unique identifier, domain based on src field (uint32[1])
-		time_to_minimum_delta	%Estimated time until collision occurs (seconds) (single[1])
-		altitude_minimum_delta	%Closest vertical distance in meters between vehicle and object (single[1])
-		horizontal_minimum_delta	%Closest horizontal distance in meteres between vehicle and object (single[1])
-		src	%Collision data source (uint8[1])
-		action	%Action that is being taken to avoid this collision (uint8[1])
-		threat_level	%How concerned the aircraft is about this collision (uint8[1])
+		id	%Unique identifier, domain based on src field (uint32)
+		time_to_minimum_delta	%Estimated time until collision occurs (seconds) (single)
+		altitude_minimum_delta	%Closest vertical distance in meters between vehicle and object (single)
+		horizontal_minimum_delta	%Closest horizontal distance in meteres between vehicle and object (single)
+		src	%Collision data source (uint8)
+		action	%Action that is being taken to avoid this collision (uint8)
+		threat_level	%How concerned the aircraft is about this collision (uint8)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_collision < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_collision.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_collision.ID;
-                
-			packet.payload.putUINT32(obj.id);
-
-			packet.payload.putSINGLE(obj.time_to_minimum_delta);
-
-			packet.payload.putSINGLE(obj.altitude_minimum_delta);
-
-			packet.payload.putSINGLE(obj.horizontal_minimum_delta);
-
-			packet.payload.putUINT8(obj.src);
-
-			packet.payload.putUINT8(obj.action);
-
-			packet.payload.putUINT8(obj.threat_level);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_collision.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_collision.ID;
+                
+				packet.payload.putUINT32(obj.id);
+
+				packet.payload.putSINGLE(obj.time_to_minimum_delta);
+
+				packet.payload.putSINGLE(obj.altitude_minimum_delta);
+
+				packet.payload.putSINGLE(obj.horizontal_minimum_delta);
+
+				packet.payload.putUINT8(obj.src);
+
+				packet.payload.putUINT8(obj.action);
+
+				packet.payload.putUINT8(obj.threat_level);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_collision.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_collision < mavlink_message
 			obj.threat_level = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.id,2) ~= 1
+                result = 'id';                                        
+            elseif size(obj.time_to_minimum_delta,2) ~= 1
+                result = 'time_to_minimum_delta';                                        
+            elseif size(obj.altitude_minimum_delta,2) ~= 1
+                result = 'altitude_minimum_delta';                                        
+            elseif size(obj.horizontal_minimum_delta,2) ~= 1
+                result = 'horizontal_minimum_delta';                                        
+            elseif size(obj.src,2) ~= 1
+                result = 'src';                                        
+            elseif size(obj.action,2) ~= 1
+                result = 'action';                                        
+            elseif size(obj.threat_level,2) ~= 1
+                result = 'threat_level';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.id(obj,value)
             if value == uint32(value)
                 obj.id = uint32(value);

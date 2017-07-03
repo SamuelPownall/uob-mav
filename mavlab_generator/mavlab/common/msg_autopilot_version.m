@@ -9,19 +9,18 @@ classdef msg_autopilot_version < mavlink_message
     end
     
     properties        
-		capabilities	%bitmask of capabilities (see MAV_PROTOCOL_CAPABILITY enum) (uint64[1])
-		uid	%UID if provided by hardware (uint64[1])
-		flight_sw_version	%Firmware version number (uint32[1])
-		middleware_sw_version	%Middleware version number (uint32[1])
-		os_sw_version	%Operating system version number (uint32[1])
-		board_version	%HW / board version (last 8 bytes should be silicon ID, if any) (uint32[1])
-		vendor_id	%ID of the board vendor (uint16[1])
-		product_id	%ID of the product (uint16[1])
+		capabilities	%bitmask of capabilities (see MAV_PROTOCOL_CAPABILITY enum) (uint64)
+		uid	%UID if provided by hardware (uint64)
+		flight_sw_version	%Firmware version number (uint32)
+		middleware_sw_version	%Middleware version number (uint32)
+		os_sw_version	%Operating system version number (uint32)
+		board_version	%HW / board version (last 8 bytes should be silicon ID, if any) (uint32)
+		vendor_id	%ID of the board vendor (uint16)
+		product_id	%ID of the product (uint16)
 		flight_custom_version	%Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases. (uint8[8])
 		middleware_custom_version	%Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases. (uint8[8])
 		os_custom_version	%Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases. (uint8[8])
 	end
-
     
     methods
         
@@ -41,42 +40,50 @@ classdef msg_autopilot_version < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_autopilot_version.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_autopilot_version.ID;
-                
-			packet.payload.putUINT64(obj.capabilities);
-
-			packet.payload.putUINT64(obj.uid);
-
-			packet.payload.putUINT32(obj.flight_sw_version);
-
-			packet.payload.putUINT32(obj.middleware_sw_version);
-
-			packet.payload.putUINT32(obj.os_sw_version);
-
-			packet.payload.putUINT32(obj.board_version);
-
-			packet.payload.putUINT16(obj.vendor_id);
-
-			packet.payload.putUINT16(obj.product_id);
-            
-            for i = 1:8
-                packet.payload.putUINT8(obj.flight_custom_version(i));
-            end
-                                        
-            for i = 1:8
-                packet.payload.putUINT8(obj.middleware_custom_version(i));
-            end
-                                        
-            for i = 1:8
-                packet.payload.putUINT8(obj.os_custom_version(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_autopilot_version.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_autopilot_version.ID;
+                
+				packet.payload.putUINT64(obj.capabilities);
+
+				packet.payload.putUINT64(obj.uid);
+
+				packet.payload.putUINT32(obj.flight_sw_version);
+
+				packet.payload.putUINT32(obj.middleware_sw_version);
+
+				packet.payload.putUINT32(obj.os_sw_version);
+
+				packet.payload.putUINT32(obj.board_version);
+
+				packet.payload.putUINT16(obj.vendor_id);
+
+				packet.payload.putUINT16(obj.product_id);
+            
+                for i = 1:8
+                    packet.payload.putUINT8(obj.flight_custom_version(i));
+                end
+                                            
+                for i = 1:8
+                    packet.payload.putUINT8(obj.middleware_custom_version(i));
+                end
+                                            
+                for i = 1:8
+                    packet.payload.putUINT8(obj.os_custom_version(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_autopilot_version.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -110,7 +117,38 @@ classdef msg_autopilot_version < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.capabilities,2) ~= 1
+                result = 'capabilities';                                        
+            elseif size(obj.uid,2) ~= 1
+                result = 'uid';                                        
+            elseif size(obj.flight_sw_version,2) ~= 1
+                result = 'flight_sw_version';                                        
+            elseif size(obj.middleware_sw_version,2) ~= 1
+                result = 'middleware_sw_version';                                        
+            elseif size(obj.os_sw_version,2) ~= 1
+                result = 'os_sw_version';                                        
+            elseif size(obj.board_version,2) ~= 1
+                result = 'board_version';                                        
+            elseif size(obj.vendor_id,2) ~= 1
+                result = 'vendor_id';                                        
+            elseif size(obj.product_id,2) ~= 1
+                result = 'product_id';                                        
+            elseif size(obj.flight_custom_version,2) ~= 8
+                result = 'flight_custom_version';                                        
+            elseif size(obj.middleware_custom_version,2) ~= 8
+                result = 'middleware_custom_version';                                        
+            elseif size(obj.os_custom_version,2) ~= 8
+                result = 'os_custom_version';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.capabilities(obj,value)
             if value == uint64(value)
                 obj.capabilities = uint64(value);

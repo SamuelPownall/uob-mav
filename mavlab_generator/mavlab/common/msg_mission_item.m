@@ -10,22 +10,21 @@ classdef msg_mission_item < mavlink_message
     end
     
     properties        
-		param1	%PARAM1, see MAV_CMD enum (single[1])
-		param2	%PARAM2, see MAV_CMD enum (single[1])
-		param3	%PARAM3, see MAV_CMD enum (single[1])
-		param4	%PARAM4, see MAV_CMD enum (single[1])
-		x	%PARAM5 / local: x position, global: latitude (single[1])
-		y	%PARAM6 / y position: global: longitude (single[1])
-		z	%PARAM7 / z position: global: altitude (relative or absolute, depending on frame. (single[1])
-		seq	%Sequence (uint16[1])
-		command	%The scheduled action for the MISSION. see MAV_CMD in common.xml MAVLink specs (uint16[1])
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
-		frame	%The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h (uint8[1])
-		current	%false:0, true:1 (uint8[1])
-		autocontinue	%autocontinue to next wp (uint8[1])
+		param1	%PARAM1, see MAV_CMD enum (single)
+		param2	%PARAM2, see MAV_CMD enum (single)
+		param3	%PARAM3, see MAV_CMD enum (single)
+		param4	%PARAM4, see MAV_CMD enum (single)
+		x	%PARAM5 / local: x position, global: latitude (single)
+		y	%PARAM6 / y position: global: longitude (single)
+		z	%PARAM7 / z position: global: altitude (relative or absolute, depending on frame. (single)
+		seq	%Sequence (uint16)
+		command	%The scheduled action for the MISSION. see MAV_CMD in common.xml MAVLink specs (uint16)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
+		frame	%The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h (uint8)
+		current	%false:0, true:1 (uint8)
+		autocontinue	%autocontinue to next wp (uint8)
 	end
-
     
     methods
         
@@ -45,42 +44,50 @@ classdef msg_mission_item < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_mission_item.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_mission_item.ID;
-                
-			packet.payload.putSINGLE(obj.param1);
-
-			packet.payload.putSINGLE(obj.param2);
-
-			packet.payload.putSINGLE(obj.param3);
-
-			packet.payload.putSINGLE(obj.param4);
-
-			packet.payload.putSINGLE(obj.x);
-
-			packet.payload.putSINGLE(obj.y);
-
-			packet.payload.putSINGLE(obj.z);
-
-			packet.payload.putUINT16(obj.seq);
-
-			packet.payload.putUINT16(obj.command);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-			packet.payload.putUINT8(obj.frame);
-
-			packet.payload.putUINT8(obj.current);
-
-			packet.payload.putUINT8(obj.autocontinue);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_mission_item.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_mission_item.ID;
+                
+				packet.payload.putSINGLE(obj.param1);
+
+				packet.payload.putSINGLE(obj.param2);
+
+				packet.payload.putSINGLE(obj.param3);
+
+				packet.payload.putSINGLE(obj.param4);
+
+				packet.payload.putSINGLE(obj.x);
+
+				packet.payload.putSINGLE(obj.y);
+
+				packet.payload.putSINGLE(obj.z);
+
+				packet.payload.putUINT16(obj.seq);
+
+				packet.payload.putUINT16(obj.command);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+
+				packet.payload.putUINT8(obj.frame);
+
+				packet.payload.putUINT8(obj.current);
+
+				packet.payload.putUINT8(obj.autocontinue);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_mission_item.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -115,6 +122,43 @@ classdef msg_mission_item < mavlink_message
 
 		end
         
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.param1,2) ~= 1
+                result = 'param1';                                        
+            elseif size(obj.param2,2) ~= 1
+                result = 'param2';                                        
+            elseif size(obj.param3,2) ~= 1
+                result = 'param3';                                        
+            elseif size(obj.param4,2) ~= 1
+                result = 'param4';                                        
+            elseif size(obj.x,2) ~= 1
+                result = 'x';                                        
+            elseif size(obj.y,2) ~= 1
+                result = 'y';                                        
+            elseif size(obj.z,2) ~= 1
+                result = 'z';                                        
+            elseif size(obj.seq,2) ~= 1
+                result = 'seq';                                        
+            elseif size(obj.command,2) ~= 1
+                result = 'command';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.frame,2) ~= 1
+                result = 'frame';                                        
+            elseif size(obj.current,2) ~= 1
+                result = 'current';                                        
+            elseif size(obj.autocontinue,2) ~= 1
+                result = 'autocontinue';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
         function set.param1(obj,value)
             obj.param1 = single(value);
         end

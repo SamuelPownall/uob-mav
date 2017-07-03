@@ -9,12 +9,11 @@ classdef msg_log_request_list < mavlink_message
     end
     
     properties        
-		start	%First log id (0 for first available) (uint16[1])
-		end	%Last log id (0xffff for last available) (uint16[1])
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
+		start	%First log id (0 for first available) (uint16)
+		end	%Last log id (0xffff for last available) (uint16)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
 	end
-
     
     methods
         
@@ -34,22 +33,30 @@ classdef msg_log_request_list < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_log_request_list.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_log_request_list.ID;
-                
-			packet.payload.putUINT16(obj.start);
-
-			packet.payload.putUINT16(obj.end);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_log_request_list.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_log_request_list.ID;
+                
+				packet.payload.putUINT16(obj.start);
+
+				packet.payload.putUINT16(obj.end);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_log_request_list.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -63,7 +70,24 @@ classdef msg_log_request_list < mavlink_message
 			obj.target_component = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.start,2) ~= 1
+                result = 'start';                                        
+            elseif size(obj.end,2) ~= 1
+                result = 'end';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.start(obj,value)
             if value == uint16(value)
                 obj.start = uint16(value);

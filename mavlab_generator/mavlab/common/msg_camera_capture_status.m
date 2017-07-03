@@ -9,18 +9,17 @@ classdef msg_camera_capture_status < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		image_interval	%Image capture interval in seconds (single[1])
-		video_framerate	%Video frame rate in Hz (single[1])
-		image_resolution_h	%Image resolution in pixels horizontal (uint16[1])
-		image_resolution_v	%Image resolution in pixels vertical (uint16[1])
-		video_resolution_h	%Video resolution in pixels horizontal (uint16[1])
-		video_resolution_v	%Video resolution in pixels vertical (uint16[1])
-		camera_id	%Camera ID if there are multiple (uint8[1])
-		image_status	%Current status of image capturing (0: not running, 1: interval capture in progress) (uint8[1])
-		video_status	%Current status of video capturing (0: not running, 1: capture in progress) (uint8[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		image_interval	%Image capture interval in seconds (single)
+		video_framerate	%Video frame rate in Hz (single)
+		image_resolution_h	%Image resolution in pixels horizontal (uint16)
+		image_resolution_v	%Image resolution in pixels vertical (uint16)
+		video_resolution_h	%Video resolution in pixels horizontal (uint16)
+		video_resolution_v	%Video resolution in pixels vertical (uint16)
+		camera_id	%Camera ID if there are multiple (uint8)
+		image_status	%Current status of image capturing (0: not running, 1: interval capture in progress) (uint8)
+		video_status	%Current status of video capturing (0: not running, 1: capture in progress) (uint8)
 	end
-
     
     methods
         
@@ -40,34 +39,42 @@ classdef msg_camera_capture_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_camera_capture_status.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_camera_capture_status.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.image_interval);
-
-			packet.payload.putSINGLE(obj.video_framerate);
-
-			packet.payload.putUINT16(obj.image_resolution_h);
-
-			packet.payload.putUINT16(obj.image_resolution_v);
-
-			packet.payload.putUINT16(obj.video_resolution_h);
-
-			packet.payload.putUINT16(obj.video_resolution_v);
-
-			packet.payload.putUINT8(obj.camera_id);
-
-			packet.payload.putUINT8(obj.image_status);
-
-			packet.payload.putUINT8(obj.video_status);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_camera_capture_status.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_camera_capture_status.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.image_interval);
+
+				packet.payload.putSINGLE(obj.video_framerate);
+
+				packet.payload.putUINT16(obj.image_resolution_h);
+
+				packet.payload.putUINT16(obj.image_resolution_v);
+
+				packet.payload.putUINT16(obj.video_resolution_h);
+
+				packet.payload.putUINT16(obj.video_resolution_v);
+
+				packet.payload.putUINT8(obj.camera_id);
+
+				packet.payload.putUINT8(obj.image_status);
+
+				packet.payload.putUINT8(obj.video_status);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_camera_capture_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -93,7 +100,36 @@ classdef msg_camera_capture_status < mavlink_message
 			obj.video_status = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.image_interval,2) ~= 1
+                result = 'image_interval';                                        
+            elseif size(obj.video_framerate,2) ~= 1
+                result = 'video_framerate';                                        
+            elseif size(obj.image_resolution_h,2) ~= 1
+                result = 'image_resolution_h';                                        
+            elseif size(obj.image_resolution_v,2) ~= 1
+                result = 'image_resolution_v';                                        
+            elseif size(obj.video_resolution_h,2) ~= 1
+                result = 'video_resolution_h';                                        
+            elseif size(obj.video_resolution_v,2) ~= 1
+                result = 'video_resolution_v';                                        
+            elseif size(obj.camera_id,2) ~= 1
+                result = 'camera_id';                                        
+            elseif size(obj.image_status,2) ~= 1
+                result = 'image_status';                                        
+            elseif size(obj.video_status,2) ~= 1
+                result = 'video_status';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

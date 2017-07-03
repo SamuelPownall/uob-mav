@@ -9,26 +9,25 @@ classdef msg_gps_input < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64[1])
-		time_week_ms	%GPS time (milliseconds from start of GPS week) (uint32[1])
-		lat	%Latitude (WGS84), in degrees * 1E7 (int32[1])
-		lon	%Longitude (WGS84), in degrees * 1E7 (int32[1])
-		alt	%Altitude (AMSL, not WGS84), in m (positive for up) (single[1])
-		hdop	%GPS HDOP horizontal dilution of position in m (single[1])
-		vdop	%GPS VDOP vertical dilution of position in m (single[1])
-		vn	%GPS velocity in m/s in NORTH direction in earth-fixed NED frame (single[1])
-		ve	%GPS velocity in m/s in EAST direction in earth-fixed NED frame (single[1])
-		vd	%GPS velocity in m/s in DOWN direction in earth-fixed NED frame (single[1])
-		speed_accuracy	%GPS speed accuracy in m/s (single[1])
-		horiz_accuracy	%GPS horizontal accuracy in m (single[1])
-		vert_accuracy	%GPS vertical accuracy in m (single[1])
-		ignore_flags	%Flags indicating which fields to ignore (see GPS_INPUT_IGNORE_FLAGS enum).  All other fields must be provided. (uint16[1])
-		time_week	%GPS week number (uint16[1])
-		gps_id	%ID of the GPS for multiple GPS inputs (uint8[1])
-		fix_type	%0-1: no fix, 2: 2D fix, 3: 3D fix. 4: 3D with DGPS. 5: 3D with RTK (uint8[1])
-		satellites_visible	%Number of satellites visible. (uint8[1])
+		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64)
+		time_week_ms	%GPS time (milliseconds from start of GPS week) (uint32)
+		lat	%Latitude (WGS84), in degrees * 1E7 (int32)
+		lon	%Longitude (WGS84), in degrees * 1E7 (int32)
+		alt	%Altitude (AMSL, not WGS84), in m (positive for up) (single)
+		hdop	%GPS HDOP horizontal dilution of position in m (single)
+		vdop	%GPS VDOP vertical dilution of position in m (single)
+		vn	%GPS velocity in m/s in NORTH direction in earth-fixed NED frame (single)
+		ve	%GPS velocity in m/s in EAST direction in earth-fixed NED frame (single)
+		vd	%GPS velocity in m/s in DOWN direction in earth-fixed NED frame (single)
+		speed_accuracy	%GPS speed accuracy in m/s (single)
+		horiz_accuracy	%GPS horizontal accuracy in m (single)
+		vert_accuracy	%GPS vertical accuracy in m (single)
+		ignore_flags	%Flags indicating which fields to ignore (see GPS_INPUT_IGNORE_FLAGS enum).  All other fields must be provided. (uint16)
+		time_week	%GPS week number (uint16)
+		gps_id	%ID of the GPS for multiple GPS inputs (uint8)
+		fix_type	%0-1: no fix, 2: 2D fix, 3: 3D fix. 4: 3D with DGPS. 5: 3D with RTK (uint8)
+		satellites_visible	%Number of satellites visible. (uint8)
 	end
-
     
     methods
         
@@ -48,50 +47,58 @@ classdef msg_gps_input < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_gps_input.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_gps_input.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putUINT32(obj.time_week_ms);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putSINGLE(obj.alt);
-
-			packet.payload.putSINGLE(obj.hdop);
-
-			packet.payload.putSINGLE(obj.vdop);
-
-			packet.payload.putSINGLE(obj.vn);
-
-			packet.payload.putSINGLE(obj.ve);
-
-			packet.payload.putSINGLE(obj.vd);
-
-			packet.payload.putSINGLE(obj.speed_accuracy);
-
-			packet.payload.putSINGLE(obj.horiz_accuracy);
-
-			packet.payload.putSINGLE(obj.vert_accuracy);
-
-			packet.payload.putUINT16(obj.ignore_flags);
-
-			packet.payload.putUINT16(obj.time_week);
-
-			packet.payload.putUINT8(obj.gps_id);
-
-			packet.payload.putUINT8(obj.fix_type);
-
-			packet.payload.putUINT8(obj.satellites_visible);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_gps_input.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_gps_input.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putUINT32(obj.time_week_ms);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putSINGLE(obj.alt);
+
+				packet.payload.putSINGLE(obj.hdop);
+
+				packet.payload.putSINGLE(obj.vdop);
+
+				packet.payload.putSINGLE(obj.vn);
+
+				packet.payload.putSINGLE(obj.ve);
+
+				packet.payload.putSINGLE(obj.vd);
+
+				packet.payload.putSINGLE(obj.speed_accuracy);
+
+				packet.payload.putSINGLE(obj.horiz_accuracy);
+
+				packet.payload.putSINGLE(obj.vert_accuracy);
+
+				packet.payload.putUINT16(obj.ignore_flags);
+
+				packet.payload.putUINT16(obj.time_week);
+
+				packet.payload.putUINT8(obj.gps_id);
+
+				packet.payload.putUINT8(obj.fix_type);
+
+				packet.payload.putUINT8(obj.satellites_visible);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_gps_input.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -133,7 +140,52 @@ classdef msg_gps_input < mavlink_message
 			obj.satellites_visible = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.time_week_ms,2) ~= 1
+                result = 'time_week_ms';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.hdop,2) ~= 1
+                result = 'hdop';                                        
+            elseif size(obj.vdop,2) ~= 1
+                result = 'vdop';                                        
+            elseif size(obj.vn,2) ~= 1
+                result = 'vn';                                        
+            elseif size(obj.ve,2) ~= 1
+                result = 've';                                        
+            elseif size(obj.vd,2) ~= 1
+                result = 'vd';                                        
+            elseif size(obj.speed_accuracy,2) ~= 1
+                result = 'speed_accuracy';                                        
+            elseif size(obj.horiz_accuracy,2) ~= 1
+                result = 'horiz_accuracy';                                        
+            elseif size(obj.vert_accuracy,2) ~= 1
+                result = 'vert_accuracy';                                        
+            elseif size(obj.ignore_flags,2) ~= 1
+                result = 'ignore_flags';                                        
+            elseif size(obj.time_week,2) ~= 1
+                result = 'time_week';                                        
+            elseif size(obj.gps_id,2) ~= 1
+                result = 'gps_id';                                        
+            elseif size(obj.fix_type,2) ~= 1
+                result = 'fix_type';                                        
+            elseif size(obj.satellites_visible,2) ~= 1
+                result = 'satellites_visible';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

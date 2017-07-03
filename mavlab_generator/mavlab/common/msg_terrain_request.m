@@ -9,12 +9,11 @@ classdef msg_terrain_request < mavlink_message
     end
     
     properties        
-		mask	%Bitmask of requested 4x4 grids (row major 8x7 array of grids, 56 bits) (uint64[1])
-		lat	%Latitude of SW corner of first grid (degrees *10^7) (int32[1])
-		lon	%Longitude of SW corner of first grid (in degrees *10^7) (int32[1])
-		grid_spacing	%Grid spacing in meters (uint16[1])
+		mask	%Bitmask of requested 4x4 grids (row major 8x7 array of grids, 56 bits) (uint64)
+		lat	%Latitude of SW corner of first grid (degrees *10^7) (int32)
+		lon	%Longitude of SW corner of first grid (in degrees *10^7) (int32)
+		grid_spacing	%Grid spacing in meters (uint16)
 	end
-
     
     methods
         
@@ -34,22 +33,30 @@ classdef msg_terrain_request < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_terrain_request.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_terrain_request.ID;
-                
-			packet.payload.putUINT64(obj.mask);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putUINT16(obj.grid_spacing);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_terrain_request.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_terrain_request.ID;
+                
+				packet.payload.putUINT64(obj.mask);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putUINT16(obj.grid_spacing);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_terrain_request.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -63,7 +70,24 @@ classdef msg_terrain_request < mavlink_message
 			obj.grid_spacing = payload.getUINT16();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.mask,2) ~= 1
+                result = 'mask';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.grid_spacing,2) ~= 1
+                result = 'grid_spacing';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.mask(obj,value)
             if value == uint64(value)
                 obj.mask = uint64(value);

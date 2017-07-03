@@ -9,16 +9,15 @@ classdef msg_landing_target < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64[1])
-		angle_x	%X-axis angular offset (in radians) of the target from the center of the image (single[1])
-		angle_y	%Y-axis angular offset (in radians) of the target from the center of the image (single[1])
-		distance	%Distance to the target from the vehicle in meters (single[1])
-		size_x	%Size in radians of target along x-axis (single[1])
-		size_y	%Size in radians of target along y-axis (single[1])
-		target_num	%The ID of the target if multiple targets are present (uint8[1])
-		frame	%MAV_FRAME enum specifying the whether the following feilds are earth-frame, body-frame, etc. (uint8[1])
+		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64)
+		angle_x	%X-axis angular offset (in radians) of the target from the center of the image (single)
+		angle_y	%Y-axis angular offset (in radians) of the target from the center of the image (single)
+		distance	%Distance to the target from the vehicle in meters (single)
+		size_x	%Size in radians of target along x-axis (single)
+		size_y	%Size in radians of target along y-axis (single)
+		target_num	%The ID of the target if multiple targets are present (uint8)
+		frame	%MAV_FRAME enum specifying the whether the following feilds are earth-frame, body-frame, etc. (uint8)
 	end
-
     
     methods
         
@@ -38,30 +37,38 @@ classdef msg_landing_target < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_landing_target.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_landing_target.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putSINGLE(obj.angle_x);
-
-			packet.payload.putSINGLE(obj.angle_y);
-
-			packet.payload.putSINGLE(obj.distance);
-
-			packet.payload.putSINGLE(obj.size_x);
-
-			packet.payload.putSINGLE(obj.size_y);
-
-			packet.payload.putUINT8(obj.target_num);
-
-			packet.payload.putUINT8(obj.frame);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_landing_target.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_landing_target.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putSINGLE(obj.angle_x);
+
+				packet.payload.putSINGLE(obj.angle_y);
+
+				packet.payload.putSINGLE(obj.distance);
+
+				packet.payload.putSINGLE(obj.size_x);
+
+				packet.payload.putSINGLE(obj.size_y);
+
+				packet.payload.putUINT8(obj.target_num);
+
+				packet.payload.putUINT8(obj.frame);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_landing_target.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -83,7 +90,32 @@ classdef msg_landing_target < mavlink_message
 			obj.frame = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.angle_x,2) ~= 1
+                result = 'angle_x';                                        
+            elseif size(obj.angle_y,2) ~= 1
+                result = 'angle_y';                                        
+            elseif size(obj.distance,2) ~= 1
+                result = 'distance';                                        
+            elseif size(obj.size_x,2) ~= 1
+                result = 'size_x';                                        
+            elseif size(obj.size_y,2) ~= 1
+                result = 'size_y';                                        
+            elseif size(obj.target_num,2) ~= 1
+                result = 'target_num';                                        
+            elseif size(obj.frame,2) ~= 1
+                result = 'frame';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

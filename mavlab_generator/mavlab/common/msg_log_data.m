@@ -9,12 +9,11 @@ classdef msg_log_data < mavlink_message
     end
     
     properties        
-		ofs	%Offset into the log (uint32[1])
-		id	%Log id (from LOG_ENTRY reply) (uint16[1])
-		count	%Number of bytes (zero for end of log) (uint8[1])
+		ofs	%Offset into the log (uint32)
+		id	%Log id (from LOG_ENTRY reply) (uint16)
+		count	%Number of bytes (zero for end of log) (uint8)
 		data	%log data (uint8[90])
 	end
-
     
     methods
         
@@ -34,24 +33,32 @@ classdef msg_log_data < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_log_data.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_log_data.ID;
-                
-			packet.payload.putUINT32(obj.ofs);
-
-			packet.payload.putUINT16(obj.id);
-
-			packet.payload.putUINT8(obj.count);
-            
-            for i = 1:90
-                packet.payload.putUINT8(obj.data(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_log_data.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_log_data.ID;
+                
+				packet.payload.putUINT32(obj.ofs);
+
+				packet.payload.putUINT16(obj.id);
+
+				packet.payload.putUINT8(obj.count);
+            
+                for i = 1:90
+                    packet.payload.putUINT8(obj.data(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_log_data.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -67,7 +74,24 @@ classdef msg_log_data < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.ofs,2) ~= 1
+                result = 'ofs';                                        
+            elseif size(obj.id,2) ~= 1
+                result = 'id';                                        
+            elseif size(obj.count,2) ~= 1
+                result = 'count';                                        
+            elseif size(obj.data,2) ~= 90
+                result = 'data';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.ofs(obj,value)
             if value == uint32(value)
                 obj.ofs = uint32(value);

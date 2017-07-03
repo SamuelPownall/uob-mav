@@ -9,14 +9,13 @@ classdef msg_vfr_hud < mavlink_message
     end
     
     properties        
-		airspeed	%Current airspeed in m/s (single[1])
-		groundspeed	%Current ground speed in m/s (single[1])
-		alt	%Current altitude (MSL), in meters (single[1])
-		climb	%Current climb rate in meters/second (single[1])
-		heading	%Current heading in degrees, in compass units (0..360, 0=north) (int16[1])
-		throttle	%Current throttle setting in integer percent, 0 to 100 (uint16[1])
+		airspeed	%Current airspeed in m/s (single)
+		groundspeed	%Current ground speed in m/s (single)
+		alt	%Current altitude (MSL), in meters (single)
+		climb	%Current climb rate in meters/second (single)
+		heading	%Current heading in degrees, in compass units (0..360, 0=north) (int16)
+		throttle	%Current throttle setting in integer percent, 0 to 100 (uint16)
 	end
-
     
     methods
         
@@ -36,26 +35,34 @@ classdef msg_vfr_hud < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_vfr_hud.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_vfr_hud.ID;
-                
-			packet.payload.putSINGLE(obj.airspeed);
-
-			packet.payload.putSINGLE(obj.groundspeed);
-
-			packet.payload.putSINGLE(obj.alt);
-
-			packet.payload.putSINGLE(obj.climb);
-
-			packet.payload.putINT16(obj.heading);
-
-			packet.payload.putUINT16(obj.throttle);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_vfr_hud.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_vfr_hud.ID;
+                
+				packet.payload.putSINGLE(obj.airspeed);
+
+				packet.payload.putSINGLE(obj.groundspeed);
+
+				packet.payload.putSINGLE(obj.alt);
+
+				packet.payload.putSINGLE(obj.climb);
+
+				packet.payload.putINT16(obj.heading);
+
+				packet.payload.putUINT16(obj.throttle);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_vfr_hud.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -74,6 +81,27 @@ classdef msg_vfr_hud < mavlink_message
 
 		end
         
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.airspeed,2) ~= 1
+                result = 'airspeed';                                        
+            elseif size(obj.groundspeed,2) ~= 1
+                result = 'groundspeed';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.climb,2) ~= 1
+                result = 'climb';                                        
+            elseif size(obj.heading,2) ~= 1
+                result = 'heading';                                        
+            elseif size(obj.throttle,2) ~= 1
+                result = 'throttle';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
         function set.airspeed(obj,value)
             obj.airspeed = single(value);
         end

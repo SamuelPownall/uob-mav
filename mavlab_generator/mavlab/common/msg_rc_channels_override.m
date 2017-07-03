@@ -9,18 +9,17 @@ classdef msg_rc_channels_override < mavlink_message
     end
     
     properties        
-		chan1_raw	%RC channel 1 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		chan2_raw	%RC channel 2 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		chan3_raw	%RC channel 3 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		chan4_raw	%RC channel 4 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		chan5_raw	%RC channel 5 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		chan6_raw	%RC channel 6 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		chan7_raw	%RC channel 7 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		chan8_raw	%RC channel 8 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16[1])
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
+		chan1_raw	%RC channel 1 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		chan2_raw	%RC channel 2 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		chan3_raw	%RC channel 3 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		chan4_raw	%RC channel 4 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		chan5_raw	%RC channel 5 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		chan6_raw	%RC channel 6 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		chan7_raw	%RC channel 7 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		chan8_raw	%RC channel 8 value, in microseconds. A value of UINT16_MAX means to ignore this field. (uint16)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
 	end
-
     
     methods
         
@@ -40,34 +39,42 @@ classdef msg_rc_channels_override < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_rc_channels_override.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_rc_channels_override.ID;
-                
-			packet.payload.putUINT16(obj.chan1_raw);
-
-			packet.payload.putUINT16(obj.chan2_raw);
-
-			packet.payload.putUINT16(obj.chan3_raw);
-
-			packet.payload.putUINT16(obj.chan4_raw);
-
-			packet.payload.putUINT16(obj.chan5_raw);
-
-			packet.payload.putUINT16(obj.chan6_raw);
-
-			packet.payload.putUINT16(obj.chan7_raw);
-
-			packet.payload.putUINT16(obj.chan8_raw);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_rc_channels_override.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_rc_channels_override.ID;
+                
+				packet.payload.putUINT16(obj.chan1_raw);
+
+				packet.payload.putUINT16(obj.chan2_raw);
+
+				packet.payload.putUINT16(obj.chan3_raw);
+
+				packet.payload.putUINT16(obj.chan4_raw);
+
+				packet.payload.putUINT16(obj.chan5_raw);
+
+				packet.payload.putUINT16(obj.chan6_raw);
+
+				packet.payload.putUINT16(obj.chan7_raw);
+
+				packet.payload.putUINT16(obj.chan8_raw);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_rc_channels_override.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -93,7 +100,36 @@ classdef msg_rc_channels_override < mavlink_message
 			obj.target_component = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.chan1_raw,2) ~= 1
+                result = 'chan1_raw';                                        
+            elseif size(obj.chan2_raw,2) ~= 1
+                result = 'chan2_raw';                                        
+            elseif size(obj.chan3_raw,2) ~= 1
+                result = 'chan3_raw';                                        
+            elseif size(obj.chan4_raw,2) ~= 1
+                result = 'chan4_raw';                                        
+            elseif size(obj.chan5_raw,2) ~= 1
+                result = 'chan5_raw';                                        
+            elseif size(obj.chan6_raw,2) ~= 1
+                result = 'chan6_raw';                                        
+            elseif size(obj.chan7_raw,2) ~= 1
+                result = 'chan7_raw';                                        
+            elseif size(obj.chan8_raw,2) ~= 1
+                result = 'chan8_raw';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.chan1_raw(obj,value)
             if value == uint16(value)
                 obj.chan1_raw = uint16(value);

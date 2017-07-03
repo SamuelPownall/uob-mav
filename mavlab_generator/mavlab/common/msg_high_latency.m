@@ -9,32 +9,31 @@ classdef msg_high_latency < mavlink_message
     end
     
     properties        
-		custom_mode	%A bitfield for use for autopilot-specific flags. (uint32[1])
-		latitude	%Latitude, expressed as degrees * 1E7 (int32[1])
-		longitude	%Longitude, expressed as degrees * 1E7 (int32[1])
-		roll	%roll (centidegrees) (int16[1])
-		pitch	%pitch (centidegrees) (int16[1])
-		heading	%heading (centidegrees) (uint16[1])
-		heading_sp	%heading setpoint (centidegrees) (int16[1])
-		altitude_amsl	%Altitude above mean sea level (meters) (int16[1])
-		altitude_sp	%Altitude setpoint relative to the home position (meters) (int16[1])
-		wp_distance	%distance to target (meters) (uint16[1])
-		base_mode	%System mode bitfield, see MAV_MODE_FLAG ENUM in mavlink/include/mavlink_types.h (uint8[1])
-		landed_state	%The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown. (uint8[1])
-		throttle	%throttle (percentage) (int8[1])
-		airspeed	%airspeed (m/s) (uint8[1])
-		airspeed_sp	%airspeed setpoint (m/s) (uint8[1])
-		groundspeed	%groundspeed (m/s) (uint8[1])
-		climb_rate	%climb rate (m/s) (int8[1])
-		gps_nsat	%Number of satellites visible. If unknown, set to 255 (uint8[1])
-		gps_fix_type	%See the GPS_FIX_TYPE enum. (uint8[1])
-		battery_remaining	%Remaining battery (percentage) (uint8[1])
-		temperature	%Autopilot temperature (degrees C) (int8[1])
-		temperature_air	%Air temperature (degrees C) from airspeed sensor (int8[1])
-		failsafe	%failsafe (each bit represents a failsafe where 0=ok, 1=failsafe active (bit0:RC, bit1:batt, bit2:GPS, bit3:GCS, bit4:fence) (uint8[1])
-		wp_num	%current waypoint number (uint8[1])
+		custom_mode	%A bitfield for use for autopilot-specific flags. (uint32)
+		latitude	%Latitude, expressed as degrees * 1E7 (int32)
+		longitude	%Longitude, expressed as degrees * 1E7 (int32)
+		roll	%roll (centidegrees) (int16)
+		pitch	%pitch (centidegrees) (int16)
+		heading	%heading (centidegrees) (uint16)
+		heading_sp	%heading setpoint (centidegrees) (int16)
+		altitude_amsl	%Altitude above mean sea level (meters) (int16)
+		altitude_sp	%Altitude setpoint relative to the home position (meters) (int16)
+		wp_distance	%distance to target (meters) (uint16)
+		base_mode	%System mode bitfield, see MAV_MODE_FLAG ENUM in mavlink/include/mavlink_types.h (uint8)
+		landed_state	%The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown. (uint8)
+		throttle	%throttle (percentage) (int8)
+		airspeed	%airspeed (m/s) (uint8)
+		airspeed_sp	%airspeed setpoint (m/s) (uint8)
+		groundspeed	%groundspeed (m/s) (uint8)
+		climb_rate	%climb rate (m/s) (int8)
+		gps_nsat	%Number of satellites visible. If unknown, set to 255 (uint8)
+		gps_fix_type	%See the GPS_FIX_TYPE enum. (uint8)
+		battery_remaining	%Remaining battery (percentage) (uint8)
+		temperature	%Autopilot temperature (degrees C) (int8)
+		temperature_air	%Air temperature (degrees C) from airspeed sensor (int8)
+		failsafe	%failsafe (each bit represents a failsafe where 0=ok, 1=failsafe active (bit0:RC, bit1:batt, bit2:GPS, bit3:GCS, bit4:fence) (uint8)
+		wp_num	%current waypoint number (uint8)
 	end
-
     
     methods
         
@@ -54,62 +53,70 @@ classdef msg_high_latency < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_high_latency.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_high_latency.ID;
-                
-			packet.payload.putUINT32(obj.custom_mode);
-
-			packet.payload.putINT32(obj.latitude);
-
-			packet.payload.putINT32(obj.longitude);
-
-			packet.payload.putINT16(obj.roll);
-
-			packet.payload.putINT16(obj.pitch);
-
-			packet.payload.putUINT16(obj.heading);
-
-			packet.payload.putINT16(obj.heading_sp);
-
-			packet.payload.putINT16(obj.altitude_amsl);
-
-			packet.payload.putINT16(obj.altitude_sp);
-
-			packet.payload.putUINT16(obj.wp_distance);
-
-			packet.payload.putUINT8(obj.base_mode);
-
-			packet.payload.putUINT8(obj.landed_state);
-
-			packet.payload.putINT8(obj.throttle);
-
-			packet.payload.putUINT8(obj.airspeed);
-
-			packet.payload.putUINT8(obj.airspeed_sp);
-
-			packet.payload.putUINT8(obj.groundspeed);
-
-			packet.payload.putINT8(obj.climb_rate);
-
-			packet.payload.putUINT8(obj.gps_nsat);
-
-			packet.payload.putUINT8(obj.gps_fix_type);
-
-			packet.payload.putUINT8(obj.battery_remaining);
-
-			packet.payload.putINT8(obj.temperature);
-
-			packet.payload.putINT8(obj.temperature_air);
-
-			packet.payload.putUINT8(obj.failsafe);
-
-			packet.payload.putUINT8(obj.wp_num);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_high_latency.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_high_latency.ID;
+                
+				packet.payload.putUINT32(obj.custom_mode);
+
+				packet.payload.putINT32(obj.latitude);
+
+				packet.payload.putINT32(obj.longitude);
+
+				packet.payload.putINT16(obj.roll);
+
+				packet.payload.putINT16(obj.pitch);
+
+				packet.payload.putUINT16(obj.heading);
+
+				packet.payload.putINT16(obj.heading_sp);
+
+				packet.payload.putINT16(obj.altitude_amsl);
+
+				packet.payload.putINT16(obj.altitude_sp);
+
+				packet.payload.putUINT16(obj.wp_distance);
+
+				packet.payload.putUINT8(obj.base_mode);
+
+				packet.payload.putUINT8(obj.landed_state);
+
+				packet.payload.putINT8(obj.throttle);
+
+				packet.payload.putUINT8(obj.airspeed);
+
+				packet.payload.putUINT8(obj.airspeed_sp);
+
+				packet.payload.putUINT8(obj.groundspeed);
+
+				packet.payload.putINT8(obj.climb_rate);
+
+				packet.payload.putUINT8(obj.gps_nsat);
+
+				packet.payload.putUINT8(obj.gps_fix_type);
+
+				packet.payload.putUINT8(obj.battery_remaining);
+
+				packet.payload.putINT8(obj.temperature);
+
+				packet.payload.putINT8(obj.temperature_air);
+
+				packet.payload.putUINT8(obj.failsafe);
+
+				packet.payload.putUINT8(obj.wp_num);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_high_latency.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -163,7 +170,64 @@ classdef msg_high_latency < mavlink_message
 			obj.wp_num = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.custom_mode,2) ~= 1
+                result = 'custom_mode';                                        
+            elseif size(obj.latitude,2) ~= 1
+                result = 'latitude';                                        
+            elseif size(obj.longitude,2) ~= 1
+                result = 'longitude';                                        
+            elseif size(obj.roll,2) ~= 1
+                result = 'roll';                                        
+            elseif size(obj.pitch,2) ~= 1
+                result = 'pitch';                                        
+            elseif size(obj.heading,2) ~= 1
+                result = 'heading';                                        
+            elseif size(obj.heading_sp,2) ~= 1
+                result = 'heading_sp';                                        
+            elseif size(obj.altitude_amsl,2) ~= 1
+                result = 'altitude_amsl';                                        
+            elseif size(obj.altitude_sp,2) ~= 1
+                result = 'altitude_sp';                                        
+            elseif size(obj.wp_distance,2) ~= 1
+                result = 'wp_distance';                                        
+            elseif size(obj.base_mode,2) ~= 1
+                result = 'base_mode';                                        
+            elseif size(obj.landed_state,2) ~= 1
+                result = 'landed_state';                                        
+            elseif size(obj.throttle,2) ~= 1
+                result = 'throttle';                                        
+            elseif size(obj.airspeed,2) ~= 1
+                result = 'airspeed';                                        
+            elseif size(obj.airspeed_sp,2) ~= 1
+                result = 'airspeed_sp';                                        
+            elseif size(obj.groundspeed,2) ~= 1
+                result = 'groundspeed';                                        
+            elseif size(obj.climb_rate,2) ~= 1
+                result = 'climb_rate';                                        
+            elseif size(obj.gps_nsat,2) ~= 1
+                result = 'gps_nsat';                                        
+            elseif size(obj.gps_fix_type,2) ~= 1
+                result = 'gps_fix_type';                                        
+            elseif size(obj.battery_remaining,2) ~= 1
+                result = 'battery_remaining';                                        
+            elseif size(obj.temperature,2) ~= 1
+                result = 'temperature';                                        
+            elseif size(obj.temperature_air,2) ~= 1
+                result = 'temperature_air';                                        
+            elseif size(obj.failsafe,2) ~= 1
+                result = 'failsafe';                                        
+            elseif size(obj.wp_num,2) ~= 1
+                result = 'wp_num';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.custom_mode(obj,value)
             if value == uint32(value)
                 obj.custom_mode = uint32(value);

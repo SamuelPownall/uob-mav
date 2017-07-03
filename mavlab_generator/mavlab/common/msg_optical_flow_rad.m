@@ -9,20 +9,19 @@ classdef msg_optical_flow_rad < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (microseconds, synced to UNIX time or since system boot) (uint64[1])
-		integration_time_us	%Integration time in microseconds. Divide integrated_x and integrated_y by the integration time to obtain average flow. The integration time also indicates the. (uint32[1])
-		time_delta_distance_us	%Time in microseconds since the distance was sampled. (uint32[1])
-		integrated_x	%Flow in radians around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor linear motion along the positive Y axis induces a negative flow.) (single[1])
-		integrated_y	%Flow in radians around Y axis (Sensor RH rotation about the Y axis induces a positive flow. Sensor linear motion along the positive X axis induces a positive flow.) (single[1])
-		integrated_xgyro	%RH rotation around X axis (rad) (single[1])
-		integrated_ygyro	%RH rotation around Y axis (rad) (single[1])
-		integrated_zgyro	%RH rotation around Z axis (rad) (single[1])
-		distance	%Distance to the center of the flow field in meters. Positive value (including zero): distance known. Negative value: Unknown distance. (single[1])
-		temperature	%Temperature * 100 in centi-degrees Celsius (int16[1])
-		sensor_id	%Sensor ID (uint8[1])
-		quality	%Optical flow quality / confidence. 0: no valid flow, 255: maximum quality (uint8[1])
+		time_usec	%Timestamp (microseconds, synced to UNIX time or since system boot) (uint64)
+		integration_time_us	%Integration time in microseconds. Divide integrated_x and integrated_y by the integration time to obtain average flow. The integration time also indicates the. (uint32)
+		time_delta_distance_us	%Time in microseconds since the distance was sampled. (uint32)
+		integrated_x	%Flow in radians around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor linear motion along the positive Y axis induces a negative flow.) (single)
+		integrated_y	%Flow in radians around Y axis (Sensor RH rotation about the Y axis induces a positive flow. Sensor linear motion along the positive X axis induces a positive flow.) (single)
+		integrated_xgyro	%RH rotation around X axis (rad) (single)
+		integrated_ygyro	%RH rotation around Y axis (rad) (single)
+		integrated_zgyro	%RH rotation around Z axis (rad) (single)
+		distance	%Distance to the center of the flow field in meters. Positive value (including zero): distance known. Negative value: Unknown distance. (single)
+		temperature	%Temperature * 100 in centi-degrees Celsius (int16)
+		sensor_id	%Sensor ID (uint8)
+		quality	%Optical flow quality / confidence. 0: no valid flow, 255: maximum quality (uint8)
 	end
-
     
     methods
         
@@ -42,38 +41,46 @@ classdef msg_optical_flow_rad < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_optical_flow_rad.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_optical_flow_rad.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putUINT32(obj.integration_time_us);
-
-			packet.payload.putUINT32(obj.time_delta_distance_us);
-
-			packet.payload.putSINGLE(obj.integrated_x);
-
-			packet.payload.putSINGLE(obj.integrated_y);
-
-			packet.payload.putSINGLE(obj.integrated_xgyro);
-
-			packet.payload.putSINGLE(obj.integrated_ygyro);
-
-			packet.payload.putSINGLE(obj.integrated_zgyro);
-
-			packet.payload.putSINGLE(obj.distance);
-
-			packet.payload.putINT16(obj.temperature);
-
-			packet.payload.putUINT8(obj.sensor_id);
-
-			packet.payload.putUINT8(obj.quality);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_optical_flow_rad.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_optical_flow_rad.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putUINT32(obj.integration_time_us);
+
+				packet.payload.putUINT32(obj.time_delta_distance_us);
+
+				packet.payload.putSINGLE(obj.integrated_x);
+
+				packet.payload.putSINGLE(obj.integrated_y);
+
+				packet.payload.putSINGLE(obj.integrated_xgyro);
+
+				packet.payload.putSINGLE(obj.integrated_ygyro);
+
+				packet.payload.putSINGLE(obj.integrated_zgyro);
+
+				packet.payload.putSINGLE(obj.distance);
+
+				packet.payload.putINT16(obj.temperature);
+
+				packet.payload.putUINT8(obj.sensor_id);
+
+				packet.payload.putUINT8(obj.quality);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_optical_flow_rad.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -103,7 +110,40 @@ classdef msg_optical_flow_rad < mavlink_message
 			obj.quality = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.integration_time_us,2) ~= 1
+                result = 'integration_time_us';                                        
+            elseif size(obj.time_delta_distance_us,2) ~= 1
+                result = 'time_delta_distance_us';                                        
+            elseif size(obj.integrated_x,2) ~= 1
+                result = 'integrated_x';                                        
+            elseif size(obj.integrated_y,2) ~= 1
+                result = 'integrated_y';                                        
+            elseif size(obj.integrated_xgyro,2) ~= 1
+                result = 'integrated_xgyro';                                        
+            elseif size(obj.integrated_ygyro,2) ~= 1
+                result = 'integrated_ygyro';                                        
+            elseif size(obj.integrated_zgyro,2) ~= 1
+                result = 'integrated_zgyro';                                        
+            elseif size(obj.distance,2) ~= 1
+                result = 'distance';                                        
+            elseif size(obj.temperature,2) ~= 1
+                result = 'temperature';                                        
+            elseif size(obj.sensor_id,2) ~= 1
+                result = 'sensor_id';                                        
+            elseif size(obj.quality,2) ~= 1
+                result = 'quality';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

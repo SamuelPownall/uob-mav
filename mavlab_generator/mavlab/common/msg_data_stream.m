@@ -9,11 +9,10 @@ classdef msg_data_stream < mavlink_message
     end
     
     properties        
-		message_rate	%The message rate (uint16[1])
-		stream_id	%The ID of the requested data stream (uint8[1])
-		on_off	%1 stream is enabled, 0 stream is stopped. (uint8[1])
+		message_rate	%The message rate (uint16)
+		stream_id	%The ID of the requested data stream (uint8)
+		on_off	%1 stream is enabled, 0 stream is stopped. (uint8)
 	end
-
     
     methods
         
@@ -33,20 +32,28 @@ classdef msg_data_stream < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_data_stream.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_data_stream.ID;
-                
-			packet.payload.putUINT16(obj.message_rate);
-
-			packet.payload.putUINT8(obj.stream_id);
-
-			packet.payload.putUINT8(obj.on_off);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_data_stream.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_data_stream.ID;
+                
+				packet.payload.putUINT16(obj.message_rate);
+
+				packet.payload.putUINT8(obj.stream_id);
+
+				packet.payload.putUINT8(obj.on_off);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_data_stream.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -58,7 +65,22 @@ classdef msg_data_stream < mavlink_message
 			obj.on_off = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.message_rate,2) ~= 1
+                result = 'message_rate';                                        
+            elseif size(obj.stream_id,2) ~= 1
+                result = 'stream_id';                                        
+            elseif size(obj.on_off,2) ~= 1
+                result = 'on_off';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.message_rate(obj,value)
             if value == uint16(value)
                 obj.message_rate = uint16(value);

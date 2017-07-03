@@ -12,11 +12,17 @@ tmsg.min_distance = 22;
 tmsg.max_distance = 122;
 tmsg.current_distance = 77;
 tmsg.type = 12;
-tmsg.id = 5;
+tmsg.id = 33;
 tmsg.orientation = 100;
 tmsg.covariance = 44;
-buffer = tmsg.pack().encode();
-write(tclient,buffer);
+packet = tmsg.pack();
+if ~isempty(packet)
+    buffer = packet.encode();
+    write(tclient,buffer);
+else
+    echotcpip('off');
+    error('IT BROKE')
+end
 
 while messages < 1
    
@@ -25,11 +31,11 @@ while messages < 1
         msg = parser.parseChar(c);
         if isempty(msg) ~= 1
             fprintf('MESSAGE:\tID\t%d\t\tLEN\t%d\t\tSEQ\t%d\n',msg.msgid,msg.len,msg.seq);
+            messages = messages + 1;
             switch msg.msgid
                 case 132
-                    msg = msg_distance_sensor(msg);
+                    msg = msg.unpack();
             end
-            messages = messages + 1;
         end
             
     end

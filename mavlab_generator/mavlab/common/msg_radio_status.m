@@ -9,15 +9,14 @@ classdef msg_radio_status < mavlink_message
     end
     
     properties        
-		rxerrors	%Receive errors (uint16[1])
-		fixed	%Count of error corrected packets (uint16[1])
-		rssi	%Local signal strength (uint8[1])
-		remrssi	%Remote signal strength (uint8[1])
-		txbuf	%Remaining free buffer space in percent. (uint8[1])
-		noise	%Background noise level (uint8[1])
-		remnoise	%Remote background noise level (uint8[1])
+		rxerrors	%Receive errors (uint16)
+		fixed	%Count of error corrected packets (uint16)
+		rssi	%Local signal strength (uint8)
+		remrssi	%Remote signal strength (uint8)
+		txbuf	%Remaining free buffer space in percent. (uint8)
+		noise	%Background noise level (uint8)
+		remnoise	%Remote background noise level (uint8)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_radio_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_radio_status.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_radio_status.ID;
-                
-			packet.payload.putUINT16(obj.rxerrors);
-
-			packet.payload.putUINT16(obj.fixed);
-
-			packet.payload.putUINT8(obj.rssi);
-
-			packet.payload.putUINT8(obj.remrssi);
-
-			packet.payload.putUINT8(obj.txbuf);
-
-			packet.payload.putUINT8(obj.noise);
-
-			packet.payload.putUINT8(obj.remnoise);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_radio_status.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_radio_status.ID;
+                
+				packet.payload.putUINT16(obj.rxerrors);
+
+				packet.payload.putUINT16(obj.fixed);
+
+				packet.payload.putUINT8(obj.rssi);
+
+				packet.payload.putUINT8(obj.remrssi);
+
+				packet.payload.putUINT8(obj.txbuf);
+
+				packet.payload.putUINT8(obj.noise);
+
+				packet.payload.putUINT8(obj.remnoise);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_radio_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_radio_status < mavlink_message
 			obj.remnoise = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.rxerrors,2) ~= 1
+                result = 'rxerrors';                                        
+            elseif size(obj.fixed,2) ~= 1
+                result = 'fixed';                                        
+            elseif size(obj.rssi,2) ~= 1
+                result = 'rssi';                                        
+            elseif size(obj.remrssi,2) ~= 1
+                result = 'remrssi';                                        
+            elseif size(obj.txbuf,2) ~= 1
+                result = 'txbuf';                                        
+            elseif size(obj.noise,2) ~= 1
+                result = 'noise';                                        
+            elseif size(obj.remnoise,2) ~= 1
+                result = 'remnoise';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.rxerrors(obj,value)
             if value == uint16(value)
                 obj.rxerrors = uint16(value);

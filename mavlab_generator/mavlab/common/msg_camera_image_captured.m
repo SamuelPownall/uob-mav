@@ -9,17 +9,16 @@ classdef msg_camera_image_captured < mavlink_message
     end
     
     properties        
-		time_utc	%Timestamp (microseconds since UNIX epoch) in UTC. 0 for unknown. (uint64[1])
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		lat	%Latitude, expressed as degrees * 1E7 where image was taken (int32[1])
-		lon	%Longitude, expressed as degrees * 1E7 where capture was taken (int32[1])
-		alt	%Altitude in meters, expressed as * 1E3 (AMSL, not WGS84) where image was taken (int32[1])
-		relative_alt	%Altitude above ground in meters, expressed as * 1E3 where image was taken (int32[1])
+		time_utc	%Timestamp (microseconds since UNIX epoch) in UTC. 0 for unknown. (uint64)
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		lat	%Latitude, expressed as degrees * 1E7 where image was taken (int32)
+		lon	%Longitude, expressed as degrees * 1E7 where capture was taken (int32)
+		alt	%Altitude in meters, expressed as * 1E3 (AMSL, not WGS84) where image was taken (int32)
+		relative_alt	%Altitude above ground in meters, expressed as * 1E3 where image was taken (int32)
 		q	%Quaternion of camera orientation (w, x, y, z order, zero-rotation is 0, 0, 0, 0) (single[4])
-		camera_id	%Camera ID if there are multiple (uint8[1])
+		camera_id	%Camera ID if there are multiple (uint8)
 		file_path	%File path of image taken. (uint8[210])
 	end
-
     
     methods
         
@@ -39,36 +38,44 @@ classdef msg_camera_image_captured < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_camera_image_captured.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_camera_image_captured.ID;
-                
-			packet.payload.putUINT64(obj.time_utc);
-
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putINT32(obj.alt);
-
-			packet.payload.putINT32(obj.relative_alt);
-            
-            for i = 1:4
-                packet.payload.putSINGLE(obj.q(i));
-            end
-                            
-			packet.payload.putUINT8(obj.camera_id);
-            
-            for i = 1:210
-                packet.payload.putUINT8(obj.file_path(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_camera_image_captured.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_camera_image_captured.ID;
+                
+				packet.payload.putUINT64(obj.time_utc);
+
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putINT32(obj.alt);
+
+				packet.payload.putINT32(obj.relative_alt);
+            
+                for i = 1:4
+                    packet.payload.putSINGLE(obj.q(i));
+                end
+                                
+				packet.payload.putUINT8(obj.camera_id);
+            
+                for i = 1:210
+                    packet.payload.putUINT8(obj.file_path(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_camera_image_captured.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -96,7 +103,34 @@ classdef msg_camera_image_captured < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_utc,2) ~= 1
+                result = 'time_utc';                                        
+            elseif size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.relative_alt,2) ~= 1
+                result = 'relative_alt';                                        
+            elseif size(obj.q,2) ~= 4
+                result = 'q';                                        
+            elseif size(obj.camera_id,2) ~= 1
+                result = 'camera_id';                                        
+            elseif size(obj.file_path,2) ~= 210
+                result = 'file_path';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_utc(obj,value)
             if value == uint64(value)
                 obj.time_utc = uint64(value);

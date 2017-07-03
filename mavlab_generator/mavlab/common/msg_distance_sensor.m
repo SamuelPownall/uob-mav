@@ -9,16 +9,15 @@ classdef msg_distance_sensor < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Time since system boot (uint32[1])
-		min_distance	%Minimum distance the sensor can measure in centimeters (uint16[1])
-		max_distance	%Maximum distance the sensor can measure in centimeters (uint16[1])
-		current_distance	%Current distance reading (uint16[1])
-		type	%Type from MAV_DISTANCE_SENSOR enum. (uint8[1])
-		id	%Onboard ID of the sensor (uint8[1])
-		orientation	%Direction the sensor faces from MAV_SENSOR_ORIENTATION enum. (uint8[1])
-		covariance	%Measurement covariance in centimeters, 0 for unknown / invalid readings (uint8[1])
+		time_boot_ms	%Time since system boot (uint32)
+		min_distance	%Minimum distance the sensor can measure in centimeters (uint16)
+		max_distance	%Maximum distance the sensor can measure in centimeters (uint16)
+		current_distance	%Current distance reading (uint16)
+		type	%Type from MAV_DISTANCE_SENSOR enum. (uint8)
+		id	%Onboard ID of the sensor (uint8)
+		orientation	%Direction the sensor faces from MAV_SENSOR_ORIENTATION enum. (uint8)
+		covariance	%Measurement covariance in centimeters, 0 for unknown / invalid readings (uint8)
 	end
-
     
     methods
         
@@ -38,30 +37,38 @@ classdef msg_distance_sensor < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_distance_sensor.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_distance_sensor.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putUINT16(obj.min_distance);
-
-			packet.payload.putUINT16(obj.max_distance);
-
-			packet.payload.putUINT16(obj.current_distance);
-
-			packet.payload.putUINT8(obj.type);
-
-			packet.payload.putUINT8(obj.id);
-
-			packet.payload.putUINT8(obj.orientation);
-
-			packet.payload.putUINT8(obj.covariance);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_distance_sensor.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_distance_sensor.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putUINT16(obj.min_distance);
+
+				packet.payload.putUINT16(obj.max_distance);
+
+				packet.payload.putUINT16(obj.current_distance);
+
+				packet.payload.putUINT8(obj.type);
+
+				packet.payload.putUINT8(obj.id);
+
+				packet.payload.putUINT8(obj.orientation);
+
+				packet.payload.putUINT8(obj.covariance);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_distance_sensor.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -83,7 +90,32 @@ classdef msg_distance_sensor < mavlink_message
 			obj.covariance = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.min_distance,2) ~= 1
+                result = 'min_distance';                                        
+            elseif size(obj.max_distance,2) ~= 1
+                result = 'max_distance';                                        
+            elseif size(obj.current_distance,2) ~= 1
+                result = 'current_distance';                                        
+            elseif size(obj.type,2) ~= 1
+                result = 'type';                                        
+            elseif size(obj.id,2) ~= 1
+                result = 'id';                                        
+            elseif size(obj.orientation,2) ~= 1
+                result = 'orientation';                                        
+            elseif size(obj.covariance,2) ~= 1
+                result = 'covariance';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

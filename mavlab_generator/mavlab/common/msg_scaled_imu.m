@@ -9,18 +9,17 @@ classdef msg_scaled_imu < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		xacc	%X acceleration (mg) (int16[1])
-		yacc	%Y acceleration (mg) (int16[1])
-		zacc	%Z acceleration (mg) (int16[1])
-		xgyro	%Angular speed around X axis (millirad /sec) (int16[1])
-		ygyro	%Angular speed around Y axis (millirad /sec) (int16[1])
-		zgyro	%Angular speed around Z axis (millirad /sec) (int16[1])
-		xmag	%X Magnetic field (milli tesla) (int16[1])
-		ymag	%Y Magnetic field (milli tesla) (int16[1])
-		zmag	%Z Magnetic field (milli tesla) (int16[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		xacc	%X acceleration (mg) (int16)
+		yacc	%Y acceleration (mg) (int16)
+		zacc	%Z acceleration (mg) (int16)
+		xgyro	%Angular speed around X axis (millirad /sec) (int16)
+		ygyro	%Angular speed around Y axis (millirad /sec) (int16)
+		zgyro	%Angular speed around Z axis (millirad /sec) (int16)
+		xmag	%X Magnetic field (milli tesla) (int16)
+		ymag	%Y Magnetic field (milli tesla) (int16)
+		zmag	%Z Magnetic field (milli tesla) (int16)
 	end
-
     
     methods
         
@@ -40,34 +39,42 @@ classdef msg_scaled_imu < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_scaled_imu.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_scaled_imu.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putINT16(obj.xacc);
-
-			packet.payload.putINT16(obj.yacc);
-
-			packet.payload.putINT16(obj.zacc);
-
-			packet.payload.putINT16(obj.xgyro);
-
-			packet.payload.putINT16(obj.ygyro);
-
-			packet.payload.putINT16(obj.zgyro);
-
-			packet.payload.putINT16(obj.xmag);
-
-			packet.payload.putINT16(obj.ymag);
-
-			packet.payload.putINT16(obj.zmag);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_scaled_imu.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_scaled_imu.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putINT16(obj.xacc);
+
+				packet.payload.putINT16(obj.yacc);
+
+				packet.payload.putINT16(obj.zacc);
+
+				packet.payload.putINT16(obj.xgyro);
+
+				packet.payload.putINT16(obj.ygyro);
+
+				packet.payload.putINT16(obj.zgyro);
+
+				packet.payload.putINT16(obj.xmag);
+
+				packet.payload.putINT16(obj.ymag);
+
+				packet.payload.putINT16(obj.zmag);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_scaled_imu.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -93,7 +100,36 @@ classdef msg_scaled_imu < mavlink_message
 			obj.zmag = payload.getINT16();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.xacc,2) ~= 1
+                result = 'xacc';                                        
+            elseif size(obj.yacc,2) ~= 1
+                result = 'yacc';                                        
+            elseif size(obj.zacc,2) ~= 1
+                result = 'zacc';                                        
+            elseif size(obj.xgyro,2) ~= 1
+                result = 'xgyro';                                        
+            elseif size(obj.ygyro,2) ~= 1
+                result = 'ygyro';                                        
+            elseif size(obj.zgyro,2) ~= 1
+                result = 'zgyro';                                        
+            elseif size(obj.xmag,2) ~= 1
+                result = 'xmag';                                        
+            elseif size(obj.ymag,2) ~= 1
+                result = 'ymag';                                        
+            elseif size(obj.zmag,2) ~= 1
+                result = 'zmag';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

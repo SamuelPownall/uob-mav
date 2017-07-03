@@ -9,21 +9,20 @@ classdef msg_camera_settings < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		aperture	%Aperture is 1/value (single[1])
-		shutter_speed	%Shutter speed in s (single[1])
-		iso_sensitivity	%ISO sensitivity (single[1])
-		white_balance	%Color temperature in K (single[1])
-		camera_id	%Camera ID if there are multiple (uint8[1])
-		aperture_locked	%Aperture locked (0: auto, 1: locked) (uint8[1])
-		shutter_speed_locked	%Shutter speed locked (0: auto, 1: locked) (uint8[1])
-		iso_sensitivity_locked	%ISO sensitivity locked (0: auto, 1: locked) (uint8[1])
-		white_balance_locked	%Color temperature locked (0: auto, 1: locked) (uint8[1])
-		mode_id	%Reserved for a camera mode ID (uint8[1])
-		color_mode_id	%Reserved for a color mode ID (uint8[1])
-		image_format_id	%Reserved for image format ID (uint8[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		aperture	%Aperture is 1/value (single)
+		shutter_speed	%Shutter speed in s (single)
+		iso_sensitivity	%ISO sensitivity (single)
+		white_balance	%Color temperature in K (single)
+		camera_id	%Camera ID if there are multiple (uint8)
+		aperture_locked	%Aperture locked (0: auto, 1: locked) (uint8)
+		shutter_speed_locked	%Shutter speed locked (0: auto, 1: locked) (uint8)
+		iso_sensitivity_locked	%ISO sensitivity locked (0: auto, 1: locked) (uint8)
+		white_balance_locked	%Color temperature locked (0: auto, 1: locked) (uint8)
+		mode_id	%Reserved for a camera mode ID (uint8)
+		color_mode_id	%Reserved for a color mode ID (uint8)
+		image_format_id	%Reserved for image format ID (uint8)
 	end
-
     
     methods
         
@@ -43,40 +42,48 @@ classdef msg_camera_settings < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_camera_settings.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_camera_settings.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.aperture);
-
-			packet.payload.putSINGLE(obj.shutter_speed);
-
-			packet.payload.putSINGLE(obj.iso_sensitivity);
-
-			packet.payload.putSINGLE(obj.white_balance);
-
-			packet.payload.putUINT8(obj.camera_id);
-
-			packet.payload.putUINT8(obj.aperture_locked);
-
-			packet.payload.putUINT8(obj.shutter_speed_locked);
-
-			packet.payload.putUINT8(obj.iso_sensitivity_locked);
-
-			packet.payload.putUINT8(obj.white_balance_locked);
-
-			packet.payload.putUINT8(obj.mode_id);
-
-			packet.payload.putUINT8(obj.color_mode_id);
-
-			packet.payload.putUINT8(obj.image_format_id);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_camera_settings.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_camera_settings.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.aperture);
+
+				packet.payload.putSINGLE(obj.shutter_speed);
+
+				packet.payload.putSINGLE(obj.iso_sensitivity);
+
+				packet.payload.putSINGLE(obj.white_balance);
+
+				packet.payload.putUINT8(obj.camera_id);
+
+				packet.payload.putUINT8(obj.aperture_locked);
+
+				packet.payload.putUINT8(obj.shutter_speed_locked);
+
+				packet.payload.putUINT8(obj.iso_sensitivity_locked);
+
+				packet.payload.putUINT8(obj.white_balance_locked);
+
+				packet.payload.putUINT8(obj.mode_id);
+
+				packet.payload.putUINT8(obj.color_mode_id);
+
+				packet.payload.putUINT8(obj.image_format_id);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_camera_settings.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -108,7 +115,42 @@ classdef msg_camera_settings < mavlink_message
 			obj.image_format_id = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.aperture,2) ~= 1
+                result = 'aperture';                                        
+            elseif size(obj.shutter_speed,2) ~= 1
+                result = 'shutter_speed';                                        
+            elseif size(obj.iso_sensitivity,2) ~= 1
+                result = 'iso_sensitivity';                                        
+            elseif size(obj.white_balance,2) ~= 1
+                result = 'white_balance';                                        
+            elseif size(obj.camera_id,2) ~= 1
+                result = 'camera_id';                                        
+            elseif size(obj.aperture_locked,2) ~= 1
+                result = 'aperture_locked';                                        
+            elseif size(obj.shutter_speed_locked,2) ~= 1
+                result = 'shutter_speed_locked';                                        
+            elseif size(obj.iso_sensitivity_locked,2) ~= 1
+                result = 'iso_sensitivity_locked';                                        
+            elseif size(obj.white_balance_locked,2) ~= 1
+                result = 'white_balance_locked';                                        
+            elseif size(obj.mode_id,2) ~= 1
+                result = 'mode_id';                                        
+            elseif size(obj.color_mode_id,2) ~= 1
+                result = 'color_mode_id';                                        
+            elseif size(obj.image_format_id,2) ~= 1
+                result = 'image_format_id';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

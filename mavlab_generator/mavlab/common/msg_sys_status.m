@@ -9,21 +9,20 @@ classdef msg_sys_status < mavlink_message
     end
     
     properties        
-		onboard_control_sensors_present	%Bitmask showing which onboard controllers and sensors are present. Value of 0: not present. Value of 1: present. Indices defined by ENUM MAV_SYS_STATUS_SENSOR (uint32[1])
-		onboard_control_sensors_enabled	%Bitmask showing which onboard controllers and sensors are enabled:  Value of 0: not enabled. Value of 1: enabled. Indices defined by ENUM MAV_SYS_STATUS_SENSOR (uint32[1])
-		onboard_control_sensors_health	%Bitmask showing which onboard controllers and sensors are operational or have an error:  Value of 0: not enabled. Value of 1: enabled. Indices defined by ENUM MAV_SYS_STATUS_SENSOR (uint32[1])
-		load	%Maximum usage in percent of the mainloop time, (0%: 0, 100%: 1000) should be always below 1000 (uint16[1])
-		voltage_battery	%Battery voltage, in millivolts (1 = 1 millivolt) (uint16[1])
-		current_battery	%Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current (int16[1])
-		drop_rate_comm	%Communication drops in percent, (0%: 0, 100%: 10'000), (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) (uint16[1])
-		errors_comm	%Communication errors (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) (uint16[1])
-		errors_count1	%Autopilot-specific errors (uint16[1])
-		errors_count2	%Autopilot-specific errors (uint16[1])
-		errors_count3	%Autopilot-specific errors (uint16[1])
-		errors_count4	%Autopilot-specific errors (uint16[1])
-		battery_remaining	%Remaining battery energy: (0%: 0, 100%: 100), -1: autopilot estimate the remaining battery (int8[1])
+		onboard_control_sensors_present	%Bitmask showing which onboard controllers and sensors are present. Value of 0: not present. Value of 1: present. Indices defined by ENUM MAV_SYS_STATUS_SENSOR (uint32)
+		onboard_control_sensors_enabled	%Bitmask showing which onboard controllers and sensors are enabled:  Value of 0: not enabled. Value of 1: enabled. Indices defined by ENUM MAV_SYS_STATUS_SENSOR (uint32)
+		onboard_control_sensors_health	%Bitmask showing which onboard controllers and sensors are operational or have an error:  Value of 0: not enabled. Value of 1: enabled. Indices defined by ENUM MAV_SYS_STATUS_SENSOR (uint32)
+		load	%Maximum usage in percent of the mainloop time, (0%: 0, 100%: 1000) should be always below 1000 (uint16)
+		voltage_battery	%Battery voltage, in millivolts (1 = 1 millivolt) (uint16)
+		current_battery	%Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current (int16)
+		drop_rate_comm	%Communication drops in percent, (0%: 0, 100%: 10'000), (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) (uint16)
+		errors_comm	%Communication errors (UART, I2C, SPI, CAN), dropped packets on all links (packets that were corrupted on reception on the MAV) (uint16)
+		errors_count1	%Autopilot-specific errors (uint16)
+		errors_count2	%Autopilot-specific errors (uint16)
+		errors_count3	%Autopilot-specific errors (uint16)
+		errors_count4	%Autopilot-specific errors (uint16)
+		battery_remaining	%Remaining battery energy: (0%: 0, 100%: 100), -1: autopilot estimate the remaining battery (int8)
 	end
-
     
     methods
         
@@ -43,40 +42,48 @@ classdef msg_sys_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_sys_status.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_sys_status.ID;
-                
-			packet.payload.putUINT32(obj.onboard_control_sensors_present);
-
-			packet.payload.putUINT32(obj.onboard_control_sensors_enabled);
-
-			packet.payload.putUINT32(obj.onboard_control_sensors_health);
-
-			packet.payload.putUINT16(obj.load);
-
-			packet.payload.putUINT16(obj.voltage_battery);
-
-			packet.payload.putINT16(obj.current_battery);
-
-			packet.payload.putUINT16(obj.drop_rate_comm);
-
-			packet.payload.putUINT16(obj.errors_comm);
-
-			packet.payload.putUINT16(obj.errors_count1);
-
-			packet.payload.putUINT16(obj.errors_count2);
-
-			packet.payload.putUINT16(obj.errors_count3);
-
-			packet.payload.putUINT16(obj.errors_count4);
-
-			packet.payload.putINT8(obj.battery_remaining);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_sys_status.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_sys_status.ID;
+                
+				packet.payload.putUINT32(obj.onboard_control_sensors_present);
+
+				packet.payload.putUINT32(obj.onboard_control_sensors_enabled);
+
+				packet.payload.putUINT32(obj.onboard_control_sensors_health);
+
+				packet.payload.putUINT16(obj.load);
+
+				packet.payload.putUINT16(obj.voltage_battery);
+
+				packet.payload.putINT16(obj.current_battery);
+
+				packet.payload.putUINT16(obj.drop_rate_comm);
+
+				packet.payload.putUINT16(obj.errors_comm);
+
+				packet.payload.putUINT16(obj.errors_count1);
+
+				packet.payload.putUINT16(obj.errors_count2);
+
+				packet.payload.putUINT16(obj.errors_count3);
+
+				packet.payload.putUINT16(obj.errors_count4);
+
+				packet.payload.putINT8(obj.battery_remaining);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_sys_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -108,7 +115,42 @@ classdef msg_sys_status < mavlink_message
 			obj.battery_remaining = payload.getINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.onboard_control_sensors_present,2) ~= 1
+                result = 'onboard_control_sensors_present';                                        
+            elseif size(obj.onboard_control_sensors_enabled,2) ~= 1
+                result = 'onboard_control_sensors_enabled';                                        
+            elseif size(obj.onboard_control_sensors_health,2) ~= 1
+                result = 'onboard_control_sensors_health';                                        
+            elseif size(obj.load,2) ~= 1
+                result = 'load';                                        
+            elseif size(obj.voltage_battery,2) ~= 1
+                result = 'voltage_battery';                                        
+            elseif size(obj.current_battery,2) ~= 1
+                result = 'current_battery';                                        
+            elseif size(obj.drop_rate_comm,2) ~= 1
+                result = 'drop_rate_comm';                                        
+            elseif size(obj.errors_comm,2) ~= 1
+                result = 'errors_comm';                                        
+            elseif size(obj.errors_count1,2) ~= 1
+                result = 'errors_count1';                                        
+            elseif size(obj.errors_count2,2) ~= 1
+                result = 'errors_count2';                                        
+            elseif size(obj.errors_count3,2) ~= 1
+                result = 'errors_count3';                                        
+            elseif size(obj.errors_count4,2) ~= 1
+                result = 'errors_count4';                                        
+            elseif size(obj.battery_remaining,2) ~= 1
+                result = 'battery_remaining';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.onboard_control_sensors_present(obj,value)
             if value == uint32(value)
                 obj.onboard_control_sensors_present = uint32(value);

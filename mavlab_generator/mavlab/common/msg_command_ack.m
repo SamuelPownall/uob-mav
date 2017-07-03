@@ -9,10 +9,9 @@ classdef msg_command_ack < mavlink_message
     end
     
     properties        
-		command	%Command ID, as defined by MAV_CMD enum. (uint16[1])
-		result	%See MAV_RESULT enum (uint8[1])
+		command	%Command ID, as defined by MAV_CMD enum. (uint16)
+		result	%See MAV_RESULT enum (uint8)
 	end
-
     
     methods
         
@@ -32,18 +31,26 @@ classdef msg_command_ack < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_command_ack.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_command_ack.ID;
-                
-			packet.payload.putUINT16(obj.command);
-
-			packet.payload.putUINT8(obj.result);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_command_ack.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_command_ack.ID;
+                
+				packet.payload.putUINT16(obj.command);
+
+				packet.payload.putUINT8(obj.result);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_command_ack.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -53,7 +60,20 @@ classdef msg_command_ack < mavlink_message
 			obj.result = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.command,2) ~= 1
+                result = 'command';                                        
+            elseif size(obj.result,2) ~= 1
+                result = 'result';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.command(obj,value)
             if value == uint16(value)
                 obj.command = uint16(value);

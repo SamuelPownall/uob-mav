@@ -9,12 +9,11 @@ classdef msg_gps_inject_data < mavlink_message
     end
     
     properties        
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
-		len	%data length (uint8[1])
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
+		len	%data length (uint8)
 		data	%raw data (110 is enough for 12 satellites of RTCMv2) (uint8[110])
 	end
-
     
     methods
         
@@ -34,24 +33,32 @@ classdef msg_gps_inject_data < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_gps_inject_data.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_gps_inject_data.ID;
-                
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-			packet.payload.putUINT8(obj.len);
-            
-            for i = 1:110
-                packet.payload.putUINT8(obj.data(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_gps_inject_data.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_gps_inject_data.ID;
+                
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+
+				packet.payload.putUINT8(obj.len);
+            
+                for i = 1:110
+                    packet.payload.putUINT8(obj.data(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_gps_inject_data.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -67,7 +74,24 @@ classdef msg_gps_inject_data < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.len,2) ~= 1
+                result = 'len';                                        
+            elseif size(obj.data,2) ~= 110
+                result = 'data';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.target_system(obj,value)
             if value == uint8(value)
                 obj.target_system = uint8(value);

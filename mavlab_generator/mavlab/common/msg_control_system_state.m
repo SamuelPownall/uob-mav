@@ -9,25 +9,24 @@ classdef msg_control_system_state < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64[1])
-		x_acc	%X acceleration in body frame (single[1])
-		y_acc	%Y acceleration in body frame (single[1])
-		z_acc	%Z acceleration in body frame (single[1])
-		x_vel	%X velocity in body frame (single[1])
-		y_vel	%Y velocity in body frame (single[1])
-		z_vel	%Z velocity in body frame (single[1])
-		x_pos	%X position in local frame (single[1])
-		y_pos	%Y position in local frame (single[1])
-		z_pos	%Z position in local frame (single[1])
-		airspeed	%Airspeed, set to -1 if unknown (single[1])
+		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64)
+		x_acc	%X acceleration in body frame (single)
+		y_acc	%Y acceleration in body frame (single)
+		z_acc	%Z acceleration in body frame (single)
+		x_vel	%X velocity in body frame (single)
+		y_vel	%Y velocity in body frame (single)
+		z_vel	%Z velocity in body frame (single)
+		x_pos	%X position in local frame (single)
+		y_pos	%Y position in local frame (single)
+		z_pos	%Z position in local frame (single)
+		airspeed	%Airspeed, set to -1 if unknown (single)
 		vel_variance	%Variance of body velocity estimate (single[3])
 		pos_variance	%Variance in local position (single[3])
 		q	%The attitude, represented as Quaternion (single[4])
-		roll_rate	%Angular rate in roll axis (single[1])
-		pitch_rate	%Angular rate in pitch axis (single[1])
-		yaw_rate	%Angular rate in yaw axis (single[1])
+		roll_rate	%Angular rate in roll axis (single)
+		pitch_rate	%Angular rate in pitch axis (single)
+		yaw_rate	%Angular rate in yaw axis (single)
 	end
-
     
     methods
         
@@ -47,54 +46,62 @@ classdef msg_control_system_state < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_control_system_state.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_control_system_state.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putSINGLE(obj.x_acc);
-
-			packet.payload.putSINGLE(obj.y_acc);
-
-			packet.payload.putSINGLE(obj.z_acc);
-
-			packet.payload.putSINGLE(obj.x_vel);
-
-			packet.payload.putSINGLE(obj.y_vel);
-
-			packet.payload.putSINGLE(obj.z_vel);
-
-			packet.payload.putSINGLE(obj.x_pos);
-
-			packet.payload.putSINGLE(obj.y_pos);
-
-			packet.payload.putSINGLE(obj.z_pos);
-
-			packet.payload.putSINGLE(obj.airspeed);
-            
-            for i = 1:3
-                packet.payload.putSINGLE(obj.vel_variance(i));
-            end
-                                        
-            for i = 1:3
-                packet.payload.putSINGLE(obj.pos_variance(i));
-            end
-                                        
-            for i = 1:4
-                packet.payload.putSINGLE(obj.q(i));
-            end
-                            
-			packet.payload.putSINGLE(obj.roll_rate);
-
-			packet.payload.putSINGLE(obj.pitch_rate);
-
-			packet.payload.putSINGLE(obj.yaw_rate);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_control_system_state.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_control_system_state.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putSINGLE(obj.x_acc);
+
+				packet.payload.putSINGLE(obj.y_acc);
+
+				packet.payload.putSINGLE(obj.z_acc);
+
+				packet.payload.putSINGLE(obj.x_vel);
+
+				packet.payload.putSINGLE(obj.y_vel);
+
+				packet.payload.putSINGLE(obj.z_vel);
+
+				packet.payload.putSINGLE(obj.x_pos);
+
+				packet.payload.putSINGLE(obj.y_pos);
+
+				packet.payload.putSINGLE(obj.z_pos);
+
+				packet.payload.putSINGLE(obj.airspeed);
+            
+                for i = 1:3
+                    packet.payload.putSINGLE(obj.vel_variance(i));
+                end
+                                            
+                for i = 1:3
+                    packet.payload.putSINGLE(obj.pos_variance(i));
+                end
+                                            
+                for i = 1:4
+                    packet.payload.putSINGLE(obj.q(i));
+                end
+                                
+				packet.payload.putSINGLE(obj.roll_rate);
+
+				packet.payload.putSINGLE(obj.pitch_rate);
+
+				packet.payload.putSINGLE(obj.yaw_rate);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_control_system_state.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -140,7 +147,50 @@ classdef msg_control_system_state < mavlink_message
 			obj.yaw_rate = payload.getSINGLE();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.x_acc,2) ~= 1
+                result = 'x_acc';                                        
+            elseif size(obj.y_acc,2) ~= 1
+                result = 'y_acc';                                        
+            elseif size(obj.z_acc,2) ~= 1
+                result = 'z_acc';                                        
+            elseif size(obj.x_vel,2) ~= 1
+                result = 'x_vel';                                        
+            elseif size(obj.y_vel,2) ~= 1
+                result = 'y_vel';                                        
+            elseif size(obj.z_vel,2) ~= 1
+                result = 'z_vel';                                        
+            elseif size(obj.x_pos,2) ~= 1
+                result = 'x_pos';                                        
+            elseif size(obj.y_pos,2) ~= 1
+                result = 'y_pos';                                        
+            elseif size(obj.z_pos,2) ~= 1
+                result = 'z_pos';                                        
+            elseif size(obj.airspeed,2) ~= 1
+                result = 'airspeed';                                        
+            elseif size(obj.vel_variance,2) ~= 3
+                result = 'vel_variance';                                        
+            elseif size(obj.pos_variance,2) ~= 3
+                result = 'pos_variance';                                        
+            elseif size(obj.q,2) ~= 4
+                result = 'q';                                        
+            elseif size(obj.roll_rate,2) ~= 1
+                result = 'roll_rate';                                        
+            elseif size(obj.pitch_rate,2) ~= 1
+                result = 'pitch_rate';                                        
+            elseif size(obj.yaw_rate,2) ~= 1
+                result = 'yaw_rate';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

@@ -9,15 +9,14 @@ classdef msg_vibration < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64[1])
-		clipping_0	%first accelerometer clipping count (uint32[1])
-		clipping_1	%second accelerometer clipping count (uint32[1])
-		clipping_2	%third accelerometer clipping count (uint32[1])
-		vibration_x	%Vibration levels on X-axis (single[1])
-		vibration_y	%Vibration levels on Y-axis (single[1])
-		vibration_z	%Vibration levels on Z-axis (single[1])
+		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64)
+		clipping_0	%first accelerometer clipping count (uint32)
+		clipping_1	%second accelerometer clipping count (uint32)
+		clipping_2	%third accelerometer clipping count (uint32)
+		vibration_x	%Vibration levels on X-axis (single)
+		vibration_y	%Vibration levels on Y-axis (single)
+		vibration_z	%Vibration levels on Z-axis (single)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_vibration < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_vibration.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_vibration.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putUINT32(obj.clipping_0);
-
-			packet.payload.putUINT32(obj.clipping_1);
-
-			packet.payload.putUINT32(obj.clipping_2);
-
-			packet.payload.putSINGLE(obj.vibration_x);
-
-			packet.payload.putSINGLE(obj.vibration_y);
-
-			packet.payload.putSINGLE(obj.vibration_z);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_vibration.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_vibration.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putUINT32(obj.clipping_0);
+
+				packet.payload.putUINT32(obj.clipping_1);
+
+				packet.payload.putUINT32(obj.clipping_2);
+
+				packet.payload.putSINGLE(obj.vibration_x);
+
+				packet.payload.putSINGLE(obj.vibration_y);
+
+				packet.payload.putSINGLE(obj.vibration_z);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_vibration.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_vibration < mavlink_message
 			obj.vibration_z = payload.getSINGLE();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.clipping_0,2) ~= 1
+                result = 'clipping_0';                                        
+            elseif size(obj.clipping_1,2) ~= 1
+                result = 'clipping_1';                                        
+            elseif size(obj.clipping_2,2) ~= 1
+                result = 'clipping_2';                                        
+            elseif size(obj.vibration_x,2) ~= 1
+                result = 'vibration_x';                                        
+            elseif size(obj.vibration_y,2) ~= 1
+                result = 'vibration_y';                                        
+            elseif size(obj.vibration_z,2) ~= 1
+                result = 'vibration_z';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

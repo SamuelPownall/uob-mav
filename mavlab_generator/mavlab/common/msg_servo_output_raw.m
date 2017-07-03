@@ -9,26 +9,25 @@ classdef msg_servo_output_raw < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (microseconds since system boot) (uint32[1])
-		servo1_raw	%Servo output 1 value, in microseconds (uint16[1])
-		servo2_raw	%Servo output 2 value, in microseconds (uint16[1])
-		servo3_raw	%Servo output 3 value, in microseconds (uint16[1])
-		servo4_raw	%Servo output 4 value, in microseconds (uint16[1])
-		servo5_raw	%Servo output 5 value, in microseconds (uint16[1])
-		servo6_raw	%Servo output 6 value, in microseconds (uint16[1])
-		servo7_raw	%Servo output 7 value, in microseconds (uint16[1])
-		servo8_raw	%Servo output 8 value, in microseconds (uint16[1])
-		servo9_raw	%Servo output 9 value, in microseconds (uint16[1])
-		servo10_raw	%Servo output 10 value, in microseconds (uint16[1])
-		servo11_raw	%Servo output 11 value, in microseconds (uint16[1])
-		servo12_raw	%Servo output 12 value, in microseconds (uint16[1])
-		servo13_raw	%Servo output 13 value, in microseconds (uint16[1])
-		servo14_raw	%Servo output 14 value, in microseconds (uint16[1])
-		servo15_raw	%Servo output 15 value, in microseconds (uint16[1])
-		servo16_raw	%Servo output 16 value, in microseconds (uint16[1])
-		port	%Servo output port (set of 8 outputs = 1 port). Most MAVs will just use one, but this allows to encode more than 8 servos. (uint8[1])
+		time_usec	%Timestamp (microseconds since system boot) (uint32)
+		servo1_raw	%Servo output 1 value, in microseconds (uint16)
+		servo2_raw	%Servo output 2 value, in microseconds (uint16)
+		servo3_raw	%Servo output 3 value, in microseconds (uint16)
+		servo4_raw	%Servo output 4 value, in microseconds (uint16)
+		servo5_raw	%Servo output 5 value, in microseconds (uint16)
+		servo6_raw	%Servo output 6 value, in microseconds (uint16)
+		servo7_raw	%Servo output 7 value, in microseconds (uint16)
+		servo8_raw	%Servo output 8 value, in microseconds (uint16)
+		servo9_raw	%Servo output 9 value, in microseconds (uint16)
+		servo10_raw	%Servo output 10 value, in microseconds (uint16)
+		servo11_raw	%Servo output 11 value, in microseconds (uint16)
+		servo12_raw	%Servo output 12 value, in microseconds (uint16)
+		servo13_raw	%Servo output 13 value, in microseconds (uint16)
+		servo14_raw	%Servo output 14 value, in microseconds (uint16)
+		servo15_raw	%Servo output 15 value, in microseconds (uint16)
+		servo16_raw	%Servo output 16 value, in microseconds (uint16)
+		port	%Servo output port (set of 8 outputs = 1 port). Most MAVs will just use one, but this allows to encode more than 8 servos. (uint8)
 	end
-
     
     methods
         
@@ -48,50 +47,58 @@ classdef msg_servo_output_raw < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_servo_output_raw.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_servo_output_raw.ID;
-                
-			packet.payload.putUINT32(obj.time_usec);
-
-			packet.payload.putUINT16(obj.servo1_raw);
-
-			packet.payload.putUINT16(obj.servo2_raw);
-
-			packet.payload.putUINT16(obj.servo3_raw);
-
-			packet.payload.putUINT16(obj.servo4_raw);
-
-			packet.payload.putUINT16(obj.servo5_raw);
-
-			packet.payload.putUINT16(obj.servo6_raw);
-
-			packet.payload.putUINT16(obj.servo7_raw);
-
-			packet.payload.putUINT16(obj.servo8_raw);
-
-			packet.payload.putUINT16(obj.servo9_raw);
-
-			packet.payload.putUINT16(obj.servo10_raw);
-
-			packet.payload.putUINT16(obj.servo11_raw);
-
-			packet.payload.putUINT16(obj.servo12_raw);
-
-			packet.payload.putUINT16(obj.servo13_raw);
-
-			packet.payload.putUINT16(obj.servo14_raw);
-
-			packet.payload.putUINT16(obj.servo15_raw);
-
-			packet.payload.putUINT16(obj.servo16_raw);
-
-			packet.payload.putUINT8(obj.port);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_servo_output_raw.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_servo_output_raw.ID;
+                
+				packet.payload.putUINT32(obj.time_usec);
+
+				packet.payload.putUINT16(obj.servo1_raw);
+
+				packet.payload.putUINT16(obj.servo2_raw);
+
+				packet.payload.putUINT16(obj.servo3_raw);
+
+				packet.payload.putUINT16(obj.servo4_raw);
+
+				packet.payload.putUINT16(obj.servo5_raw);
+
+				packet.payload.putUINT16(obj.servo6_raw);
+
+				packet.payload.putUINT16(obj.servo7_raw);
+
+				packet.payload.putUINT16(obj.servo8_raw);
+
+				packet.payload.putUINT16(obj.servo9_raw);
+
+				packet.payload.putUINT16(obj.servo10_raw);
+
+				packet.payload.putUINT16(obj.servo11_raw);
+
+				packet.payload.putUINT16(obj.servo12_raw);
+
+				packet.payload.putUINT16(obj.servo13_raw);
+
+				packet.payload.putUINT16(obj.servo14_raw);
+
+				packet.payload.putUINT16(obj.servo15_raw);
+
+				packet.payload.putUINT16(obj.servo16_raw);
+
+				packet.payload.putUINT8(obj.port);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_servo_output_raw.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -133,7 +140,52 @@ classdef msg_servo_output_raw < mavlink_message
 			obj.port = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.servo1_raw,2) ~= 1
+                result = 'servo1_raw';                                        
+            elseif size(obj.servo2_raw,2) ~= 1
+                result = 'servo2_raw';                                        
+            elseif size(obj.servo3_raw,2) ~= 1
+                result = 'servo3_raw';                                        
+            elseif size(obj.servo4_raw,2) ~= 1
+                result = 'servo4_raw';                                        
+            elseif size(obj.servo5_raw,2) ~= 1
+                result = 'servo5_raw';                                        
+            elseif size(obj.servo6_raw,2) ~= 1
+                result = 'servo6_raw';                                        
+            elseif size(obj.servo7_raw,2) ~= 1
+                result = 'servo7_raw';                                        
+            elseif size(obj.servo8_raw,2) ~= 1
+                result = 'servo8_raw';                                        
+            elseif size(obj.servo9_raw,2) ~= 1
+                result = 'servo9_raw';                                        
+            elseif size(obj.servo10_raw,2) ~= 1
+                result = 'servo10_raw';                                        
+            elseif size(obj.servo11_raw,2) ~= 1
+                result = 'servo11_raw';                                        
+            elseif size(obj.servo12_raw,2) ~= 1
+                result = 'servo12_raw';                                        
+            elseif size(obj.servo13_raw,2) ~= 1
+                result = 'servo13_raw';                                        
+            elseif size(obj.servo14_raw,2) ~= 1
+                result = 'servo14_raw';                                        
+            elseif size(obj.servo15_raw,2) ~= 1
+                result = 'servo15_raw';                                        
+            elseif size(obj.servo16_raw,2) ~= 1
+                result = 'servo16_raw';                                        
+            elseif size(obj.port,2) ~= 1
+                result = 'port';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint32(value)
                 obj.time_usec = uint32(value);

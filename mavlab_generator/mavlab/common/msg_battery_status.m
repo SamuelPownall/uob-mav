@@ -9,17 +9,16 @@ classdef msg_battery_status < mavlink_message
     end
     
     properties        
-		current_consumed	%Consumed charge, in milliampere hours (1 = 1 mAh), -1: autopilot does not provide mAh consumption estimate (int32[1])
-		energy_consumed	%Consumed energy, in 100*Joules (intergrated U*I*dt)  (1 = 100 Joule), -1: autopilot does not provide energy consumption estimate (int32[1])
-		temperature	%Temperature of the battery in centi-degrees celsius. INT16_MAX for unknown temperature. (int16[1])
+		current_consumed	%Consumed charge, in milliampere hours (1 = 1 mAh), -1: autopilot does not provide mAh consumption estimate (int32)
+		energy_consumed	%Consumed energy, in 100*Joules (intergrated U*I*dt)  (1 = 100 Joule), -1: autopilot does not provide energy consumption estimate (int32)
+		temperature	%Temperature of the battery in centi-degrees celsius. INT16_MAX for unknown temperature. (int16)
 		voltages	%Battery voltage of cells, in millivolts (1 = 1 millivolt). Cells above the valid cell count for this battery should have the UINT16_MAX value. (uint16[10])
-		current_battery	%Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current (int16[1])
-		id	%Battery ID (uint8[1])
-		battery_function	%Function of the battery (uint8[1])
-		type	%Type (chemistry) of the battery (uint8[1])
-		battery_remaining	%Remaining battery energy: (0%: 0, 100%: 100), -1: autopilot does not estimate the remaining battery (int8[1])
+		current_battery	%Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current (int16)
+		id	%Battery ID (uint8)
+		battery_function	%Function of the battery (uint8)
+		type	%Type (chemistry) of the battery (uint8)
+		battery_remaining	%Remaining battery energy: (0%: 0, 100%: 100), -1: autopilot does not estimate the remaining battery (int8)
 	end
-
     
     methods
         
@@ -39,34 +38,42 @@ classdef msg_battery_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_battery_status.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_battery_status.ID;
-                
-			packet.payload.putINT32(obj.current_consumed);
-
-			packet.payload.putINT32(obj.energy_consumed);
-
-			packet.payload.putINT16(obj.temperature);
-            
-            for i = 1:10
-                packet.payload.putUINT16(obj.voltages(i));
-            end
-                            
-			packet.payload.putINT16(obj.current_battery);
-
-			packet.payload.putUINT8(obj.id);
-
-			packet.payload.putUINT8(obj.battery_function);
-
-			packet.payload.putUINT8(obj.type);
-
-			packet.payload.putINT8(obj.battery_remaining);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_battery_status.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_battery_status.ID;
+                
+				packet.payload.putINT32(obj.current_consumed);
+
+				packet.payload.putINT32(obj.energy_consumed);
+
+				packet.payload.putINT16(obj.temperature);
+            
+                for i = 1:10
+                    packet.payload.putUINT16(obj.voltages(i));
+                end
+                                
+				packet.payload.putINT16(obj.current_battery);
+
+				packet.payload.putUINT8(obj.id);
+
+				packet.payload.putUINT8(obj.battery_function);
+
+				packet.payload.putUINT8(obj.type);
+
+				packet.payload.putINT8(obj.battery_remaining);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_battery_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -92,7 +99,34 @@ classdef msg_battery_status < mavlink_message
 			obj.battery_remaining = payload.getINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.current_consumed,2) ~= 1
+                result = 'current_consumed';                                        
+            elseif size(obj.energy_consumed,2) ~= 1
+                result = 'energy_consumed';                                        
+            elseif size(obj.temperature,2) ~= 1
+                result = 'temperature';                                        
+            elseif size(obj.voltages,2) ~= 10
+                result = 'voltages';                                        
+            elseif size(obj.current_battery,2) ~= 1
+                result = 'current_battery';                                        
+            elseif size(obj.id,2) ~= 1
+                result = 'id';                                        
+            elseif size(obj.battery_function,2) ~= 1
+                result = 'battery_function';                                        
+            elseif size(obj.type,2) ~= 1
+                result = 'type';                                        
+            elseif size(obj.battery_remaining,2) ~= 1
+                result = 'battery_remaining';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.current_consumed(obj,value)
             if value == int32(value)
                 obj.current_consumed = int32(value);

@@ -9,16 +9,15 @@ classdef msg_attitude_quaternion < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		q1	%Quaternion component 1, w (1 in null-rotation) (single[1])
-		q2	%Quaternion component 2, x (0 in null-rotation) (single[1])
-		q3	%Quaternion component 3, y (0 in null-rotation) (single[1])
-		q4	%Quaternion component 4, z (0 in null-rotation) (single[1])
-		rollspeed	%Roll angular speed (rad/s) (single[1])
-		pitchspeed	%Pitch angular speed (rad/s) (single[1])
-		yawspeed	%Yaw angular speed (rad/s) (single[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		q1	%Quaternion component 1, w (1 in null-rotation) (single)
+		q2	%Quaternion component 2, x (0 in null-rotation) (single)
+		q3	%Quaternion component 3, y (0 in null-rotation) (single)
+		q4	%Quaternion component 4, z (0 in null-rotation) (single)
+		rollspeed	%Roll angular speed (rad/s) (single)
+		pitchspeed	%Pitch angular speed (rad/s) (single)
+		yawspeed	%Yaw angular speed (rad/s) (single)
 	end
-
     
     methods
         
@@ -38,30 +37,38 @@ classdef msg_attitude_quaternion < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_attitude_quaternion.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_attitude_quaternion.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.q1);
-
-			packet.payload.putSINGLE(obj.q2);
-
-			packet.payload.putSINGLE(obj.q3);
-
-			packet.payload.putSINGLE(obj.q4);
-
-			packet.payload.putSINGLE(obj.rollspeed);
-
-			packet.payload.putSINGLE(obj.pitchspeed);
-
-			packet.payload.putSINGLE(obj.yawspeed);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_attitude_quaternion.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_attitude_quaternion.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.q1);
+
+				packet.payload.putSINGLE(obj.q2);
+
+				packet.payload.putSINGLE(obj.q3);
+
+				packet.payload.putSINGLE(obj.q4);
+
+				packet.payload.putSINGLE(obj.rollspeed);
+
+				packet.payload.putSINGLE(obj.pitchspeed);
+
+				packet.payload.putSINGLE(obj.yawspeed);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_attitude_quaternion.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -83,7 +90,32 @@ classdef msg_attitude_quaternion < mavlink_message
 			obj.yawspeed = payload.getSINGLE();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.q1,2) ~= 1
+                result = 'q1';                                        
+            elseif size(obj.q2,2) ~= 1
+                result = 'q2';                                        
+            elseif size(obj.q3,2) ~= 1
+                result = 'q3';                                        
+            elseif size(obj.q4,2) ~= 1
+                result = 'q4';                                        
+            elseif size(obj.rollspeed,2) ~= 1
+                result = 'rollspeed';                                        
+            elseif size(obj.pitchspeed,2) ~= 1
+                result = 'pitchspeed';                                        
+            elseif size(obj.yawspeed,2) ~= 1
+                result = 'yawspeed';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

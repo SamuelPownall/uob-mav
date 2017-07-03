@@ -9,13 +9,12 @@ classdef msg_request_data_stream < mavlink_message
     end
     
     properties        
-		req_message_rate	%The requested message rate (uint16[1])
-		target_system	%The target requested to send the message stream. (uint8[1])
-		target_component	%The target requested to send the message stream. (uint8[1])
-		req_stream_id	%The ID of the requested data stream (uint8[1])
-		start_stop	%1 to start sending, 0 to stop sending. (uint8[1])
+		req_message_rate	%The requested message rate (uint16)
+		target_system	%The target requested to send the message stream. (uint8)
+		target_component	%The target requested to send the message stream. (uint8)
+		req_stream_id	%The ID of the requested data stream (uint8)
+		start_stop	%1 to start sending, 0 to stop sending. (uint8)
 	end
-
     
     methods
         
@@ -35,24 +34,32 @@ classdef msg_request_data_stream < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_request_data_stream.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_request_data_stream.ID;
-                
-			packet.payload.putUINT16(obj.req_message_rate);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-			packet.payload.putUINT8(obj.req_stream_id);
-
-			packet.payload.putUINT8(obj.start_stop);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_request_data_stream.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_request_data_stream.ID;
+                
+				packet.payload.putUINT16(obj.req_message_rate);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+
+				packet.payload.putUINT8(obj.req_stream_id);
+
+				packet.payload.putUINT8(obj.start_stop);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_request_data_stream.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -68,7 +75,26 @@ classdef msg_request_data_stream < mavlink_message
 			obj.start_stop = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.req_message_rate,2) ~= 1
+                result = 'req_message_rate';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.req_stream_id,2) ~= 1
+                result = 'req_stream_id';                                        
+            elseif size(obj.start_stop,2) ~= 1
+                result = 'start_stop';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.req_message_rate(obj,value)
             if value == uint16(value)
                 obj.req_message_rate = uint16(value);

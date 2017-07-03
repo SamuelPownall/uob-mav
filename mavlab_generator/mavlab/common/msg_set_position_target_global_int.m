@@ -9,24 +9,23 @@ classdef msg_set_position_target_global_int < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp in milliseconds since system boot. The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency. (uint32[1])
-		lat_int	%X Position in WGS84 frame in 1e7 * meters (int32[1])
-		lon_int	%Y Position in WGS84 frame in 1e7 * meters (int32[1])
-		alt	%Altitude in meters in AMSL altitude, not WGS84 if absolute or relative, above terrain if GLOBAL_TERRAIN_ALT_INT (single[1])
-		vx	%X velocity in NED frame in meter / s (single[1])
-		vy	%Y velocity in NED frame in meter / s (single[1])
-		vz	%Z velocity in NED frame in meter / s (single[1])
-		afx	%X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N (single[1])
-		afy	%Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N (single[1])
-		afz	%Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N (single[1])
-		yaw	%yaw setpoint in rad (single[1])
-		yaw_rate	%yaw rate setpoint in rad/s (single[1])
-		type_mask	%Bitmask to indicate which dimensions should be ignored by the vehicle: a value of 0b0000000000000000 or 0b0000001000000000 indicates that none of the setpoint dimensions should be ignored. If bit 10 is set the floats afx afy afz should be interpreted as force instead of acceleration. Mapping: bit 1: x, bit 2: y, bit 3: z, bit 4: vx, bit 5: vy, bit 6: vz, bit 7: ax, bit 8: ay, bit 9: az, bit 10: is force setpoint, bit 11: yaw, bit 12: yaw rate (uint16[1])
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
-		coordinate_frame	%Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11 (uint8[1])
+		time_boot_ms	%Timestamp in milliseconds since system boot. The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency. (uint32)
+		lat_int	%X Position in WGS84 frame in 1e7 * meters (int32)
+		lon_int	%Y Position in WGS84 frame in 1e7 * meters (int32)
+		alt	%Altitude in meters in AMSL altitude, not WGS84 if absolute or relative, above terrain if GLOBAL_TERRAIN_ALT_INT (single)
+		vx	%X velocity in NED frame in meter / s (single)
+		vy	%Y velocity in NED frame in meter / s (single)
+		vz	%Z velocity in NED frame in meter / s (single)
+		afx	%X acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N (single)
+		afy	%Y acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N (single)
+		afz	%Z acceleration or force (if bit 10 of type_mask is set) in NED frame in meter / s^2 or N (single)
+		yaw	%yaw setpoint in rad (single)
+		yaw_rate	%yaw rate setpoint in rad/s (single)
+		type_mask	%Bitmask to indicate which dimensions should be ignored by the vehicle: a value of 0b0000000000000000 or 0b0000001000000000 indicates that none of the setpoint dimensions should be ignored. If bit 10 is set the floats afx afy afz should be interpreted as force instead of acceleration. Mapping: bit 1: x, bit 2: y, bit 3: z, bit 4: vx, bit 5: vy, bit 6: vz, bit 7: ax, bit 8: ay, bit 9: az, bit 10: is force setpoint, bit 11: yaw, bit 12: yaw rate (uint16)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
+		coordinate_frame	%Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11 (uint8)
 	end
-
     
     methods
         
@@ -46,46 +45,54 @@ classdef msg_set_position_target_global_int < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_set_position_target_global_int.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_set_position_target_global_int.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putINT32(obj.lat_int);
-
-			packet.payload.putINT32(obj.lon_int);
-
-			packet.payload.putSINGLE(obj.alt);
-
-			packet.payload.putSINGLE(obj.vx);
-
-			packet.payload.putSINGLE(obj.vy);
-
-			packet.payload.putSINGLE(obj.vz);
-
-			packet.payload.putSINGLE(obj.afx);
-
-			packet.payload.putSINGLE(obj.afy);
-
-			packet.payload.putSINGLE(obj.afz);
-
-			packet.payload.putSINGLE(obj.yaw);
-
-			packet.payload.putSINGLE(obj.yaw_rate);
-
-			packet.payload.putUINT16(obj.type_mask);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-			packet.payload.putUINT8(obj.coordinate_frame);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_set_position_target_global_int.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_set_position_target_global_int.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putINT32(obj.lat_int);
+
+				packet.payload.putINT32(obj.lon_int);
+
+				packet.payload.putSINGLE(obj.alt);
+
+				packet.payload.putSINGLE(obj.vx);
+
+				packet.payload.putSINGLE(obj.vy);
+
+				packet.payload.putSINGLE(obj.vz);
+
+				packet.payload.putSINGLE(obj.afx);
+
+				packet.payload.putSINGLE(obj.afy);
+
+				packet.payload.putSINGLE(obj.afz);
+
+				packet.payload.putSINGLE(obj.yaw);
+
+				packet.payload.putSINGLE(obj.yaw_rate);
+
+				packet.payload.putUINT16(obj.type_mask);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+
+				packet.payload.putUINT8(obj.coordinate_frame);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_set_position_target_global_int.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -123,7 +130,48 @@ classdef msg_set_position_target_global_int < mavlink_message
 			obj.coordinate_frame = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.lat_int,2) ~= 1
+                result = 'lat_int';                                        
+            elseif size(obj.lon_int,2) ~= 1
+                result = 'lon_int';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.vx,2) ~= 1
+                result = 'vx';                                        
+            elseif size(obj.vy,2) ~= 1
+                result = 'vy';                                        
+            elseif size(obj.vz,2) ~= 1
+                result = 'vz';                                        
+            elseif size(obj.afx,2) ~= 1
+                result = 'afx';                                        
+            elseif size(obj.afy,2) ~= 1
+                result = 'afy';                                        
+            elseif size(obj.afz,2) ~= 1
+                result = 'afz';                                        
+            elseif size(obj.yaw,2) ~= 1
+                result = 'yaw';                                        
+            elseif size(obj.yaw_rate,2) ~= 1
+                result = 'yaw_rate';                                        
+            elseif size(obj.type_mask,2) ~= 1
+                result = 'type_mask';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.coordinate_frame,2) ~= 1
+                result = 'coordinate_frame';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

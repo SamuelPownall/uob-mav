@@ -9,12 +9,11 @@ classdef msg_hil_actuator_controls < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (microseconds since UNIX epoch or microseconds since system boot) (uint64[1])
-		flags	%Flags as bitfield, reserved for future use. (uint64[1])
+		time_usec	%Timestamp (microseconds since UNIX epoch or microseconds since system boot) (uint64)
+		flags	%Flags as bitfield, reserved for future use. (uint64)
 		controls	%Control outputs -1 .. 1. Channel assignment depends on the simulated hardware. (single[16])
-		mode	%System mode (MAV_MODE), includes arming state. (uint8[1])
+		mode	%System mode (MAV_MODE), includes arming state. (uint8)
 	end
-
     
     methods
         
@@ -34,24 +33,32 @@ classdef msg_hil_actuator_controls < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_hil_actuator_controls.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_hil_actuator_controls.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putUINT64(obj.flags);
-            
-            for i = 1:16
-                packet.payload.putSINGLE(obj.controls(i));
-            end
-                            
-			packet.payload.putUINT8(obj.mode);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_hil_actuator_controls.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_hil_actuator_controls.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putUINT64(obj.flags);
+            
+                for i = 1:16
+                    packet.payload.putSINGLE(obj.controls(i));
+                end
+                                
+				packet.payload.putUINT8(obj.mode);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_hil_actuator_controls.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -67,7 +74,24 @@ classdef msg_hil_actuator_controls < mavlink_message
 			obj.mode = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.flags,2) ~= 1
+                result = 'flags';                                        
+            elseif size(obj.controls,2) ~= 16
+                result = 'controls';                                        
+            elseif size(obj.mode,2) ~= 1
+                result = 'mode';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

@@ -9,15 +9,14 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		x	%X Position (single[1])
-		y	%Y Position (single[1])
-		z	%Z Position (single[1])
-		roll	%Roll (single[1])
-		pitch	%Pitch (single[1])
-		yaw	%Yaw (single[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		x	%X Position (single)
+		y	%Y Position (single)
+		z	%Z Position (single)
+		roll	%Roll (single)
+		pitch	%Pitch (single)
+		yaw	%Yaw (single)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_local_position_ned_system_global_offset.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_local_position_ned_system_global_offset.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.x);
-
-			packet.payload.putSINGLE(obj.y);
-
-			packet.payload.putSINGLE(obj.z);
-
-			packet.payload.putSINGLE(obj.roll);
-
-			packet.payload.putSINGLE(obj.pitch);
-
-			packet.payload.putSINGLE(obj.yaw);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_local_position_ned_system_global_offset.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_local_position_ned_system_global_offset.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.x);
+
+				packet.payload.putSINGLE(obj.y);
+
+				packet.payload.putSINGLE(obj.z);
+
+				packet.payload.putSINGLE(obj.roll);
+
+				packet.payload.putSINGLE(obj.pitch);
+
+				packet.payload.putSINGLE(obj.yaw);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_local_position_ned_system_global_offset.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
 			obj.yaw = payload.getSINGLE();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.x,2) ~= 1
+                result = 'x';                                        
+            elseif size(obj.y,2) ~= 1
+                result = 'y';                                        
+            elseif size(obj.z,2) ~= 1
+                result = 'z';                                        
+            elseif size(obj.roll,2) ~= 1
+                result = 'roll';                                        
+            elseif size(obj.pitch,2) ~= 1
+                result = 'pitch';                                        
+            elseif size(obj.yaw,2) ~= 1
+                result = 'yaw';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

@@ -9,10 +9,9 @@ classdef msg_system_time < mavlink_message
     end
     
     properties        
-		time_unix_usec	%Timestamp of the master clock in microseconds since UNIX epoch. (uint64[1])
-		time_boot_ms	%Timestamp of the component clock since boot time in milliseconds. (uint32[1])
+		time_unix_usec	%Timestamp of the master clock in microseconds since UNIX epoch. (uint64)
+		time_boot_ms	%Timestamp of the component clock since boot time in milliseconds. (uint32)
 	end
-
     
     methods
         
@@ -32,18 +31,26 @@ classdef msg_system_time < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_system_time.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_system_time.ID;
-                
-			packet.payload.putUINT64(obj.time_unix_usec);
-
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_system_time.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_system_time.ID;
+                
+				packet.payload.putUINT64(obj.time_unix_usec);
+
+				packet.payload.putUINT32(obj.time_boot_ms);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_system_time.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -53,7 +60,20 @@ classdef msg_system_time < mavlink_message
 			obj.time_boot_ms = payload.getUINT32();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_unix_usec,2) ~= 1
+                result = 'time_unix_usec';                                        
+            elseif size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_unix_usec(obj,value)
             if value == uint64(value)
                 obj.time_unix_usec = uint64(value);

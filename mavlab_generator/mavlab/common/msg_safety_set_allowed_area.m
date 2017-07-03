@@ -9,17 +9,16 @@ classdef msg_safety_set_allowed_area < mavlink_message
     end
     
     properties        
-		p1x	%x position 1 / Latitude 1 (single[1])
-		p1y	%y position 1 / Longitude 1 (single[1])
-		p1z	%z position 1 / Altitude 1 (single[1])
-		p2x	%x position 2 / Latitude 2 (single[1])
-		p2y	%y position 2 / Longitude 2 (single[1])
-		p2z	%z position 2 / Altitude 2 (single[1])
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
-		frame	%Coordinate frame, as defined by MAV_FRAME enum in mavlink_types.h. Can be either global, GPS, right-handed with Z axis up or local, right handed, Z axis down. (uint8[1])
+		p1x	%x position 1 / Latitude 1 (single)
+		p1y	%y position 1 / Longitude 1 (single)
+		p1z	%z position 1 / Altitude 1 (single)
+		p2x	%x position 2 / Latitude 2 (single)
+		p2y	%y position 2 / Longitude 2 (single)
+		p2z	%z position 2 / Altitude 2 (single)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
+		frame	%Coordinate frame, as defined by MAV_FRAME enum in mavlink_types.h. Can be either global, GPS, right-handed with Z axis up or local, right handed, Z axis down. (uint8)
 	end
-
     
     methods
         
@@ -39,32 +38,40 @@ classdef msg_safety_set_allowed_area < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_safety_set_allowed_area.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_safety_set_allowed_area.ID;
-                
-			packet.payload.putSINGLE(obj.p1x);
-
-			packet.payload.putSINGLE(obj.p1y);
-
-			packet.payload.putSINGLE(obj.p1z);
-
-			packet.payload.putSINGLE(obj.p2x);
-
-			packet.payload.putSINGLE(obj.p2y);
-
-			packet.payload.putSINGLE(obj.p2z);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-			packet.payload.putUINT8(obj.frame);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_safety_set_allowed_area.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_safety_set_allowed_area.ID;
+                
+				packet.payload.putSINGLE(obj.p1x);
+
+				packet.payload.putSINGLE(obj.p1y);
+
+				packet.payload.putSINGLE(obj.p1z);
+
+				packet.payload.putSINGLE(obj.p2x);
+
+				packet.payload.putSINGLE(obj.p2y);
+
+				packet.payload.putSINGLE(obj.p2z);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+
+				packet.payload.putUINT8(obj.frame);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_safety_set_allowed_area.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -89,6 +96,33 @@ classdef msg_safety_set_allowed_area < mavlink_message
 
 		end
         
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.p1x,2) ~= 1
+                result = 'p1x';                                        
+            elseif size(obj.p1y,2) ~= 1
+                result = 'p1y';                                        
+            elseif size(obj.p1z,2) ~= 1
+                result = 'p1z';                                        
+            elseif size(obj.p2x,2) ~= 1
+                result = 'p2x';                                        
+            elseif size(obj.p2y,2) ~= 1
+                result = 'p2y';                                        
+            elseif size(obj.p2z,2) ~= 1
+                result = 'p2z';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.frame,2) ~= 1
+                result = 'frame';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
         function set.p1x(obj,value)
             obj.p1x = single(value);
         end

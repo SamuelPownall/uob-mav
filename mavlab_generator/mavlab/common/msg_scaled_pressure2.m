@@ -9,12 +9,11 @@ classdef msg_scaled_pressure2 < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		press_abs	%Absolute pressure (hectopascal) (single[1])
-		press_diff	%Differential pressure 1 (hectopascal) (single[1])
-		temperature	%Temperature measurement (0.01 degrees celsius) (int16[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		press_abs	%Absolute pressure (hectopascal) (single)
+		press_diff	%Differential pressure 1 (hectopascal) (single)
+		temperature	%Temperature measurement (0.01 degrees celsius) (int16)
 	end
-
     
     methods
         
@@ -34,22 +33,30 @@ classdef msg_scaled_pressure2 < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_scaled_pressure2.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_scaled_pressure2.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.press_abs);
-
-			packet.payload.putSINGLE(obj.press_diff);
-
-			packet.payload.putINT16(obj.temperature);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_scaled_pressure2.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_scaled_pressure2.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.press_abs);
+
+				packet.payload.putSINGLE(obj.press_diff);
+
+				packet.payload.putINT16(obj.temperature);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_scaled_pressure2.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -63,7 +70,24 @@ classdef msg_scaled_pressure2 < mavlink_message
 			obj.temperature = payload.getINT16();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.press_abs,2) ~= 1
+                result = 'press_abs';                                        
+            elseif size(obj.press_diff,2) ~= 1
+                result = 'press_diff';                                        
+            elseif size(obj.temperature,2) ~= 1
+                result = 'temperature';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

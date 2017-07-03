@@ -9,11 +9,10 @@ classdef msg_gps_rtcm_data < mavlink_message
     end
     
     properties        
-		flags	%LSB: 1 means message is fragmented (uint8[1])
-		len	%data length (uint8[1])
+		flags	%LSB: 1 means message is fragmented (uint8)
+		len	%data length (uint8)
 		data	%RTCM message (may be fragmented) (uint8[180])
 	end
-
     
     methods
         
@@ -33,22 +32,30 @@ classdef msg_gps_rtcm_data < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_gps_rtcm_data.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_gps_rtcm_data.ID;
-                
-			packet.payload.putUINT8(obj.flags);
-
-			packet.payload.putUINT8(obj.len);
-            
-            for i = 1:180
-                packet.payload.putUINT8(obj.data(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_gps_rtcm_data.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_gps_rtcm_data.ID;
+                
+				packet.payload.putUINT8(obj.flags);
+
+				packet.payload.putUINT8(obj.len);
+            
+                for i = 1:180
+                    packet.payload.putUINT8(obj.data(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_gps_rtcm_data.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -62,7 +69,22 @@ classdef msg_gps_rtcm_data < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.flags,2) ~= 1
+                result = 'flags';                                        
+            elseif size(obj.len,2) ~= 1
+                result = 'len';                                        
+            elseif size(obj.data,2) ~= 180
+                result = 'data';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.flags(obj,value)
             if value == uint8(value)
                 obj.flags = uint8(value);

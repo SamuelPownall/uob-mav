@@ -9,15 +9,14 @@ classdef msg_terrain_report < mavlink_message
     end
     
     properties        
-		lat	%Latitude (degrees *10^7) (int32[1])
-		lon	%Longitude (degrees *10^7) (int32[1])
-		terrain_height	%Terrain height in meters AMSL (single[1])
-		current_height	%Current vehicle height above lat/lon terrain height (meters) (single[1])
-		spacing	%grid spacing (zero if terrain at this location unavailable) (uint16[1])
-		pending	%Number of 4x4 terrain blocks waiting to be received or read from disk (uint16[1])
-		loaded	%Number of 4x4 terrain blocks in memory (uint16[1])
+		lat	%Latitude (degrees *10^7) (int32)
+		lon	%Longitude (degrees *10^7) (int32)
+		terrain_height	%Terrain height in meters AMSL (single)
+		current_height	%Current vehicle height above lat/lon terrain height (meters) (single)
+		spacing	%grid spacing (zero if terrain at this location unavailable) (uint16)
+		pending	%Number of 4x4 terrain blocks waiting to be received or read from disk (uint16)
+		loaded	%Number of 4x4 terrain blocks in memory (uint16)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_terrain_report < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_terrain_report.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_terrain_report.ID;
-                
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putSINGLE(obj.terrain_height);
-
-			packet.payload.putSINGLE(obj.current_height);
-
-			packet.payload.putUINT16(obj.spacing);
-
-			packet.payload.putUINT16(obj.pending);
-
-			packet.payload.putUINT16(obj.loaded);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_terrain_report.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_terrain_report.ID;
+                
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putSINGLE(obj.terrain_height);
+
+				packet.payload.putSINGLE(obj.current_height);
+
+				packet.payload.putUINT16(obj.spacing);
+
+				packet.payload.putUINT16(obj.pending);
+
+				packet.payload.putUINT16(obj.loaded);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_terrain_report.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_terrain_report < mavlink_message
 			obj.loaded = payload.getUINT16();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.terrain_height,2) ~= 1
+                result = 'terrain_height';                                        
+            elseif size(obj.current_height,2) ~= 1
+                result = 'current_height';                                        
+            elseif size(obj.spacing,2) ~= 1
+                result = 'spacing';                                        
+            elseif size(obj.pending,2) ~= 1
+                result = 'pending';                                        
+            elseif size(obj.loaded,2) ~= 1
+                result = 'loaded';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.lat(obj,value)
             if value == int32(value)
                 obj.lat = int32(value);

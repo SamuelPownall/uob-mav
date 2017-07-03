@@ -16,7 +16,6 @@ import array
 from os.path import basename
 from shutil import copyfile
 
-
 def accumulate(crc, buf):
     
     """
@@ -156,8 +155,11 @@ classdef %s < mavlink_message
         
         #Insert a variable per field
         for field in fields:
-            fo.write('\n\t\t%s\t%%%s (%s[%s])' % (field['name'], field['desc'], field['type'], field['size']))
-        fo.write('\n\tend\n\n')
+            if field['size'] == 1:
+                fo.write('\n\t\t%s\t%%%s (%s)' % (field['name'], field['desc'], field['type']))
+            else:
+                fo.write('\n\t\t%s\t%%%s (%s[%s])' % (field['name'], field['desc'], field['type'], field['size']))
+        fo.write('\n\tend\n')
         
         #Generate class constructors
         fo.write('''\
@@ -185,10 +187,13 @@ classdef %s < mavlink_message
         %%Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(%s.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = %s.ID;
+            emptyField = obj.verify();
+            if emptyField == 0
+        
+                packet = mavlink_packet(%s.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = %s.ID;
         \
         ''' % (class_name, class_name))
         
@@ -197,20 +202,29 @@ classdef %s < mavlink_message
             if field['size'] > 1:
                 fo.write('''\
             
-            for i = 1:%s
-                packet.payload.put%s(obj.%s(i));
-            end
-            \
+                for i = 1:%s
+                    packet.payload.put%s(obj.%s(i));
+                end
+                \
                 ''' % (field['size'], field['type'].upper(), field['name']))
             else:
-                fo.write('\n\t\t\tpacket.payload.put%s(obj.%s);\n' % (field['type'].upper(), field['name']))
+                fo.write('\n\t\t\t\tpacket.payload.put%s(obj.%s);\n' % (field['type'].upper(), field['name']))
         
-        fo.write('\n\t\tend\n')
+        fo.write('''\
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | %s.pack()\\n\\t Message data in "%%s" is not valid\\n',emptyField);
+            end
+            
+        end
+        \
+        ''' % class_name)
         
         #Generate message unpack function
         fo.write('''\
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -230,6 +244,40 @@ classdef %s < mavlink_message
                 fo.write('\n\t\t\tobj.%s = payload.get%s();\n' % (field['name'], field['type'].upper()))
                 
         fo.write('\n\t\tend\n')
+        
+        #Generate verification function
+        fo.write('''\
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+        \
+        ''')
+        
+        for i in range(0,len(fields)):
+            field = fields[i]
+            if i == 0:
+                fo.write('''\
+            
+            if size(obj.%s,2) ~= %s
+                result = '%s';\
+            \
+                ''' % (field['name'], field['size'], field['name']))
+            else:
+                fo.write('''\
+            
+            elseif size(obj.%s,2) ~= %s
+                result = '%s';\
+            \
+                '''% (field['name'], field['size'], field['name']))
+                
+        fo.write('''
+            else
+                result = 0;
+            end
+            
+        end
+            \
+        ''')
         
         #Generate setters for integer message fields
         for field in fields:

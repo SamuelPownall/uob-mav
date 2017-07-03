@@ -9,17 +9,16 @@ classdef msg_set_attitude_target < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp in milliseconds since system boot (uint32[1])
+		time_boot_ms	%Timestamp in milliseconds since system boot (uint32)
 		q	%Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0) (single[4])
-		body_roll_rate	%Body roll rate in radians per second (single[1])
-		body_pitch_rate	%Body roll rate in radians per second (single[1])
-		body_yaw_rate	%Body roll rate in radians per second (single[1])
-		thrust	%Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse trust) (single[1])
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
-		type_mask	%Mappings: If any of these bits are set, the corresponding input should be ignored: bit 1: body roll rate, bit 2: body pitch rate, bit 3: body yaw rate. bit 4-bit 6: reserved, bit 7: throttle, bit 8: attitude (uint8[1])
+		body_roll_rate	%Body roll rate in radians per second (single)
+		body_pitch_rate	%Body roll rate in radians per second (single)
+		body_yaw_rate	%Body roll rate in radians per second (single)
+		thrust	%Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse trust) (single)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
+		type_mask	%Mappings: If any of these bits are set, the corresponding input should be ignored: bit 1: body roll rate, bit 2: body pitch rate, bit 3: body yaw rate. bit 4-bit 6: reserved, bit 7: throttle, bit 8: attitude (uint8)
 	end
-
     
     methods
         
@@ -39,34 +38,42 @@ classdef msg_set_attitude_target < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_set_attitude_target.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_set_attitude_target.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-            
-            for i = 1:4
-                packet.payload.putSINGLE(obj.q(i));
-            end
-                            
-			packet.payload.putSINGLE(obj.body_roll_rate);
-
-			packet.payload.putSINGLE(obj.body_pitch_rate);
-
-			packet.payload.putSINGLE(obj.body_yaw_rate);
-
-			packet.payload.putSINGLE(obj.thrust);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-			packet.payload.putUINT8(obj.type_mask);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_set_attitude_target.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_set_attitude_target.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+            
+                for i = 1:4
+                    packet.payload.putSINGLE(obj.q(i));
+                end
+                                
+				packet.payload.putSINGLE(obj.body_roll_rate);
+
+				packet.payload.putSINGLE(obj.body_pitch_rate);
+
+				packet.payload.putSINGLE(obj.body_yaw_rate);
+
+				packet.payload.putSINGLE(obj.thrust);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+
+				packet.payload.putUINT8(obj.type_mask);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_set_attitude_target.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -92,7 +99,34 @@ classdef msg_set_attitude_target < mavlink_message
 			obj.type_mask = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.q,2) ~= 4
+                result = 'q';                                        
+            elseif size(obj.body_roll_rate,2) ~= 1
+                result = 'body_roll_rate';                                        
+            elseif size(obj.body_pitch_rate,2) ~= 1
+                result = 'body_pitch_rate';                                        
+            elseif size(obj.body_yaw_rate,2) ~= 1
+                result = 'body_yaw_rate';                                        
+            elseif size(obj.thrust,2) ~= 1
+                result = 'thrust';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.type_mask,2) ~= 1
+                result = 'type_mask';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

@@ -9,13 +9,12 @@ classdef msg_param_value < mavlink_message
     end
     
     properties        
-		param_value	%Onboard parameter value (single[1])
-		param_count	%Total number of onboard parameters (uint16[1])
-		param_index	%Index of this onboard parameter (uint16[1])
+		param_value	%Onboard parameter value (single)
+		param_count	%Total number of onboard parameters (uint16)
+		param_index	%Index of this onboard parameter (uint16)
 		param_id	%Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string (uint8[16])
-		param_type	%Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types. (uint8[1])
+		param_type	%Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types. (uint8)
 	end
-
     
     methods
         
@@ -35,26 +34,34 @@ classdef msg_param_value < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_param_value.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_param_value.ID;
-                
-			packet.payload.putSINGLE(obj.param_value);
-
-			packet.payload.putUINT16(obj.param_count);
-
-			packet.payload.putUINT16(obj.param_index);
-            
-            for i = 1:16
-                packet.payload.putUINT8(obj.param_id(i));
-            end
-                            
-			packet.payload.putUINT8(obj.param_type);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_param_value.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_param_value.ID;
+                
+				packet.payload.putSINGLE(obj.param_value);
+
+				packet.payload.putUINT16(obj.param_count);
+
+				packet.payload.putUINT16(obj.param_index);
+            
+                for i = 1:16
+                    packet.payload.putUINT8(obj.param_id(i));
+                end
+                                
+				packet.payload.putUINT8(obj.param_type);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_param_value.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -73,6 +80,25 @@ classdef msg_param_value < mavlink_message
 
 		end
         
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.param_value,2) ~= 1
+                result = 'param_value';                                        
+            elseif size(obj.param_count,2) ~= 1
+                result = 'param_count';                                        
+            elseif size(obj.param_index,2) ~= 1
+                result = 'param_index';                                        
+            elseif size(obj.param_id,2) ~= 16
+                result = 'param_id';                                        
+            elseif size(obj.param_type,2) ~= 1
+                result = 'param_type';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
         function set.param_value(obj,value)
             obj.param_value = single(value);
         end

@@ -9,18 +9,17 @@ classdef msg_home_position < mavlink_message
     end
     
     properties        
-		latitude	%Latitude (WGS84), in degrees * 1E7 (int32[1])
-		longitude	%Longitude (WGS84, in degrees * 1E7 (int32[1])
-		altitude	%Altitude (AMSL), in meters * 1000 (positive for up) (int32[1])
-		x	%Local X position of this position in the local coordinate frame (single[1])
-		y	%Local Y position of this position in the local coordinate frame (single[1])
-		z	%Local Z position of this position in the local coordinate frame (single[1])
+		latitude	%Latitude (WGS84), in degrees * 1E7 (int32)
+		longitude	%Longitude (WGS84, in degrees * 1E7 (int32)
+		altitude	%Altitude (AMSL), in meters * 1000 (positive for up) (int32)
+		x	%Local X position of this position in the local coordinate frame (single)
+		y	%Local Y position of this position in the local coordinate frame (single)
+		z	%Local Z position of this position in the local coordinate frame (single)
 		q	%World to surface normal and heading transformation of the takeoff position. Used to indicate the heading and slope of the ground (single[4])
-		approach_x	%Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone. (single[1])
-		approach_y	%Local Y position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone. (single[1])
-		approach_z	%Local Z position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone. (single[1])
+		approach_x	%Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone. (single)
+		approach_y	%Local Y position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone. (single)
+		approach_z	%Local Z position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone. (single)
 	end
-
     
     methods
         
@@ -40,36 +39,44 @@ classdef msg_home_position < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_home_position.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_home_position.ID;
-                
-			packet.payload.putINT32(obj.latitude);
-
-			packet.payload.putINT32(obj.longitude);
-
-			packet.payload.putINT32(obj.altitude);
-
-			packet.payload.putSINGLE(obj.x);
-
-			packet.payload.putSINGLE(obj.y);
-
-			packet.payload.putSINGLE(obj.z);
-            
-            for i = 1:4
-                packet.payload.putSINGLE(obj.q(i));
-            end
-                            
-			packet.payload.putSINGLE(obj.approach_x);
-
-			packet.payload.putSINGLE(obj.approach_y);
-
-			packet.payload.putSINGLE(obj.approach_z);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_home_position.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_home_position.ID;
+                
+				packet.payload.putINT32(obj.latitude);
+
+				packet.payload.putINT32(obj.longitude);
+
+				packet.payload.putINT32(obj.altitude);
+
+				packet.payload.putSINGLE(obj.x);
+
+				packet.payload.putSINGLE(obj.y);
+
+				packet.payload.putSINGLE(obj.z);
+            
+                for i = 1:4
+                    packet.payload.putSINGLE(obj.q(i));
+                end
+                                
+				packet.payload.putSINGLE(obj.approach_x);
+
+				packet.payload.putSINGLE(obj.approach_y);
+
+				packet.payload.putSINGLE(obj.approach_z);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_home_position.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -97,7 +104,36 @@ classdef msg_home_position < mavlink_message
 			obj.approach_z = payload.getSINGLE();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.latitude,2) ~= 1
+                result = 'latitude';                                        
+            elseif size(obj.longitude,2) ~= 1
+                result = 'longitude';                                        
+            elseif size(obj.altitude,2) ~= 1
+                result = 'altitude';                                        
+            elseif size(obj.x,2) ~= 1
+                result = 'x';                                        
+            elseif size(obj.y,2) ~= 1
+                result = 'y';                                        
+            elseif size(obj.z,2) ~= 1
+                result = 'z';                                        
+            elseif size(obj.q,2) ~= 4
+                result = 'q';                                        
+            elseif size(obj.approach_x,2) ~= 1
+                result = 'approach_x';                                        
+            elseif size(obj.approach_y,2) ~= 1
+                result = 'approach_y';                                        
+            elseif size(obj.approach_z,2) ~= 1
+                result = 'approach_z';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.latitude(obj,value)
             if value == int32(value)
                 obj.latitude = int32(value);

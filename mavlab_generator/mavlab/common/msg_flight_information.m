@@ -9,12 +9,11 @@ classdef msg_flight_information < mavlink_message
     end
     
     properties        
-		arming_time_utc	%Timestamp at arming (microseconds since UNIX epoch) in UTC, 0 for unknown (uint64[1])
-		takeoff_time_utc	%Timestamp at takeoff (microseconds since UNIX epoch) in UTC, 0 for unknown (uint64[1])
-		flight_uuid	%Universally unique identifier (UUID) of flight, should correspond to name of logfiles (uint64[1])
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
+		arming_time_utc	%Timestamp at arming (microseconds since UNIX epoch) in UTC, 0 for unknown (uint64)
+		takeoff_time_utc	%Timestamp at takeoff (microseconds since UNIX epoch) in UTC, 0 for unknown (uint64)
+		flight_uuid	%Universally unique identifier (UUID) of flight, should correspond to name of logfiles (uint64)
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
 	end
-
     
     methods
         
@@ -34,22 +33,30 @@ classdef msg_flight_information < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_flight_information.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_flight_information.ID;
-                
-			packet.payload.putUINT64(obj.arming_time_utc);
-
-			packet.payload.putUINT64(obj.takeoff_time_utc);
-
-			packet.payload.putUINT64(obj.flight_uuid);
-
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_flight_information.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_flight_information.ID;
+                
+				packet.payload.putUINT64(obj.arming_time_utc);
+
+				packet.payload.putUINT64(obj.takeoff_time_utc);
+
+				packet.payload.putUINT64(obj.flight_uuid);
+
+				packet.payload.putUINT32(obj.time_boot_ms);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_flight_information.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -63,7 +70,24 @@ classdef msg_flight_information < mavlink_message
 			obj.time_boot_ms = payload.getUINT32();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.arming_time_utc,2) ~= 1
+                result = 'arming_time_utc';                                        
+            elseif size(obj.takeoff_time_utc,2) ~= 1
+                result = 'takeoff_time_utc';                                        
+            elseif size(obj.flight_uuid,2) ~= 1
+                result = 'flight_uuid';                                        
+            elseif size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.arming_time_utc(obj,value)
             if value == uint64(value)
                 obj.arming_time_utc = uint64(value);

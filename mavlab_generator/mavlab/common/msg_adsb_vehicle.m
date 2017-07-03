@@ -9,21 +9,20 @@ classdef msg_adsb_vehicle < mavlink_message
     end
     
     properties        
-		icao_address	%ICAO address (uint32[1])
-		lat	%Latitude, expressed as degrees * 1E7 (int32[1])
-		lon	%Longitude, expressed as degrees * 1E7 (int32[1])
-		altitude	%Altitude(ASL) in millimeters (int32[1])
-		heading	%Course over ground in centidegrees (uint16[1])
-		hor_velocity	%The horizontal velocity in centimeters/second (uint16[1])
-		ver_velocity	%The vertical velocity in centimeters/second, positive is up (int16[1])
-		flags	%Flags to indicate various statuses including valid data fields (uint16[1])
-		squawk	%Squawk code (uint16[1])
-		altitude_type	%Type from ADSB_ALTITUDE_TYPE enum (uint8[1])
+		icao_address	%ICAO address (uint32)
+		lat	%Latitude, expressed as degrees * 1E7 (int32)
+		lon	%Longitude, expressed as degrees * 1E7 (int32)
+		altitude	%Altitude(ASL) in millimeters (int32)
+		heading	%Course over ground in centidegrees (uint16)
+		hor_velocity	%The horizontal velocity in centimeters/second (uint16)
+		ver_velocity	%The vertical velocity in centimeters/second, positive is up (int16)
+		flags	%Flags to indicate various statuses including valid data fields (uint16)
+		squawk	%Squawk code (uint16)
+		altitude_type	%Type from ADSB_ALTITUDE_TYPE enum (uint8)
 		callsign	%The callsign, 8+null (uint8[9])
-		emitter_type	%Type from ADSB_EMITTER_TYPE enum (uint8[1])
-		tslc	%Time since last communication in seconds (uint8[1])
+		emitter_type	%Type from ADSB_EMITTER_TYPE enum (uint8)
+		tslc	%Time since last communication in seconds (uint8)
 	end
-
     
     methods
         
@@ -43,42 +42,50 @@ classdef msg_adsb_vehicle < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_adsb_vehicle.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_adsb_vehicle.ID;
-                
-			packet.payload.putUINT32(obj.icao_address);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putINT32(obj.altitude);
-
-			packet.payload.putUINT16(obj.heading);
-
-			packet.payload.putUINT16(obj.hor_velocity);
-
-			packet.payload.putINT16(obj.ver_velocity);
-
-			packet.payload.putUINT16(obj.flags);
-
-			packet.payload.putUINT16(obj.squawk);
-
-			packet.payload.putUINT8(obj.altitude_type);
-            
-            for i = 1:9
-                packet.payload.putUINT8(obj.callsign(i));
-            end
-                            
-			packet.payload.putUINT8(obj.emitter_type);
-
-			packet.payload.putUINT8(obj.tslc);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_adsb_vehicle.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_adsb_vehicle.ID;
+                
+				packet.payload.putUINT32(obj.icao_address);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putINT32(obj.altitude);
+
+				packet.payload.putUINT16(obj.heading);
+
+				packet.payload.putUINT16(obj.hor_velocity);
+
+				packet.payload.putINT16(obj.ver_velocity);
+
+				packet.payload.putUINT16(obj.flags);
+
+				packet.payload.putUINT16(obj.squawk);
+
+				packet.payload.putUINT8(obj.altitude_type);
+            
+                for i = 1:9
+                    packet.payload.putUINT8(obj.callsign(i));
+                end
+                                
+				packet.payload.putUINT8(obj.emitter_type);
+
+				packet.payload.putUINT8(obj.tslc);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_adsb_vehicle.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -112,7 +119,42 @@ classdef msg_adsb_vehicle < mavlink_message
 			obj.tslc = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.icao_address,2) ~= 1
+                result = 'icao_address';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.altitude,2) ~= 1
+                result = 'altitude';                                        
+            elseif size(obj.heading,2) ~= 1
+                result = 'heading';                                        
+            elseif size(obj.hor_velocity,2) ~= 1
+                result = 'hor_velocity';                                        
+            elseif size(obj.ver_velocity,2) ~= 1
+                result = 'ver_velocity';                                        
+            elseif size(obj.flags,2) ~= 1
+                result = 'flags';                                        
+            elseif size(obj.squawk,2) ~= 1
+                result = 'squawk';                                        
+            elseif size(obj.altitude_type,2) ~= 1
+                result = 'altitude_type';                                        
+            elseif size(obj.callsign,2) ~= 9
+                result = 'callsign';                                        
+            elseif size(obj.emitter_type,2) ~= 1
+                result = 'emitter_type';                                        
+            elseif size(obj.tslc,2) ~= 1
+                result = 'tslc';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.icao_address(obj,value)
             if value == uint32(value)
                 obj.icao_address = uint32(value);

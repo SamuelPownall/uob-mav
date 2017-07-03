@@ -9,21 +9,20 @@ classdef msg_gps2_rtk < mavlink_message
     end
     
     properties        
-		time_last_baseline_ms	%Time since boot of last baseline message received in ms. (uint32[1])
-		tow	%GPS Time of Week of last baseline (uint32[1])
-		baseline_a_mm	%Current baseline in ECEF x or NED north component in mm. (int32[1])
-		baseline_b_mm	%Current baseline in ECEF y or NED east component in mm. (int32[1])
-		baseline_c_mm	%Current baseline in ECEF z or NED down component in mm. (int32[1])
-		accuracy	%Current estimate of baseline accuracy. (uint32[1])
-		iar_num_hypotheses	%Current number of integer ambiguity hypotheses. (int32[1])
-		wn	%GPS Week Number of last baseline (uint16[1])
-		rtk_receiver_id	%Identification of connected RTK receiver. (uint8[1])
-		rtk_health	%GPS-specific health report for RTK data. (uint8[1])
-		rtk_rate	%Rate of baseline messages being received by GPS, in HZ (uint8[1])
-		nsats	%Current number of sats used for RTK calculation. (uint8[1])
-		baseline_coords_type	%Coordinate system of baseline. 0 == ECEF, 1 == NED (uint8[1])
+		time_last_baseline_ms	%Time since boot of last baseline message received in ms. (uint32)
+		tow	%GPS Time of Week of last baseline (uint32)
+		baseline_a_mm	%Current baseline in ECEF x or NED north component in mm. (int32)
+		baseline_b_mm	%Current baseline in ECEF y or NED east component in mm. (int32)
+		baseline_c_mm	%Current baseline in ECEF z or NED down component in mm. (int32)
+		accuracy	%Current estimate of baseline accuracy. (uint32)
+		iar_num_hypotheses	%Current number of integer ambiguity hypotheses. (int32)
+		wn	%GPS Week Number of last baseline (uint16)
+		rtk_receiver_id	%Identification of connected RTK receiver. (uint8)
+		rtk_health	%GPS-specific health report for RTK data. (uint8)
+		rtk_rate	%Rate of baseline messages being received by GPS, in HZ (uint8)
+		nsats	%Current number of sats used for RTK calculation. (uint8)
+		baseline_coords_type	%Coordinate system of baseline. 0 == ECEF, 1 == NED (uint8)
 	end
-
     
     methods
         
@@ -43,40 +42,48 @@ classdef msg_gps2_rtk < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_gps2_rtk.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_gps2_rtk.ID;
-                
-			packet.payload.putUINT32(obj.time_last_baseline_ms);
-
-			packet.payload.putUINT32(obj.tow);
-
-			packet.payload.putINT32(obj.baseline_a_mm);
-
-			packet.payload.putINT32(obj.baseline_b_mm);
-
-			packet.payload.putINT32(obj.baseline_c_mm);
-
-			packet.payload.putUINT32(obj.accuracy);
-
-			packet.payload.putINT32(obj.iar_num_hypotheses);
-
-			packet.payload.putUINT16(obj.wn);
-
-			packet.payload.putUINT8(obj.rtk_receiver_id);
-
-			packet.payload.putUINT8(obj.rtk_health);
-
-			packet.payload.putUINT8(obj.rtk_rate);
-
-			packet.payload.putUINT8(obj.nsats);
-
-			packet.payload.putUINT8(obj.baseline_coords_type);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_gps2_rtk.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_gps2_rtk.ID;
+                
+				packet.payload.putUINT32(obj.time_last_baseline_ms);
+
+				packet.payload.putUINT32(obj.tow);
+
+				packet.payload.putINT32(obj.baseline_a_mm);
+
+				packet.payload.putINT32(obj.baseline_b_mm);
+
+				packet.payload.putINT32(obj.baseline_c_mm);
+
+				packet.payload.putUINT32(obj.accuracy);
+
+				packet.payload.putINT32(obj.iar_num_hypotheses);
+
+				packet.payload.putUINT16(obj.wn);
+
+				packet.payload.putUINT8(obj.rtk_receiver_id);
+
+				packet.payload.putUINT8(obj.rtk_health);
+
+				packet.payload.putUINT8(obj.rtk_rate);
+
+				packet.payload.putUINT8(obj.nsats);
+
+				packet.payload.putUINT8(obj.baseline_coords_type);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_gps2_rtk.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -108,7 +115,42 @@ classdef msg_gps2_rtk < mavlink_message
 			obj.baseline_coords_type = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_last_baseline_ms,2) ~= 1
+                result = 'time_last_baseline_ms';                                        
+            elseif size(obj.tow,2) ~= 1
+                result = 'tow';                                        
+            elseif size(obj.baseline_a_mm,2) ~= 1
+                result = 'baseline_a_mm';                                        
+            elseif size(obj.baseline_b_mm,2) ~= 1
+                result = 'baseline_b_mm';                                        
+            elseif size(obj.baseline_c_mm,2) ~= 1
+                result = 'baseline_c_mm';                                        
+            elseif size(obj.accuracy,2) ~= 1
+                result = 'accuracy';                                        
+            elseif size(obj.iar_num_hypotheses,2) ~= 1
+                result = 'iar_num_hypotheses';                                        
+            elseif size(obj.wn,2) ~= 1
+                result = 'wn';                                        
+            elseif size(obj.rtk_receiver_id,2) ~= 1
+                result = 'rtk_receiver_id';                                        
+            elseif size(obj.rtk_health,2) ~= 1
+                result = 'rtk_health';                                        
+            elseif size(obj.rtk_rate,2) ~= 1
+                result = 'rtk_rate';                                        
+            elseif size(obj.nsats,2) ~= 1
+                result = 'nsats';                                        
+            elseif size(obj.baseline_coords_type,2) ~= 1
+                result = 'baseline_coords_type';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_last_baseline_ms(obj,value)
             if value == uint32(value)
                 obj.time_last_baseline_ms = uint32(value);

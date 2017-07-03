@@ -9,12 +9,11 @@ classdef msg_file_transfer_protocol < mavlink_message
     end
     
     properties        
-		target_network	%Network ID (0 for broadcast) (uint8[1])
-		target_system	%System ID (0 for broadcast) (uint8[1])
-		target_component	%Component ID (0 for broadcast) (uint8[1])
+		target_network	%Network ID (0 for broadcast) (uint8)
+		target_system	%System ID (0 for broadcast) (uint8)
+		target_component	%Component ID (0 for broadcast) (uint8)
 		payload	%Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification. (uint8[251])
 	end
-
     
     methods
         
@@ -34,24 +33,32 @@ classdef msg_file_transfer_protocol < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_file_transfer_protocol.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_file_transfer_protocol.ID;
-                
-			packet.payload.putUINT8(obj.target_network);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-            
-            for i = 1:251
-                packet.payload.putUINT8(obj.payload(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_file_transfer_protocol.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_file_transfer_protocol.ID;
+                
+				packet.payload.putUINT8(obj.target_network);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+            
+                for i = 1:251
+                    packet.payload.putUINT8(obj.payload(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_file_transfer_protocol.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -67,7 +74,24 @@ classdef msg_file_transfer_protocol < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.target_network,2) ~= 1
+                result = 'target_network';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.payload,2) ~= 251
+                result = 'payload';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.target_network(obj,value)
             if value == uint8(value)
                 obj.target_network = uint8(value);

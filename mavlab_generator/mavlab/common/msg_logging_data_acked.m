@@ -9,14 +9,13 @@ classdef msg_logging_data_acked < mavlink_message
     end
     
     properties        
-		sequence	%sequence number (can wrap) (uint16[1])
-		target_system	%system ID of the target (uint8[1])
-		target_component	%component ID of the target (uint8[1])
-		length	%data length (uint8[1])
-		first_message_offset	%offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to 255 if no start exists). (uint8[1])
+		sequence	%sequence number (can wrap) (uint16)
+		target_system	%system ID of the target (uint8)
+		target_component	%component ID of the target (uint8)
+		length	%data length (uint8)
+		first_message_offset	%offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to 255 if no start exists). (uint8)
 		data	%logged data (uint8[249])
 	end
-
     
     methods
         
@@ -36,28 +35,36 @@ classdef msg_logging_data_acked < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_logging_data_acked.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_logging_data_acked.ID;
-                
-			packet.payload.putUINT16(obj.sequence);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-
-			packet.payload.putUINT8(obj.length);
-
-			packet.payload.putUINT8(obj.first_message_offset);
-            
-            for i = 1:249
-                packet.payload.putUINT8(obj.data(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_logging_data_acked.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_logging_data_acked.ID;
+                
+				packet.payload.putUINT16(obj.sequence);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+
+				packet.payload.putUINT8(obj.length);
+
+				packet.payload.putUINT8(obj.first_message_offset);
+            
+                for i = 1:249
+                    packet.payload.putUINT8(obj.data(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_logging_data_acked.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -77,7 +84,28 @@ classdef msg_logging_data_acked < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.sequence,2) ~= 1
+                result = 'sequence';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.length,2) ~= 1
+                result = 'length';                                        
+            elseif size(obj.first_message_offset,2) ~= 1
+                result = 'first_message_offset';                                        
+            elseif size(obj.data,2) ~= 249
+                result = 'data';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.sequence(obj,value)
             if value == uint16(value)
                 obj.sequence = uint16(value);

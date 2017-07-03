@@ -9,29 +9,28 @@ classdef msg_sim_state < mavlink_message
     end
     
     properties        
-		q1	%True attitude quaternion component 1, w (1 in null-rotation) (single[1])
-		q2	%True attitude quaternion component 2, x (0 in null-rotation) (single[1])
-		q3	%True attitude quaternion component 3, y (0 in null-rotation) (single[1])
-		q4	%True attitude quaternion component 4, z (0 in null-rotation) (single[1])
-		roll	%Attitude roll expressed as Euler angles, not recommended except for human-readable outputs (single[1])
-		pitch	%Attitude pitch expressed as Euler angles, not recommended except for human-readable outputs (single[1])
-		yaw	%Attitude yaw expressed as Euler angles, not recommended except for human-readable outputs (single[1])
-		xacc	%X acceleration m/s/s (single[1])
-		yacc	%Y acceleration m/s/s (single[1])
-		zacc	%Z acceleration m/s/s (single[1])
-		xgyro	%Angular speed around X axis rad/s (single[1])
-		ygyro	%Angular speed around Y axis rad/s (single[1])
-		zgyro	%Angular speed around Z axis rad/s (single[1])
-		lat	%Latitude in degrees (single[1])
-		lon	%Longitude in degrees (single[1])
-		alt	%Altitude in meters (single[1])
-		std_dev_horz	%Horizontal position standard deviation (single[1])
-		std_dev_vert	%Vertical position standard deviation (single[1])
-		vn	%True velocity in m/s in NORTH direction in earth-fixed NED frame (single[1])
-		ve	%True velocity in m/s in EAST direction in earth-fixed NED frame (single[1])
-		vd	%True velocity in m/s in DOWN direction in earth-fixed NED frame (single[1])
+		q1	%True attitude quaternion component 1, w (1 in null-rotation) (single)
+		q2	%True attitude quaternion component 2, x (0 in null-rotation) (single)
+		q3	%True attitude quaternion component 3, y (0 in null-rotation) (single)
+		q4	%True attitude quaternion component 4, z (0 in null-rotation) (single)
+		roll	%Attitude roll expressed as Euler angles, not recommended except for human-readable outputs (single)
+		pitch	%Attitude pitch expressed as Euler angles, not recommended except for human-readable outputs (single)
+		yaw	%Attitude yaw expressed as Euler angles, not recommended except for human-readable outputs (single)
+		xacc	%X acceleration m/s/s (single)
+		yacc	%Y acceleration m/s/s (single)
+		zacc	%Z acceleration m/s/s (single)
+		xgyro	%Angular speed around X axis rad/s (single)
+		ygyro	%Angular speed around Y axis rad/s (single)
+		zgyro	%Angular speed around Z axis rad/s (single)
+		lat	%Latitude in degrees (single)
+		lon	%Longitude in degrees (single)
+		alt	%Altitude in meters (single)
+		std_dev_horz	%Horizontal position standard deviation (single)
+		std_dev_vert	%Vertical position standard deviation (single)
+		vn	%True velocity in m/s in NORTH direction in earth-fixed NED frame (single)
+		ve	%True velocity in m/s in EAST direction in earth-fixed NED frame (single)
+		vd	%True velocity in m/s in DOWN direction in earth-fixed NED frame (single)
 	end
-
     
     methods
         
@@ -51,56 +50,64 @@ classdef msg_sim_state < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_sim_state.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_sim_state.ID;
-                
-			packet.payload.putSINGLE(obj.q1);
-
-			packet.payload.putSINGLE(obj.q2);
-
-			packet.payload.putSINGLE(obj.q3);
-
-			packet.payload.putSINGLE(obj.q4);
-
-			packet.payload.putSINGLE(obj.roll);
-
-			packet.payload.putSINGLE(obj.pitch);
-
-			packet.payload.putSINGLE(obj.yaw);
-
-			packet.payload.putSINGLE(obj.xacc);
-
-			packet.payload.putSINGLE(obj.yacc);
-
-			packet.payload.putSINGLE(obj.zacc);
-
-			packet.payload.putSINGLE(obj.xgyro);
-
-			packet.payload.putSINGLE(obj.ygyro);
-
-			packet.payload.putSINGLE(obj.zgyro);
-
-			packet.payload.putSINGLE(obj.lat);
-
-			packet.payload.putSINGLE(obj.lon);
-
-			packet.payload.putSINGLE(obj.alt);
-
-			packet.payload.putSINGLE(obj.std_dev_horz);
-
-			packet.payload.putSINGLE(obj.std_dev_vert);
-
-			packet.payload.putSINGLE(obj.vn);
-
-			packet.payload.putSINGLE(obj.ve);
-
-			packet.payload.putSINGLE(obj.vd);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_sim_state.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_sim_state.ID;
+                
+				packet.payload.putSINGLE(obj.q1);
+
+				packet.payload.putSINGLE(obj.q2);
+
+				packet.payload.putSINGLE(obj.q3);
+
+				packet.payload.putSINGLE(obj.q4);
+
+				packet.payload.putSINGLE(obj.roll);
+
+				packet.payload.putSINGLE(obj.pitch);
+
+				packet.payload.putSINGLE(obj.yaw);
+
+				packet.payload.putSINGLE(obj.xacc);
+
+				packet.payload.putSINGLE(obj.yacc);
+
+				packet.payload.putSINGLE(obj.zacc);
+
+				packet.payload.putSINGLE(obj.xgyro);
+
+				packet.payload.putSINGLE(obj.ygyro);
+
+				packet.payload.putSINGLE(obj.zgyro);
+
+				packet.payload.putSINGLE(obj.lat);
+
+				packet.payload.putSINGLE(obj.lon);
+
+				packet.payload.putSINGLE(obj.alt);
+
+				packet.payload.putSINGLE(obj.std_dev_horz);
+
+				packet.payload.putSINGLE(obj.std_dev_vert);
+
+				packet.payload.putSINGLE(obj.vn);
+
+				packet.payload.putSINGLE(obj.ve);
+
+				packet.payload.putSINGLE(obj.vd);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_sim_state.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -149,6 +156,57 @@ classdef msg_sim_state < mavlink_message
 
 		end
         
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.q1,2) ~= 1
+                result = 'q1';                                        
+            elseif size(obj.q2,2) ~= 1
+                result = 'q2';                                        
+            elseif size(obj.q3,2) ~= 1
+                result = 'q3';                                        
+            elseif size(obj.q4,2) ~= 1
+                result = 'q4';                                        
+            elseif size(obj.roll,2) ~= 1
+                result = 'roll';                                        
+            elseif size(obj.pitch,2) ~= 1
+                result = 'pitch';                                        
+            elseif size(obj.yaw,2) ~= 1
+                result = 'yaw';                                        
+            elseif size(obj.xacc,2) ~= 1
+                result = 'xacc';                                        
+            elseif size(obj.yacc,2) ~= 1
+                result = 'yacc';                                        
+            elseif size(obj.zacc,2) ~= 1
+                result = 'zacc';                                        
+            elseif size(obj.xgyro,2) ~= 1
+                result = 'xgyro';                                        
+            elseif size(obj.ygyro,2) ~= 1
+                result = 'ygyro';                                        
+            elseif size(obj.zgyro,2) ~= 1
+                result = 'zgyro';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.std_dev_horz,2) ~= 1
+                result = 'std_dev_horz';                                        
+            elseif size(obj.std_dev_vert,2) ~= 1
+                result = 'std_dev_vert';                                        
+            elseif size(obj.vn,2) ~= 1
+                result = 'vn';                                        
+            elseif size(obj.ve,2) ~= 1
+                result = 've';                                        
+            elseif size(obj.vd,2) ~= 1
+                result = 'vd';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
         function set.q1(obj,value)
             obj.q1 = single(value);
         end

@@ -9,15 +9,14 @@ classdef msg_manual_setpoint < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp in milliseconds since system boot (uint32[1])
-		roll	%Desired roll rate in radians per second (single[1])
-		pitch	%Desired pitch rate in radians per second (single[1])
-		yaw	%Desired yaw rate in radians per second (single[1])
-		thrust	%Collective thrust, normalized to 0 .. 1 (single[1])
-		mode_switch	%Flight mode switch position, 0.. 255 (uint8[1])
-		manual_override_switch	%Override mode switch position, 0.. 255 (uint8[1])
+		time_boot_ms	%Timestamp in milliseconds since system boot (uint32)
+		roll	%Desired roll rate in radians per second (single)
+		pitch	%Desired pitch rate in radians per second (single)
+		yaw	%Desired yaw rate in radians per second (single)
+		thrust	%Collective thrust, normalized to 0 .. 1 (single)
+		mode_switch	%Flight mode switch position, 0.. 255 (uint8)
+		manual_override_switch	%Override mode switch position, 0.. 255 (uint8)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_manual_setpoint < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_manual_setpoint.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_manual_setpoint.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.roll);
-
-			packet.payload.putSINGLE(obj.pitch);
-
-			packet.payload.putSINGLE(obj.yaw);
-
-			packet.payload.putSINGLE(obj.thrust);
-
-			packet.payload.putUINT8(obj.mode_switch);
-
-			packet.payload.putUINT8(obj.manual_override_switch);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_manual_setpoint.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_manual_setpoint.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.roll);
+
+				packet.payload.putSINGLE(obj.pitch);
+
+				packet.payload.putSINGLE(obj.yaw);
+
+				packet.payload.putSINGLE(obj.thrust);
+
+				packet.payload.putUINT8(obj.mode_switch);
+
+				packet.payload.putUINT8(obj.manual_override_switch);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_manual_setpoint.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_manual_setpoint < mavlink_message
 			obj.manual_override_switch = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.roll,2) ~= 1
+                result = 'roll';                                        
+            elseif size(obj.pitch,2) ~= 1
+                result = 'pitch';                                        
+            elseif size(obj.yaw,2) ~= 1
+                result = 'yaw';                                        
+            elseif size(obj.thrust,2) ~= 1
+                result = 'thrust';                                        
+            elseif size(obj.mode_switch,2) ~= 1
+                result = 'mode_switch';                                        
+            elseif size(obj.manual_override_switch,2) ~= 1
+                result = 'manual_override_switch';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

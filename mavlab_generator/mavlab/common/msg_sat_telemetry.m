@@ -9,22 +9,21 @@ classdef msg_sat_telemetry < mavlink_message
     end
     
     properties        
-		time	%Description of the field (uint32[1])
-		latitude	%Description of the field (int32[1])
-		longitude	%Description of the field (int32[1])
-		altitude	%Description of the field (single[1])
-		nav_distance	%Description of the field (single[1])
-		nav_bearing	%Description of the field (uint16[1])
-		air_speed	%Description of the field (uint16[1])
-		bat_voltage	%Description of the field (uint16[1])
-		bat_current	%Description of the field (uint16[1])
-		roll	%Description of the field (int16[1])
-		pitch	%Description of the field (int16[1])
-		vertical_speed	%Description of the field (int16[1])
-		gps_fixtype	%Description of the field (uint8[1])
-		bat_percent	%Description of the field (uint8[1])
+		time	%Description of the field (uint32)
+		latitude	%Description of the field (int32)
+		longitude	%Description of the field (int32)
+		altitude	%Description of the field (single)
+		nav_distance	%Description of the field (single)
+		nav_bearing	%Description of the field (uint16)
+		air_speed	%Description of the field (uint16)
+		bat_voltage	%Description of the field (uint16)
+		bat_current	%Description of the field (uint16)
+		roll	%Description of the field (int16)
+		pitch	%Description of the field (int16)
+		vertical_speed	%Description of the field (int16)
+		gps_fixtype	%Description of the field (uint8)
+		bat_percent	%Description of the field (uint8)
 	end
-
     
     methods
         
@@ -44,42 +43,50 @@ classdef msg_sat_telemetry < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_sat_telemetry.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_sat_telemetry.ID;
-                
-			packet.payload.putUINT32(obj.time);
-
-			packet.payload.putINT32(obj.latitude);
-
-			packet.payload.putINT32(obj.longitude);
-
-			packet.payload.putSINGLE(obj.altitude);
-
-			packet.payload.putSINGLE(obj.nav_distance);
-
-			packet.payload.putUINT16(obj.nav_bearing);
-
-			packet.payload.putUINT16(obj.air_speed);
-
-			packet.payload.putUINT16(obj.bat_voltage);
-
-			packet.payload.putUINT16(obj.bat_current);
-
-			packet.payload.putINT16(obj.roll);
-
-			packet.payload.putINT16(obj.pitch);
-
-			packet.payload.putINT16(obj.vertical_speed);
-
-			packet.payload.putUINT8(obj.gps_fixtype);
-
-			packet.payload.putUINT8(obj.bat_percent);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_sat_telemetry.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_sat_telemetry.ID;
+                
+				packet.payload.putUINT32(obj.time);
+
+				packet.payload.putINT32(obj.latitude);
+
+				packet.payload.putINT32(obj.longitude);
+
+				packet.payload.putSINGLE(obj.altitude);
+
+				packet.payload.putSINGLE(obj.nav_distance);
+
+				packet.payload.putUINT16(obj.nav_bearing);
+
+				packet.payload.putUINT16(obj.air_speed);
+
+				packet.payload.putUINT16(obj.bat_voltage);
+
+				packet.payload.putUINT16(obj.bat_current);
+
+				packet.payload.putINT16(obj.roll);
+
+				packet.payload.putINT16(obj.pitch);
+
+				packet.payload.putINT16(obj.vertical_speed);
+
+				packet.payload.putUINT8(obj.gps_fixtype);
+
+				packet.payload.putUINT8(obj.bat_percent);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_sat_telemetry.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -113,7 +120,44 @@ classdef msg_sat_telemetry < mavlink_message
 			obj.bat_percent = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time,2) ~= 1
+                result = 'time';                                        
+            elseif size(obj.latitude,2) ~= 1
+                result = 'latitude';                                        
+            elseif size(obj.longitude,2) ~= 1
+                result = 'longitude';                                        
+            elseif size(obj.altitude,2) ~= 1
+                result = 'altitude';                                        
+            elseif size(obj.nav_distance,2) ~= 1
+                result = 'nav_distance';                                        
+            elseif size(obj.nav_bearing,2) ~= 1
+                result = 'nav_bearing';                                        
+            elseif size(obj.air_speed,2) ~= 1
+                result = 'air_speed';                                        
+            elseif size(obj.bat_voltage,2) ~= 1
+                result = 'bat_voltage';                                        
+            elseif size(obj.bat_current,2) ~= 1
+                result = 'bat_current';                                        
+            elseif size(obj.roll,2) ~= 1
+                result = 'roll';                                        
+            elseif size(obj.pitch,2) ~= 1
+                result = 'pitch';                                        
+            elseif size(obj.vertical_speed,2) ~= 1
+                result = 'vertical_speed';                                        
+            elseif size(obj.gps_fixtype,2) ~= 1
+                result = 'gps_fixtype';                                        
+            elseif size(obj.bat_percent,2) ~= 1
+                result = 'bat_percent';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time(obj,value)
             if value == uint32(value)
                 obj.time = uint32(value);

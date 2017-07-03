@@ -9,11 +9,10 @@ classdef msg_set_mode < mavlink_message
     end
     
     properties        
-		custom_mode	%The new autopilot-specific mode. This field can be ignored by an autopilot. (uint32[1])
-		target_system	%The system setting the mode (uint8[1])
-		base_mode	%The new base mode (uint8[1])
+		custom_mode	%The new autopilot-specific mode. This field can be ignored by an autopilot. (uint32)
+		target_system	%The system setting the mode (uint8)
+		base_mode	%The new base mode (uint8)
 	end
-
     
     methods
         
@@ -33,20 +32,28 @@ classdef msg_set_mode < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_set_mode.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_set_mode.ID;
-                
-			packet.payload.putUINT32(obj.custom_mode);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.base_mode);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_set_mode.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_set_mode.ID;
+                
+				packet.payload.putUINT32(obj.custom_mode);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.base_mode);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_set_mode.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -58,7 +65,22 @@ classdef msg_set_mode < mavlink_message
 			obj.base_mode = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.custom_mode,2) ~= 1
+                result = 'custom_mode';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.base_mode,2) ~= 1
+                result = 'base_mode';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.custom_mode(obj,value)
             if value == uint32(value)
                 obj.custom_mode = uint32(value);

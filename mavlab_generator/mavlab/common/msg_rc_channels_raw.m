@@ -9,19 +9,18 @@ classdef msg_rc_channels_raw < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		chan1_raw	%RC channel 1 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		chan2_raw	%RC channel 2 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		chan3_raw	%RC channel 3 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		chan4_raw	%RC channel 4 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		chan5_raw	%RC channel 5 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		chan6_raw	%RC channel 6 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		chan7_raw	%RC channel 7 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		chan8_raw	%RC channel 8 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16[1])
-		port	%Servo output port (set of 8 outputs = 1 port). Most MAVs will just use one, but this allows for more than 8 servos. (uint8[1])
-		rssi	%Receive signal strength indicator, 0: 0%, 100: 100%, 255: invalid/unknown. (uint8[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		chan1_raw	%RC channel 1 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		chan2_raw	%RC channel 2 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		chan3_raw	%RC channel 3 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		chan4_raw	%RC channel 4 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		chan5_raw	%RC channel 5 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		chan6_raw	%RC channel 6 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		chan7_raw	%RC channel 7 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		chan8_raw	%RC channel 8 value, in microseconds. A value of UINT16_MAX implies the channel is unused. (uint16)
+		port	%Servo output port (set of 8 outputs = 1 port). Most MAVs will just use one, but this allows for more than 8 servos. (uint8)
+		rssi	%Receive signal strength indicator, 0: 0%, 100: 100%, 255: invalid/unknown. (uint8)
 	end
-
     
     methods
         
@@ -41,36 +40,44 @@ classdef msg_rc_channels_raw < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_rc_channels_raw.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_rc_channels_raw.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putUINT16(obj.chan1_raw);
-
-			packet.payload.putUINT16(obj.chan2_raw);
-
-			packet.payload.putUINT16(obj.chan3_raw);
-
-			packet.payload.putUINT16(obj.chan4_raw);
-
-			packet.payload.putUINT16(obj.chan5_raw);
-
-			packet.payload.putUINT16(obj.chan6_raw);
-
-			packet.payload.putUINT16(obj.chan7_raw);
-
-			packet.payload.putUINT16(obj.chan8_raw);
-
-			packet.payload.putUINT8(obj.port);
-
-			packet.payload.putUINT8(obj.rssi);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_rc_channels_raw.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_rc_channels_raw.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putUINT16(obj.chan1_raw);
+
+				packet.payload.putUINT16(obj.chan2_raw);
+
+				packet.payload.putUINT16(obj.chan3_raw);
+
+				packet.payload.putUINT16(obj.chan4_raw);
+
+				packet.payload.putUINT16(obj.chan5_raw);
+
+				packet.payload.putUINT16(obj.chan6_raw);
+
+				packet.payload.putUINT16(obj.chan7_raw);
+
+				packet.payload.putUINT16(obj.chan8_raw);
+
+				packet.payload.putUINT8(obj.port);
+
+				packet.payload.putUINT8(obj.rssi);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_rc_channels_raw.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -98,7 +105,38 @@ classdef msg_rc_channels_raw < mavlink_message
 			obj.rssi = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.chan1_raw,2) ~= 1
+                result = 'chan1_raw';                                        
+            elseif size(obj.chan2_raw,2) ~= 1
+                result = 'chan2_raw';                                        
+            elseif size(obj.chan3_raw,2) ~= 1
+                result = 'chan3_raw';                                        
+            elseif size(obj.chan4_raw,2) ~= 1
+                result = 'chan4_raw';                                        
+            elseif size(obj.chan5_raw,2) ~= 1
+                result = 'chan5_raw';                                        
+            elseif size(obj.chan6_raw,2) ~= 1
+                result = 'chan6_raw';                                        
+            elseif size(obj.chan7_raw,2) ~= 1
+                result = 'chan7_raw';                                        
+            elseif size(obj.chan8_raw,2) ~= 1
+                result = 'chan8_raw';                                        
+            elseif size(obj.port,2) ~= 1
+                result = 'port';                                        
+            elseif size(obj.rssi,2) ~= 1
+                result = 'rssi';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

@@ -9,18 +9,17 @@ classdef msg_global_position_int_cov < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (microseconds since system boot or since UNIX epoch) (uint64[1])
-		lat	%Latitude, expressed as degrees * 1E7 (int32[1])
-		lon	%Longitude, expressed as degrees * 1E7 (int32[1])
-		alt	%Altitude in meters, expressed as * 1000 (millimeters), above MSL (int32[1])
-		relative_alt	%Altitude above ground in meters, expressed as * 1000 (millimeters) (int32[1])
-		vx	%Ground X Speed (Latitude), expressed as m/s (single[1])
-		vy	%Ground Y Speed (Longitude), expressed as m/s (single[1])
-		vz	%Ground Z Speed (Altitude), expressed as m/s (single[1])
+		time_usec	%Timestamp (microseconds since system boot or since UNIX epoch) (uint64)
+		lat	%Latitude, expressed as degrees * 1E7 (int32)
+		lon	%Longitude, expressed as degrees * 1E7 (int32)
+		alt	%Altitude in meters, expressed as * 1000 (millimeters), above MSL (int32)
+		relative_alt	%Altitude above ground in meters, expressed as * 1000 (millimeters) (int32)
+		vx	%Ground X Speed (Latitude), expressed as m/s (single)
+		vy	%Ground Y Speed (Longitude), expressed as m/s (single)
+		vz	%Ground Z Speed (Altitude), expressed as m/s (single)
 		covariance	%Covariance matrix (first six entries are the first ROW, next six entries are the second row, etc.) (single[36])
-		estimator_type	%Class id of the estimator this estimate originated from. (uint8[1])
+		estimator_type	%Class id of the estimator this estimate originated from. (uint8)
 	end
-
     
     methods
         
@@ -40,36 +39,44 @@ classdef msg_global_position_int_cov < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_global_position_int_cov.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_global_position_int_cov.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putINT32(obj.alt);
-
-			packet.payload.putINT32(obj.relative_alt);
-
-			packet.payload.putSINGLE(obj.vx);
-
-			packet.payload.putSINGLE(obj.vy);
-
-			packet.payload.putSINGLE(obj.vz);
-            
-            for i = 1:36
-                packet.payload.putSINGLE(obj.covariance(i));
-            end
-                            
-			packet.payload.putUINT8(obj.estimator_type);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_global_position_int_cov.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_global_position_int_cov.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putINT32(obj.alt);
+
+				packet.payload.putINT32(obj.relative_alt);
+
+				packet.payload.putSINGLE(obj.vx);
+
+				packet.payload.putSINGLE(obj.vy);
+
+				packet.payload.putSINGLE(obj.vz);
+            
+                for i = 1:36
+                    packet.payload.putSINGLE(obj.covariance(i));
+                end
+                                
+				packet.payload.putUINT8(obj.estimator_type);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_global_position_int_cov.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -97,7 +104,36 @@ classdef msg_global_position_int_cov < mavlink_message
 			obj.estimator_type = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.relative_alt,2) ~= 1
+                result = 'relative_alt';                                        
+            elseif size(obj.vx,2) ~= 1
+                result = 'vx';                                        
+            elseif size(obj.vy,2) ~= 1
+                result = 'vy';                                        
+            elseif size(obj.vz,2) ~= 1
+                result = 'vz';                                        
+            elseif size(obj.covariance,2) ~= 36
+                result = 'covariance';                                        
+            elseif size(obj.estimator_type,2) ~= 1
+                result = 'estimator_type';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

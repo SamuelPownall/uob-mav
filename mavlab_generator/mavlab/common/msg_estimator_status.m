@@ -9,18 +9,17 @@ classdef msg_estimator_status < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64[1])
-		vel_ratio	%Velocity innovation test ratio (single[1])
-		pos_horiz_ratio	%Horizontal position innovation test ratio (single[1])
-		pos_vert_ratio	%Vertical position innovation test ratio (single[1])
-		mag_ratio	%Magnetometer innovation test ratio (single[1])
-		hagl_ratio	%Height above terrain innovation test ratio (single[1])
-		tas_ratio	%True airspeed innovation test ratio (single[1])
-		pos_horiz_accuracy	%Horizontal position 1-STD accuracy relative to the EKF local origin (m) (single[1])
-		pos_vert_accuracy	%Vertical position 1-STD accuracy relative to the EKF local origin (m) (single[1])
-		flags	%Integer bitmask indicating which EKF outputs are valid. See definition for ESTIMATOR_STATUS_FLAGS. (uint16[1])
+		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64)
+		vel_ratio	%Velocity innovation test ratio (single)
+		pos_horiz_ratio	%Horizontal position innovation test ratio (single)
+		pos_vert_ratio	%Vertical position innovation test ratio (single)
+		mag_ratio	%Magnetometer innovation test ratio (single)
+		hagl_ratio	%Height above terrain innovation test ratio (single)
+		tas_ratio	%True airspeed innovation test ratio (single)
+		pos_horiz_accuracy	%Horizontal position 1-STD accuracy relative to the EKF local origin (m) (single)
+		pos_vert_accuracy	%Vertical position 1-STD accuracy relative to the EKF local origin (m) (single)
+		flags	%Integer bitmask indicating which EKF outputs are valid. See definition for ESTIMATOR_STATUS_FLAGS. (uint16)
 	end
-
     
     methods
         
@@ -40,34 +39,42 @@ classdef msg_estimator_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_estimator_status.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_estimator_status.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putSINGLE(obj.vel_ratio);
-
-			packet.payload.putSINGLE(obj.pos_horiz_ratio);
-
-			packet.payload.putSINGLE(obj.pos_vert_ratio);
-
-			packet.payload.putSINGLE(obj.mag_ratio);
-
-			packet.payload.putSINGLE(obj.hagl_ratio);
-
-			packet.payload.putSINGLE(obj.tas_ratio);
-
-			packet.payload.putSINGLE(obj.pos_horiz_accuracy);
-
-			packet.payload.putSINGLE(obj.pos_vert_accuracy);
-
-			packet.payload.putUINT16(obj.flags);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_estimator_status.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_estimator_status.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putSINGLE(obj.vel_ratio);
+
+				packet.payload.putSINGLE(obj.pos_horiz_ratio);
+
+				packet.payload.putSINGLE(obj.pos_vert_ratio);
+
+				packet.payload.putSINGLE(obj.mag_ratio);
+
+				packet.payload.putSINGLE(obj.hagl_ratio);
+
+				packet.payload.putSINGLE(obj.tas_ratio);
+
+				packet.payload.putSINGLE(obj.pos_horiz_accuracy);
+
+				packet.payload.putSINGLE(obj.pos_vert_accuracy);
+
+				packet.payload.putUINT16(obj.flags);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_estimator_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -93,7 +100,36 @@ classdef msg_estimator_status < mavlink_message
 			obj.flags = payload.getUINT16();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.vel_ratio,2) ~= 1
+                result = 'vel_ratio';                                        
+            elseif size(obj.pos_horiz_ratio,2) ~= 1
+                result = 'pos_horiz_ratio';                                        
+            elseif size(obj.pos_vert_ratio,2) ~= 1
+                result = 'pos_vert_ratio';                                        
+            elseif size(obj.mag_ratio,2) ~= 1
+                result = 'mag_ratio';                                        
+            elseif size(obj.hagl_ratio,2) ~= 1
+                result = 'hagl_ratio';                                        
+            elseif size(obj.tas_ratio,2) ~= 1
+                result = 'tas_ratio';                                        
+            elseif size(obj.pos_horiz_accuracy,2) ~= 1
+                result = 'pos_horiz_accuracy';                                        
+            elseif size(obj.pos_vert_accuracy,2) ~= 1
+                result = 'pos_vert_accuracy';                                        
+            elseif size(obj.flags,2) ~= 1
+                result = 'flags';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

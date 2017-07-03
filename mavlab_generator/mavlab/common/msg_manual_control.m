@@ -9,14 +9,13 @@ classdef msg_manual_control < mavlink_message
     end
     
     properties        
-		x	%X-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to forward(1000)-backward(-1000) movement on a joystick and the pitch of a vehicle. (int16[1])
-		y	%Y-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to left(-1000)-right(1000) movement on a joystick and the roll of a vehicle. (int16[1])
-		z	%Z-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a separate slider movement with maximum being 1000 and minimum being -1000 on a joystick and the thrust of a vehicle. Positive values are positive thrust, negative values are negative thrust. (int16[1])
-		r	%R-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a twisting of the joystick, with counter-clockwise being 1000 and clockwise being -1000, and the yaw of a vehicle. (int16[1])
-		buttons	%A bitfield corresponding to the joystick buttons' current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1. (uint16[1])
-		target	%The system to be controlled. (uint8[1])
+		x	%X-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to forward(1000)-backward(-1000) movement on a joystick and the pitch of a vehicle. (int16)
+		y	%Y-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to left(-1000)-right(1000) movement on a joystick and the roll of a vehicle. (int16)
+		z	%Z-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a separate slider movement with maximum being 1000 and minimum being -1000 on a joystick and the thrust of a vehicle. Positive values are positive thrust, negative values are negative thrust. (int16)
+		r	%R-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a twisting of the joystick, with counter-clockwise being 1000 and clockwise being -1000, and the yaw of a vehicle. (int16)
+		buttons	%A bitfield corresponding to the joystick buttons' current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1. (uint16)
+		target	%The system to be controlled. (uint8)
 	end
-
     
     methods
         
@@ -36,26 +35,34 @@ classdef msg_manual_control < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_manual_control.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_manual_control.ID;
-                
-			packet.payload.putINT16(obj.x);
-
-			packet.payload.putINT16(obj.y);
-
-			packet.payload.putINT16(obj.z);
-
-			packet.payload.putINT16(obj.r);
-
-			packet.payload.putUINT16(obj.buttons);
-
-			packet.payload.putUINT8(obj.target);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_manual_control.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_manual_control.ID;
+                
+				packet.payload.putINT16(obj.x);
+
+				packet.payload.putINT16(obj.y);
+
+				packet.payload.putINT16(obj.z);
+
+				packet.payload.putINT16(obj.r);
+
+				packet.payload.putUINT16(obj.buttons);
+
+				packet.payload.putUINT8(obj.target);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_manual_control.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -73,7 +80,28 @@ classdef msg_manual_control < mavlink_message
 			obj.target = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.x,2) ~= 1
+                result = 'x';                                        
+            elseif size(obj.y,2) ~= 1
+                result = 'y';                                        
+            elseif size(obj.z,2) ~= 1
+                result = 'z';                                        
+            elseif size(obj.r,2) ~= 1
+                result = 'r';                                        
+            elseif size(obj.buttons,2) ~= 1
+                result = 'buttons';                                        
+            elseif size(obj.target,2) ~= 1
+                result = 'target';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.x(obj,value)
             if value == int16(value)
                 obj.x = int16(value);

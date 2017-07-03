@@ -10,18 +10,17 @@ classdef msg_gps_raw_int < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (microseconds since UNIX epoch or microseconds since system boot) (uint64[1])
-		lat	%Latitude (WGS84), in degrees * 1E7 (int32[1])
-		lon	%Longitude (WGS84), in degrees * 1E7 (int32[1])
-		alt	%Altitude (AMSL, NOT WGS84), in meters * 1000 (positive for up). Note that virtually all GPS modules provide the AMSL altitude in addition to the WGS84 altitude. (int32[1])
-		eph	%GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX (uint16[1])
-		epv	%GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX (uint16[1])
-		vel	%GPS ground speed (m/s * 100). If unknown, set to: UINT16_MAX (uint16[1])
-		cog	%Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX (uint16[1])
-		fix_type	%See the GPS_FIX_TYPE enum. (uint8[1])
-		satellites_visible	%Number of satellites visible. If unknown, set to 255 (uint8[1])
+		time_usec	%Timestamp (microseconds since UNIX epoch or microseconds since system boot) (uint64)
+		lat	%Latitude (WGS84), in degrees * 1E7 (int32)
+		lon	%Longitude (WGS84), in degrees * 1E7 (int32)
+		alt	%Altitude (AMSL, NOT WGS84), in meters * 1000 (positive for up). Note that virtually all GPS modules provide the AMSL altitude in addition to the WGS84 altitude. (int32)
+		eph	%GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX (uint16)
+		epv	%GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX (uint16)
+		vel	%GPS ground speed (m/s * 100). If unknown, set to: UINT16_MAX (uint16)
+		cog	%Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX (uint16)
+		fix_type	%See the GPS_FIX_TYPE enum. (uint8)
+		satellites_visible	%Number of satellites visible. If unknown, set to 255 (uint8)
 	end
-
     
     methods
         
@@ -41,34 +40,42 @@ classdef msg_gps_raw_int < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_gps_raw_int.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_gps_raw_int.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putINT32(obj.alt);
-
-			packet.payload.putUINT16(obj.eph);
-
-			packet.payload.putUINT16(obj.epv);
-
-			packet.payload.putUINT16(obj.vel);
-
-			packet.payload.putUINT16(obj.cog);
-
-			packet.payload.putUINT8(obj.fix_type);
-
-			packet.payload.putUINT8(obj.satellites_visible);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_gps_raw_int.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_gps_raw_int.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putINT32(obj.alt);
+
+				packet.payload.putUINT16(obj.eph);
+
+				packet.payload.putUINT16(obj.epv);
+
+				packet.payload.putUINT16(obj.vel);
+
+				packet.payload.putUINT16(obj.cog);
+
+				packet.payload.putUINT8(obj.fix_type);
+
+				packet.payload.putUINT8(obj.satellites_visible);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_gps_raw_int.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -94,7 +101,36 @@ classdef msg_gps_raw_int < mavlink_message
 			obj.satellites_visible = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.eph,2) ~= 1
+                result = 'eph';                                        
+            elseif size(obj.epv,2) ~= 1
+                result = 'epv';                                        
+            elseif size(obj.vel,2) ~= 1
+                result = 'vel';                                        
+            elseif size(obj.cog,2) ~= 1
+                result = 'cog';                                        
+            elseif size(obj.fix_type,2) ~= 1
+                result = 'fix_type';                                        
+            elseif size(obj.satellites_visible,2) ~= 1
+                result = 'satellites_visible';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

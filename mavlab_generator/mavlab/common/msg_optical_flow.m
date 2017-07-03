@@ -9,16 +9,15 @@ classdef msg_optical_flow < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (UNIX) (uint64[1])
-		flow_comp_m_x	%Flow in meters in x-sensor direction, angular-speed compensated (single[1])
-		flow_comp_m_y	%Flow in meters in y-sensor direction, angular-speed compensated (single[1])
-		ground_distance	%Ground distance in meters. Positive value: distance known. Negative value: Unknown distance (single[1])
-		flow_x	%Flow in pixels * 10 in x-sensor direction (dezi-pixels) (int16[1])
-		flow_y	%Flow in pixels * 10 in y-sensor direction (dezi-pixels) (int16[1])
-		sensor_id	%Sensor ID (uint8[1])
-		quality	%Optical flow quality / confidence. 0: bad, 255: maximum quality (uint8[1])
+		time_usec	%Timestamp (UNIX) (uint64)
+		flow_comp_m_x	%Flow in meters in x-sensor direction, angular-speed compensated (single)
+		flow_comp_m_y	%Flow in meters in y-sensor direction, angular-speed compensated (single)
+		ground_distance	%Ground distance in meters. Positive value: distance known. Negative value: Unknown distance (single)
+		flow_x	%Flow in pixels * 10 in x-sensor direction (dezi-pixels) (int16)
+		flow_y	%Flow in pixels * 10 in y-sensor direction (dezi-pixels) (int16)
+		sensor_id	%Sensor ID (uint8)
+		quality	%Optical flow quality / confidence. 0: bad, 255: maximum quality (uint8)
 	end
-
     
     methods
         
@@ -38,30 +37,38 @@ classdef msg_optical_flow < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_optical_flow.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_optical_flow.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putSINGLE(obj.flow_comp_m_x);
-
-			packet.payload.putSINGLE(obj.flow_comp_m_y);
-
-			packet.payload.putSINGLE(obj.ground_distance);
-
-			packet.payload.putINT16(obj.flow_x);
-
-			packet.payload.putINT16(obj.flow_y);
-
-			packet.payload.putUINT8(obj.sensor_id);
-
-			packet.payload.putUINT8(obj.quality);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_optical_flow.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_optical_flow.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putSINGLE(obj.flow_comp_m_x);
+
+				packet.payload.putSINGLE(obj.flow_comp_m_y);
+
+				packet.payload.putSINGLE(obj.ground_distance);
+
+				packet.payload.putINT16(obj.flow_x);
+
+				packet.payload.putINT16(obj.flow_y);
+
+				packet.payload.putUINT8(obj.sensor_id);
+
+				packet.payload.putUINT8(obj.quality);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_optical_flow.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -83,7 +90,32 @@ classdef msg_optical_flow < mavlink_message
 			obj.quality = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.flow_comp_m_x,2) ~= 1
+                result = 'flow_comp_m_x';                                        
+            elseif size(obj.flow_comp_m_y,2) ~= 1
+                result = 'flow_comp_m_y';                                        
+            elseif size(obj.ground_distance,2) ~= 1
+                result = 'ground_distance';                                        
+            elseif size(obj.flow_x,2) ~= 1
+                result = 'flow_x';                                        
+            elseif size(obj.flow_y,2) ~= 1
+                result = 'flow_y';                                        
+            elseif size(obj.sensor_id,2) ~= 1
+                result = 'sensor_id';                                        
+            elseif size(obj.quality,2) ~= 1
+                result = 'quality';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

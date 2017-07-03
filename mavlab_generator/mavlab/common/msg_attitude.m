@@ -9,15 +9,14 @@ classdef msg_attitude < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		roll	%Roll angle (rad, -pi..+pi) (single[1])
-		pitch	%Pitch angle (rad, -pi..+pi) (single[1])
-		yaw	%Yaw angle (rad, -pi..+pi) (single[1])
-		rollspeed	%Roll angular speed (rad/s) (single[1])
-		pitchspeed	%Pitch angular speed (rad/s) (single[1])
-		yawspeed	%Yaw angular speed (rad/s) (single[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		roll	%Roll angle (rad, -pi..+pi) (single)
+		pitch	%Pitch angle (rad, -pi..+pi) (single)
+		yaw	%Yaw angle (rad, -pi..+pi) (single)
+		rollspeed	%Roll angular speed (rad/s) (single)
+		pitchspeed	%Pitch angular speed (rad/s) (single)
+		yawspeed	%Yaw angular speed (rad/s) (single)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_attitude < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_attitude.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_attitude.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.roll);
-
-			packet.payload.putSINGLE(obj.pitch);
-
-			packet.payload.putSINGLE(obj.yaw);
-
-			packet.payload.putSINGLE(obj.rollspeed);
-
-			packet.payload.putSINGLE(obj.pitchspeed);
-
-			packet.payload.putSINGLE(obj.yawspeed);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_attitude.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_attitude.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.roll);
+
+				packet.payload.putSINGLE(obj.pitch);
+
+				packet.payload.putSINGLE(obj.yaw);
+
+				packet.payload.putSINGLE(obj.rollspeed);
+
+				packet.payload.putSINGLE(obj.pitchspeed);
+
+				packet.payload.putSINGLE(obj.yawspeed);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_attitude.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_attitude < mavlink_message
 			obj.yawspeed = payload.getSINGLE();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.roll,2) ~= 1
+                result = 'roll';                                        
+            elseif size(obj.pitch,2) ~= 1
+                result = 'pitch';                                        
+            elseif size(obj.yaw,2) ~= 1
+                result = 'yaw';                                        
+            elseif size(obj.rollspeed,2) ~= 1
+                result = 'rollspeed';                                        
+            elseif size(obj.pitchspeed,2) ~= 1
+                result = 'pitchspeed';                                        
+            elseif size(obj.yawspeed,2) ~= 1
+                result = 'yawspeed';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

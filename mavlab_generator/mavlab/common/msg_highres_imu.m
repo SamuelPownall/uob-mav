@@ -9,23 +9,22 @@ classdef msg_highres_imu < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (microseconds, synced to UNIX time or since system boot) (uint64[1])
-		xacc	%X acceleration (m/s^2) (single[1])
-		yacc	%Y acceleration (m/s^2) (single[1])
-		zacc	%Z acceleration (m/s^2) (single[1])
-		xgyro	%Angular speed around X axis (rad / sec) (single[1])
-		ygyro	%Angular speed around Y axis (rad / sec) (single[1])
-		zgyro	%Angular speed around Z axis (rad / sec) (single[1])
-		xmag	%X Magnetic field (Gauss) (single[1])
-		ymag	%Y Magnetic field (Gauss) (single[1])
-		zmag	%Z Magnetic field (Gauss) (single[1])
-		abs_pressure	%Absolute pressure in millibar (single[1])
-		diff_pressure	%Differential pressure in millibar (single[1])
-		pressure_alt	%Altitude calculated from pressure (single[1])
-		temperature	%Temperature in degrees celsius (single[1])
-		fields_updated	%Bitmask for fields that have updated since last message, bit 0 = xacc, bit 12: temperature (uint16[1])
+		time_usec	%Timestamp (microseconds, synced to UNIX time or since system boot) (uint64)
+		xacc	%X acceleration (m/s^2) (single)
+		yacc	%Y acceleration (m/s^2) (single)
+		zacc	%Z acceleration (m/s^2) (single)
+		xgyro	%Angular speed around X axis (rad / sec) (single)
+		ygyro	%Angular speed around Y axis (rad / sec) (single)
+		zgyro	%Angular speed around Z axis (rad / sec) (single)
+		xmag	%X Magnetic field (Gauss) (single)
+		ymag	%Y Magnetic field (Gauss) (single)
+		zmag	%Z Magnetic field (Gauss) (single)
+		abs_pressure	%Absolute pressure in millibar (single)
+		diff_pressure	%Differential pressure in millibar (single)
+		pressure_alt	%Altitude calculated from pressure (single)
+		temperature	%Temperature in degrees celsius (single)
+		fields_updated	%Bitmask for fields that have updated since last message, bit 0 = xacc, bit 12: temperature (uint16)
 	end
-
     
     methods
         
@@ -45,44 +44,52 @@ classdef msg_highres_imu < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_highres_imu.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_highres_imu.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putSINGLE(obj.xacc);
-
-			packet.payload.putSINGLE(obj.yacc);
-
-			packet.payload.putSINGLE(obj.zacc);
-
-			packet.payload.putSINGLE(obj.xgyro);
-
-			packet.payload.putSINGLE(obj.ygyro);
-
-			packet.payload.putSINGLE(obj.zgyro);
-
-			packet.payload.putSINGLE(obj.xmag);
-
-			packet.payload.putSINGLE(obj.ymag);
-
-			packet.payload.putSINGLE(obj.zmag);
-
-			packet.payload.putSINGLE(obj.abs_pressure);
-
-			packet.payload.putSINGLE(obj.diff_pressure);
-
-			packet.payload.putSINGLE(obj.pressure_alt);
-
-			packet.payload.putSINGLE(obj.temperature);
-
-			packet.payload.putUINT16(obj.fields_updated);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_highres_imu.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_highres_imu.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putSINGLE(obj.xacc);
+
+				packet.payload.putSINGLE(obj.yacc);
+
+				packet.payload.putSINGLE(obj.zacc);
+
+				packet.payload.putSINGLE(obj.xgyro);
+
+				packet.payload.putSINGLE(obj.ygyro);
+
+				packet.payload.putSINGLE(obj.zgyro);
+
+				packet.payload.putSINGLE(obj.xmag);
+
+				packet.payload.putSINGLE(obj.ymag);
+
+				packet.payload.putSINGLE(obj.zmag);
+
+				packet.payload.putSINGLE(obj.abs_pressure);
+
+				packet.payload.putSINGLE(obj.diff_pressure);
+
+				packet.payload.putSINGLE(obj.pressure_alt);
+
+				packet.payload.putSINGLE(obj.temperature);
+
+				packet.payload.putUINT16(obj.fields_updated);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_highres_imu.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -118,7 +125,46 @@ classdef msg_highres_imu < mavlink_message
 			obj.fields_updated = payload.getUINT16();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.xacc,2) ~= 1
+                result = 'xacc';                                        
+            elseif size(obj.yacc,2) ~= 1
+                result = 'yacc';                                        
+            elseif size(obj.zacc,2) ~= 1
+                result = 'zacc';                                        
+            elseif size(obj.xgyro,2) ~= 1
+                result = 'xgyro';                                        
+            elseif size(obj.ygyro,2) ~= 1
+                result = 'ygyro';                                        
+            elseif size(obj.zgyro,2) ~= 1
+                result = 'zgyro';                                        
+            elseif size(obj.xmag,2) ~= 1
+                result = 'xmag';                                        
+            elseif size(obj.ymag,2) ~= 1
+                result = 'ymag';                                        
+            elseif size(obj.zmag,2) ~= 1
+                result = 'zmag';                                        
+            elseif size(obj.abs_pressure,2) ~= 1
+                result = 'abs_pressure';                                        
+            elseif size(obj.diff_pressure,2) ~= 1
+                result = 'diff_pressure';                                        
+            elseif size(obj.pressure_alt,2) ~= 1
+                result = 'pressure_alt';                                        
+            elseif size(obj.temperature,2) ~= 1
+                result = 'temperature';                                        
+            elseif size(obj.fields_updated,2) ~= 1
+                result = 'fields_updated';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

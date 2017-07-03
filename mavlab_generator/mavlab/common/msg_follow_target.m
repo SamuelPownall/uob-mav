@@ -9,19 +9,18 @@ classdef msg_follow_target < mavlink_message
     end
     
     properties        
-		timestamp	%Timestamp in milliseconds since system boot (uint64[1])
-		custom_state	%button states or switches of a tracker device (uint64[1])
-		lat	%Latitude (WGS84), in degrees * 1E7 (int32[1])
-		lon	%Longitude (WGS84), in degrees * 1E7 (int32[1])
-		alt	%AMSL, in meters (single[1])
+		timestamp	%Timestamp in milliseconds since system boot (uint64)
+		custom_state	%button states or switches of a tracker device (uint64)
+		lat	%Latitude (WGS84), in degrees * 1E7 (int32)
+		lon	%Longitude (WGS84), in degrees * 1E7 (int32)
+		alt	%AMSL, in meters (single)
 		vel	%target velocity (0,0,0) for unknown (single[3])
 		acc	%linear target acceleration (0,0,0) for unknown (single[3])
 		attitude_q	%(1 0 0 0 for unknown) (single[4])
 		rates	%(0 0 0 for unknown) (single[3])
 		position_cov	%eph epv (single[3])
-		est_capabilities	%bit positions for tracker reporting capabilities (POS = 0, VEL = 1, ACCEL = 2, ATT + RATES = 3) (uint8[1])
+		est_capabilities	%bit positions for tracker reporting capabilities (POS = 0, VEL = 1, ACCEL = 2, ATT + RATES = 3) (uint8)
 	end
-
     
     methods
         
@@ -41,46 +40,54 @@ classdef msg_follow_target < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_follow_target.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_follow_target.ID;
-                
-			packet.payload.putUINT64(obj.timestamp);
-
-			packet.payload.putUINT64(obj.custom_state);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putSINGLE(obj.alt);
-            
-            for i = 1:3
-                packet.payload.putSINGLE(obj.vel(i));
-            end
-                                        
-            for i = 1:3
-                packet.payload.putSINGLE(obj.acc(i));
-            end
-                                        
-            for i = 1:4
-                packet.payload.putSINGLE(obj.attitude_q(i));
-            end
-                                        
-            for i = 1:3
-                packet.payload.putSINGLE(obj.rates(i));
-            end
-                                        
-            for i = 1:3
-                packet.payload.putSINGLE(obj.position_cov(i));
-            end
-                            
-			packet.payload.putUINT8(obj.est_capabilities);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_follow_target.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_follow_target.ID;
+                
+				packet.payload.putUINT64(obj.timestamp);
+
+				packet.payload.putUINT64(obj.custom_state);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putSINGLE(obj.alt);
+            
+                for i = 1:3
+                    packet.payload.putSINGLE(obj.vel(i));
+                end
+                                            
+                for i = 1:3
+                    packet.payload.putSINGLE(obj.acc(i));
+                end
+                                            
+                for i = 1:4
+                    packet.payload.putSINGLE(obj.attitude_q(i));
+                end
+                                            
+                for i = 1:3
+                    packet.payload.putSINGLE(obj.rates(i));
+                end
+                                            
+                for i = 1:3
+                    packet.payload.putSINGLE(obj.position_cov(i));
+                end
+                                
+				packet.payload.putUINT8(obj.est_capabilities);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_follow_target.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -118,7 +125,38 @@ classdef msg_follow_target < mavlink_message
 			obj.est_capabilities = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.timestamp,2) ~= 1
+                result = 'timestamp';                                        
+            elseif size(obj.custom_state,2) ~= 1
+                result = 'custom_state';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.vel,2) ~= 3
+                result = 'vel';                                        
+            elseif size(obj.acc,2) ~= 3
+                result = 'acc';                                        
+            elseif size(obj.attitude_q,2) ~= 4
+                result = 'attitude_q';                                        
+            elseif size(obj.rates,2) ~= 3
+                result = 'rates';                                        
+            elseif size(obj.position_cov,2) ~= 3
+                result = 'position_cov';                                        
+            elseif size(obj.est_capabilities,2) ~= 1
+                result = 'est_capabilities';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.timestamp(obj,value)
             if value == uint64(value)
                 obj.timestamp = uint64(value);

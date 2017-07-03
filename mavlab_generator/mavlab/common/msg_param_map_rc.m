@@ -9,17 +9,16 @@ classdef msg_param_map_rc < mavlink_message
     end
     
     properties        
-		param_value0	%Initial parameter value (single[1])
-		scale	%Scale, maps the RC range [-1, 1] to a parameter value (single[1])
-		param_value_min	%Minimum param value. The protocol does not define if this overwrites an onboard minimum value. (Depends on implementation) (single[1])
-		param_value_max	%Maximum param value. The protocol does not define if this overwrites an onboard maximum value. (Depends on implementation) (single[1])
-		param_index	%Parameter index. Send -1 to use the param ID field as identifier (else the param id will be ignored), send -2 to disable any existing map for this rc_channel_index. (int16[1])
-		target_system	%System ID (uint8[1])
-		target_component	%Component ID (uint8[1])
+		param_value0	%Initial parameter value (single)
+		scale	%Scale, maps the RC range [-1, 1] to a parameter value (single)
+		param_value_min	%Minimum param value. The protocol does not define if this overwrites an onboard minimum value. (Depends on implementation) (single)
+		param_value_max	%Maximum param value. The protocol does not define if this overwrites an onboard maximum value. (Depends on implementation) (single)
+		param_index	%Parameter index. Send -1 to use the param ID field as identifier (else the param id will be ignored), send -2 to disable any existing map for this rc_channel_index. (int16)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
 		param_id	%Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string (uint8[16])
-		parameter_rc_channel_index	%Index of parameter RC channel. Not equal to the RC channel id. Typically correpsonds to a potentiometer-knob on the RC. (uint8[1])
+		parameter_rc_channel_index	%Index of parameter RC channel. Not equal to the RC channel id. Typically correpsonds to a potentiometer-knob on the RC. (uint8)
 	end
-
     
     methods
         
@@ -39,34 +38,42 @@ classdef msg_param_map_rc < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_param_map_rc.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_param_map_rc.ID;
-                
-			packet.payload.putSINGLE(obj.param_value0);
-
-			packet.payload.putSINGLE(obj.scale);
-
-			packet.payload.putSINGLE(obj.param_value_min);
-
-			packet.payload.putSINGLE(obj.param_value_max);
-
-			packet.payload.putINT16(obj.param_index);
-
-			packet.payload.putUINT8(obj.target_system);
-
-			packet.payload.putUINT8(obj.target_component);
-            
-            for i = 1:16
-                packet.payload.putUINT8(obj.param_id(i));
-            end
-                            
-			packet.payload.putUINT8(obj.parameter_rc_channel_index);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_param_map_rc.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_param_map_rc.ID;
+                
+				packet.payload.putSINGLE(obj.param_value0);
+
+				packet.payload.putSINGLE(obj.scale);
+
+				packet.payload.putSINGLE(obj.param_value_min);
+
+				packet.payload.putSINGLE(obj.param_value_max);
+
+				packet.payload.putINT16(obj.param_index);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+            
+                for i = 1:16
+                    packet.payload.putUINT8(obj.param_id(i));
+                end
+                                
+				packet.payload.putUINT8(obj.parameter_rc_channel_index);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_param_map_rc.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -93,6 +100,33 @@ classdef msg_param_map_rc < mavlink_message
 
 		end
         
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.param_value0,2) ~= 1
+                result = 'param_value0';                                        
+            elseif size(obj.scale,2) ~= 1
+                result = 'scale';                                        
+            elseif size(obj.param_value_min,2) ~= 1
+                result = 'param_value_min';                                        
+            elseif size(obj.param_value_max,2) ~= 1
+                result = 'param_value_max';                                        
+            elseif size(obj.param_index,2) ~= 1
+                result = 'param_index';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                                        
+            elseif size(obj.param_id,2) ~= 16
+                result = 'param_id';                                        
+            elseif size(obj.parameter_rc_channel_index,2) ~= 1
+                result = 'parameter_rc_channel_index';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
         function set.param_value0(obj,value)
             obj.param_value0 = single(value);
         end

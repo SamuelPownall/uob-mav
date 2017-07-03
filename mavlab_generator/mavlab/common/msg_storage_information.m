@@ -9,16 +9,15 @@ classdef msg_storage_information < mavlink_message
     end
     
     properties        
-		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32[1])
-		total_capacity	%Total capacity in MiB (single[1])
-		used_capacity	%Used capacity in MiB (single[1])
-		available_capacity	%Available capacity in MiB (single[1])
-		read_speed	%Read speed in MiB/s (single[1])
-		write_speed	%Write speed in MiB/s (single[1])
-		storage_id	%Storage ID if there are multiple (uint8[1])
-		status	%Status of storage (0 not available, 1 unformatted, 2 formatted) (uint8[1])
+		time_boot_ms	%Timestamp (milliseconds since system boot) (uint32)
+		total_capacity	%Total capacity in MiB (single)
+		used_capacity	%Used capacity in MiB (single)
+		available_capacity	%Available capacity in MiB (single)
+		read_speed	%Read speed in MiB/s (single)
+		write_speed	%Write speed in MiB/s (single)
+		storage_id	%Storage ID if there are multiple (uint8)
+		status	%Status of storage (0 not available, 1 unformatted, 2 formatted) (uint8)
 	end
-
     
     methods
         
@@ -38,30 +37,38 @@ classdef msg_storage_information < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_storage_information.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_storage_information.ID;
-                
-			packet.payload.putUINT32(obj.time_boot_ms);
-
-			packet.payload.putSINGLE(obj.total_capacity);
-
-			packet.payload.putSINGLE(obj.used_capacity);
-
-			packet.payload.putSINGLE(obj.available_capacity);
-
-			packet.payload.putSINGLE(obj.read_speed);
-
-			packet.payload.putSINGLE(obj.write_speed);
-
-			packet.payload.putUINT8(obj.storage_id);
-
-			packet.payload.putUINT8(obj.status);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_storage_information.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_storage_information.ID;
+                
+				packet.payload.putUINT32(obj.time_boot_ms);
+
+				packet.payload.putSINGLE(obj.total_capacity);
+
+				packet.payload.putSINGLE(obj.used_capacity);
+
+				packet.payload.putSINGLE(obj.available_capacity);
+
+				packet.payload.putSINGLE(obj.read_speed);
+
+				packet.payload.putSINGLE(obj.write_speed);
+
+				packet.payload.putUINT8(obj.storage_id);
+
+				packet.payload.putUINT8(obj.status);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_storage_information.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -83,7 +90,32 @@ classdef msg_storage_information < mavlink_message
 			obj.status = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_boot_ms,2) ~= 1
+                result = 'time_boot_ms';                                        
+            elseif size(obj.total_capacity,2) ~= 1
+                result = 'total_capacity';                                        
+            elseif size(obj.used_capacity,2) ~= 1
+                result = 'used_capacity';                                        
+            elseif size(obj.available_capacity,2) ~= 1
+                result = 'available_capacity';                                        
+            elseif size(obj.read_speed,2) ~= 1
+                result = 'read_speed';                                        
+            elseif size(obj.write_speed,2) ~= 1
+                result = 'write_speed';                                        
+            elseif size(obj.storage_id,2) ~= 1
+                result = 'storage_id';                                        
+            elseif size(obj.status,2) ~= 1
+                result = 'status';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_boot_ms(obj,value)
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);

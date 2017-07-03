@@ -9,17 +9,16 @@ classdef msg_wind_cov < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64[1])
-		wind_x	%Wind in X (NED) direction in m/s (single[1])
-		wind_y	%Wind in Y (NED) direction in m/s (single[1])
-		wind_z	%Wind in Z (NED) direction in m/s (single[1])
-		var_horiz	%Variability of the wind in XY. RMS of a 1 Hz lowpassed wind estimate. (single[1])
-		var_vert	%Variability of the wind in Z. RMS of a 1 Hz lowpassed wind estimate. (single[1])
-		wind_alt	%AMSL altitude (m) this measurement was taken at (single[1])
-		horiz_accuracy	%Horizontal speed 1-STD accuracy (single[1])
-		vert_accuracy	%Vertical speed 1-STD accuracy (single[1])
+		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64)
+		wind_x	%Wind in X (NED) direction in m/s (single)
+		wind_y	%Wind in Y (NED) direction in m/s (single)
+		wind_z	%Wind in Z (NED) direction in m/s (single)
+		var_horiz	%Variability of the wind in XY. RMS of a 1 Hz lowpassed wind estimate. (single)
+		var_vert	%Variability of the wind in Z. RMS of a 1 Hz lowpassed wind estimate. (single)
+		wind_alt	%AMSL altitude (m) this measurement was taken at (single)
+		horiz_accuracy	%Horizontal speed 1-STD accuracy (single)
+		vert_accuracy	%Vertical speed 1-STD accuracy (single)
 	end
-
     
     methods
         
@@ -39,32 +38,40 @@ classdef msg_wind_cov < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_wind_cov.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_wind_cov.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putSINGLE(obj.wind_x);
-
-			packet.payload.putSINGLE(obj.wind_y);
-
-			packet.payload.putSINGLE(obj.wind_z);
-
-			packet.payload.putSINGLE(obj.var_horiz);
-
-			packet.payload.putSINGLE(obj.var_vert);
-
-			packet.payload.putSINGLE(obj.wind_alt);
-
-			packet.payload.putSINGLE(obj.horiz_accuracy);
-
-			packet.payload.putSINGLE(obj.vert_accuracy);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_wind_cov.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_wind_cov.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putSINGLE(obj.wind_x);
+
+				packet.payload.putSINGLE(obj.wind_y);
+
+				packet.payload.putSINGLE(obj.wind_z);
+
+				packet.payload.putSINGLE(obj.var_horiz);
+
+				packet.payload.putSINGLE(obj.var_vert);
+
+				packet.payload.putSINGLE(obj.wind_alt);
+
+				packet.payload.putSINGLE(obj.horiz_accuracy);
+
+				packet.payload.putSINGLE(obj.vert_accuracy);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_wind_cov.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -88,7 +95,34 @@ classdef msg_wind_cov < mavlink_message
 			obj.vert_accuracy = payload.getSINGLE();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.wind_x,2) ~= 1
+                result = 'wind_x';                                        
+            elseif size(obj.wind_y,2) ~= 1
+                result = 'wind_y';                                        
+            elseif size(obj.wind_z,2) ~= 1
+                result = 'wind_z';                                        
+            elseif size(obj.var_horiz,2) ~= 1
+                result = 'var_horiz';                                        
+            elseif size(obj.var_vert,2) ~= 1
+                result = 'var_vert';                                        
+            elseif size(obj.wind_alt,2) ~= 1
+                result = 'wind_alt';                                        
+            elseif size(obj.horiz_accuracy,2) ~= 1
+                result = 'horiz_accuracy';                                        
+            elseif size(obj.vert_accuracy,2) ~= 1
+                result = 'vert_accuracy';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

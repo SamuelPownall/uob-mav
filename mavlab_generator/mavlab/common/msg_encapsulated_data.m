@@ -9,10 +9,9 @@ classdef msg_encapsulated_data < mavlink_message
     end
     
     properties        
-		seqnr	%sequence number (starting with 0 on every transmission) (uint16[1])
+		seqnr	%sequence number (starting with 0 on every transmission) (uint16)
 		data	%image data bytes (uint8[253])
 	end
-
     
     methods
         
@@ -32,20 +31,28 @@ classdef msg_encapsulated_data < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_encapsulated_data.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_encapsulated_data.ID;
-                
-			packet.payload.putUINT16(obj.seqnr);
-            
-            for i = 1:253
-                packet.payload.putUINT8(obj.data(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_encapsulated_data.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_encapsulated_data.ID;
+                
+				packet.payload.putUINT16(obj.seqnr);
+            
+                for i = 1:253
+                    packet.payload.putUINT8(obj.data(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_encapsulated_data.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -57,7 +64,20 @@ classdef msg_encapsulated_data < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.seqnr,2) ~= 1
+                result = 'seqnr';                                        
+            elseif size(obj.data,2) ~= 253
+                result = 'data';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.seqnr(obj,value)
             if value == uint16(value)
                 obj.seqnr = uint16(value);

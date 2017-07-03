@@ -10,21 +10,20 @@ classdef msg_hil_gps < mavlink_message
     end
     
     properties        
-		time_usec	%Timestamp (microseconds since UNIX epoch or microseconds since system boot) (uint64[1])
-		lat	%Latitude (WGS84), in degrees * 1E7 (int32[1])
-		lon	%Longitude (WGS84), in degrees * 1E7 (int32[1])
-		alt	%Altitude (AMSL, not WGS84), in meters * 1000 (positive for up) (int32[1])
-		eph	%GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535 (uint16[1])
-		epv	%GPS VDOP vertical dilution of position in cm (m*100). If unknown, set to: 65535 (uint16[1])
-		vel	%GPS ground speed (m/s * 100). If unknown, set to: 65535 (uint16[1])
-		vn	%GPS velocity in cm/s in NORTH direction in earth-fixed NED frame (int16[1])
-		ve	%GPS velocity in cm/s in EAST direction in earth-fixed NED frame (int16[1])
-		vd	%GPS velocity in cm/s in DOWN direction in earth-fixed NED frame (int16[1])
-		cog	%Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535 (uint16[1])
-		fix_type	%0-1: no fix, 2: 2D fix, 3: 3D fix. Some applications will not use the value of this field unless it is at least two, so always correctly fill in the fix. (uint8[1])
-		satellites_visible	%Number of satellites visible. If unknown, set to 255 (uint8[1])
+		time_usec	%Timestamp (microseconds since UNIX epoch or microseconds since system boot) (uint64)
+		lat	%Latitude (WGS84), in degrees * 1E7 (int32)
+		lon	%Longitude (WGS84), in degrees * 1E7 (int32)
+		alt	%Altitude (AMSL, not WGS84), in meters * 1000 (positive for up) (int32)
+		eph	%GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535 (uint16)
+		epv	%GPS VDOP vertical dilution of position in cm (m*100). If unknown, set to: 65535 (uint16)
+		vel	%GPS ground speed (m/s * 100). If unknown, set to: 65535 (uint16)
+		vn	%GPS velocity in cm/s in NORTH direction in earth-fixed NED frame (int16)
+		ve	%GPS velocity in cm/s in EAST direction in earth-fixed NED frame (int16)
+		vd	%GPS velocity in cm/s in DOWN direction in earth-fixed NED frame (int16)
+		cog	%Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535 (uint16)
+		fix_type	%0-1: no fix, 2: 2D fix, 3: 3D fix. Some applications will not use the value of this field unless it is at least two, so always correctly fill in the fix. (uint8)
+		satellites_visible	%Number of satellites visible. If unknown, set to 255 (uint8)
 	end
-
     
     methods
         
@@ -44,40 +43,48 @@ classdef msg_hil_gps < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_hil_gps.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_hil_gps.ID;
-                
-			packet.payload.putUINT64(obj.time_usec);
-
-			packet.payload.putINT32(obj.lat);
-
-			packet.payload.putINT32(obj.lon);
-
-			packet.payload.putINT32(obj.alt);
-
-			packet.payload.putUINT16(obj.eph);
-
-			packet.payload.putUINT16(obj.epv);
-
-			packet.payload.putUINT16(obj.vel);
-
-			packet.payload.putINT16(obj.vn);
-
-			packet.payload.putINT16(obj.ve);
-
-			packet.payload.putINT16(obj.vd);
-
-			packet.payload.putUINT16(obj.cog);
-
-			packet.payload.putUINT8(obj.fix_type);
-
-			packet.payload.putUINT8(obj.satellites_visible);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_hil_gps.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_hil_gps.ID;
+                
+				packet.payload.putUINT64(obj.time_usec);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putINT32(obj.alt);
+
+				packet.payload.putUINT16(obj.eph);
+
+				packet.payload.putUINT16(obj.epv);
+
+				packet.payload.putUINT16(obj.vel);
+
+				packet.payload.putINT16(obj.vn);
+
+				packet.payload.putINT16(obj.ve);
+
+				packet.payload.putINT16(obj.vd);
+
+				packet.payload.putUINT16(obj.cog);
+
+				packet.payload.putUINT8(obj.fix_type);
+
+				packet.payload.putUINT8(obj.satellites_visible);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_hil_gps.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -109,7 +116,42 @@ classdef msg_hil_gps < mavlink_message
 			obj.satellites_visible = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.time_usec,2) ~= 1
+                result = 'time_usec';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
+            elseif size(obj.eph,2) ~= 1
+                result = 'eph';                                        
+            elseif size(obj.epv,2) ~= 1
+                result = 'epv';                                        
+            elseif size(obj.vel,2) ~= 1
+                result = 'vel';                                        
+            elseif size(obj.vn,2) ~= 1
+                result = 'vn';                                        
+            elseif size(obj.ve,2) ~= 1
+                result = 've';                                        
+            elseif size(obj.vd,2) ~= 1
+                result = 'vd';                                        
+            elseif size(obj.cog,2) ~= 1
+                result = 'cog';                                        
+            elseif size(obj.fix_type,2) ~= 1
+                result = 'fix_type';                                        
+            elseif size(obj.satellites_visible,2) ~= 1
+                result = 'satellites_visible';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.time_usec(obj,value)
             if value == uint64(value)
                 obj.time_usec = uint64(value);

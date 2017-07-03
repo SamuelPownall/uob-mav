@@ -11,7 +11,6 @@ classdef msg_auth_key < mavlink_message
     properties        
 		key	%key (uint8[32])
 	end
-
     
     methods
         
@@ -31,18 +30,26 @@ classdef msg_auth_key < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_auth_key.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_auth_key.ID;
-                            
-            for i = 1:32
-                packet.payload.putUINT8(obj.key(i));
-            end
-                            
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_auth_key.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_auth_key.ID;
+                            
+                for i = 1:32
+                    packet.payload.putUINT8(obj.key(i));
+                end
+                                        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_auth_key.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -52,7 +59,18 @@ classdef msg_auth_key < mavlink_message
             end
                             
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.key,2) ~= 32
+                result = 'key';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.key(obj,value)
             if value == uint8(value)
                 obj.key = uint8(value);

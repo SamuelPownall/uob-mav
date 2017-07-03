@@ -9,15 +9,14 @@ classdef msg_data_transmission_handshake < mavlink_message
     end
     
     properties        
-		size	%total data size in bytes (set on ACK only) (uint32[1])
-		width	%Width of a matrix or image (uint16[1])
-		height	%Height of a matrix or image (uint16[1])
-		packets	%number of packets beeing sent (set on ACK only) (uint16[1])
-		type	%type of requested/acknowledged data (as defined in ENUM DATA_TYPES in mavlink/include/mavlink_types.h) (uint8[1])
-		payload	%payload size per packet (normally 253 byte, see DATA field size in message ENCAPSULATED_DATA) (set on ACK only) (uint8[1])
-		jpg_quality	%JPEG quality out of [1,100] (uint8[1])
+		size	%total data size in bytes (set on ACK only) (uint32)
+		width	%Width of a matrix or image (uint16)
+		height	%Height of a matrix or image (uint16)
+		packets	%number of packets beeing sent (set on ACK only) (uint16)
+		type	%type of requested/acknowledged data (as defined in ENUM DATA_TYPES in mavlink/include/mavlink_types.h) (uint8)
+		payload	%payload size per packet (normally 253 byte, see DATA field size in message ENCAPSULATED_DATA) (set on ACK only) (uint8)
+		jpg_quality	%JPEG quality out of [1,100] (uint8)
 	end
-
     
     methods
         
@@ -37,28 +36,36 @@ classdef msg_data_transmission_handshake < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_data_transmission_handshake.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_data_transmission_handshake.ID;
-                
-			packet.payload.putUINT32(obj.size);
-
-			packet.payload.putUINT16(obj.width);
-
-			packet.payload.putUINT16(obj.height);
-
-			packet.payload.putUINT16(obj.packets);
-
-			packet.payload.putUINT8(obj.type);
-
-			packet.payload.putUINT8(obj.payload);
-
-			packet.payload.putUINT8(obj.jpg_quality);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_data_transmission_handshake.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_data_transmission_handshake.ID;
+                
+				packet.payload.putUINT32(obj.size);
+
+				packet.payload.putUINT16(obj.width);
+
+				packet.payload.putUINT16(obj.height);
+
+				packet.payload.putUINT16(obj.packets);
+
+				packet.payload.putUINT8(obj.type);
+
+				packet.payload.putUINT8(obj.payload);
+
+				packet.payload.putUINT8(obj.jpg_quality);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_data_transmission_handshake.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -78,7 +85,30 @@ classdef msg_data_transmission_handshake < mavlink_message
 			obj.jpg_quality = payload.getUINT8();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.size,2) ~= 1
+                result = 'size';                                        
+            elseif size(obj.width,2) ~= 1
+                result = 'width';                                        
+            elseif size(obj.height,2) ~= 1
+                result = 'height';                                        
+            elseif size(obj.packets,2) ~= 1
+                result = 'packets';                                        
+            elseif size(obj.type,2) ~= 1
+                result = 'type';                                        
+            elseif size(obj.payload,2) ~= 1
+                result = 'payload';                                        
+            elseif size(obj.jpg_quality,2) ~= 1
+                result = 'jpg_quality';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.size(obj,value)
             if value == uint32(value)
                 obj.size = uint32(value);

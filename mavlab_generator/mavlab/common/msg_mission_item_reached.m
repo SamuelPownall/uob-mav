@@ -9,9 +9,8 @@ classdef msg_mission_item_reached < mavlink_message
     end
     
     properties        
-		seq	%Sequence (uint16[1])
+		seq	%Sequence (uint16)
 	end
-
     
     methods
         
@@ -31,16 +30,24 @@ classdef msg_mission_item_reached < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            packet = mavlink_packet(msg_mission_item_reached.LEN);
-            packet.sysid = mavlink.SYSID;
-            packet.compid = mavlink.COMPID;
-            packet.msgid = msg_mission_item_reached.ID;
-                
-			packet.payload.putUINT16(obj.seq);
-
-		end
+            emptyField = obj.verify();
+            if emptyField == 0
         
-        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+                packet = mavlink_packet(msg_mission_item_reached.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_mission_item_reached.ID;
+                
+				packet.payload.putUINT16(obj.seq);
+        
+            else
+                packet = [];
+                fprintf(2,'MAVLAB-ERROR | msg_mission_item_reached.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
         
             payload.resetIndex();
@@ -48,7 +55,18 @@ classdef msg_mission_item_reached < mavlink_message
 			obj.seq = payload.getUINT16();
 
 		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.seq,2) ~= 1
+                result = 'seq';                            
+            else
+                result = 0;
+            end
             
+        end
+                                
         function set.seq(obj,value)
             if value == uint16(value)
                 obj.seq = uint16(value);
