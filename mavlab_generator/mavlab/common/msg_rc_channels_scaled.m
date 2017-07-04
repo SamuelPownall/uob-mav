@@ -40,8 +40,8 @@ classdef msg_rc_channels_scaled < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_rc_channels_scaled.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -72,7 +72,7 @@ classdef msg_rc_channels_scaled < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_rc_channels_scaled.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -141,7 +141,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -149,7 +149,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan1_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan1_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -157,7 +157,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan2_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan2_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -165,7 +165,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan3_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan3_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -173,7 +173,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan4_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan4_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -181,7 +181,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan5_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan5_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -189,7 +189,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan6_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan6_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -197,7 +197,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan7_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan7_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -205,7 +205,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == int16(value)
                 obj.chan8_scaled = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.chan8_scaled()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -213,7 +213,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == uint8(value)
                 obj.port = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.port()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -221,7 +221,7 @@ classdef msg_rc_channels_scaled < mavlink_message
             if value == uint8(value)
                 obj.rssi = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | rc_channels_scaled.set.rssi()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

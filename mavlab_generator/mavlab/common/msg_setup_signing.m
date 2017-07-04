@@ -33,8 +33,8 @@ classdef msg_setup_signing < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_setup_signing.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -53,7 +53,7 @@ classdef msg_setup_signing < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_setup_signing.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -96,7 +96,7 @@ classdef msg_setup_signing < mavlink_message
             if value == uint64(value)
                 obj.initial_timestamp = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | setup_signing.set.initial_timestamp()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -104,7 +104,7 @@ classdef msg_setup_signing < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | setup_signing.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -112,7 +112,7 @@ classdef msg_setup_signing < mavlink_message
             if value == uint8(value)
                 obj.target_component = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | setup_signing.set.target_component()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -120,7 +120,7 @@ classdef msg_setup_signing < mavlink_message
             if value == uint8(value)
                 obj.secret_key = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | setup_signing.set.secret_key()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

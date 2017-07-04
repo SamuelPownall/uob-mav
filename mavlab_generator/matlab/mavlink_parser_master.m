@@ -115,7 +115,7 @@ classdef mavlink_parser < handle
                 end
                 
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_parser.parse_char()\n\t Input "char" must be cast to type "uint8"\n');
+                mavlink.throwCustomError('Input "char" must be cast to type "uint8" before being passed into this function')
                 packet = [];
             end
         end

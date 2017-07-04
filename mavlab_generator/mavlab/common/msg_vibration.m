@@ -36,8 +36,8 @@ classdef msg_vibration < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_vibration.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -60,7 +60,7 @@ classdef msg_vibration < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_vibration.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -113,7 +113,7 @@ classdef msg_vibration < mavlink_message
             if value == uint64(value)
                 obj.time_usec = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | vibration.set.time_usec()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -121,7 +121,7 @@ classdef msg_vibration < mavlink_message
             if value == uint32(value)
                 obj.clipping_0 = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | vibration.set.clipping_0()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -129,7 +129,7 @@ classdef msg_vibration < mavlink_message
             if value == uint32(value)
                 obj.clipping_1 = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | vibration.set.clipping_1()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -137,7 +137,7 @@ classdef msg_vibration < mavlink_message
             if value == uint32(value)
                 obj.clipping_2 = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | vibration.set.clipping_2()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                 

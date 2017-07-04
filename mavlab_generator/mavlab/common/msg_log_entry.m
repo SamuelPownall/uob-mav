@@ -34,8 +34,8 @@ classdef msg_log_entry < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_log_entry.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -54,7 +54,7 @@ classdef msg_log_entry < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_log_entry.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -99,7 +99,7 @@ classdef msg_log_entry < mavlink_message
             if value == uint32(value)
                 obj.time_utc = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | log_entry.set.time_utc()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -107,7 +107,7 @@ classdef msg_log_entry < mavlink_message
             if value == uint32(value)
                 obj.size = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | log_entry.set.size()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -115,7 +115,7 @@ classdef msg_log_entry < mavlink_message
             if value == uint16(value)
                 obj.id = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | log_entry.set.id()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -123,7 +123,7 @@ classdef msg_log_entry < mavlink_message
             if value == uint16(value)
                 obj.num_logs = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | log_entry.set.num_logs()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -131,7 +131,7 @@ classdef msg_log_entry < mavlink_message
             if value == uint16(value)
                 obj.last_log_num = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | log_entry.set.last_log_num()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                         

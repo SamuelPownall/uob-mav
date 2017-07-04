@@ -43,8 +43,8 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_hil_rc_inputs_raw.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -81,7 +81,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_hil_rc_inputs_raw.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -162,7 +162,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint64(value)
                 obj.time_usec = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.time_usec()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -170,7 +170,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan1_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan1_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -178,7 +178,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan2_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan2_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -186,7 +186,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan3_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan3_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -194,7 +194,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan4_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan4_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -202,7 +202,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan5_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan5_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -210,7 +210,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan6_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan6_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -218,7 +218,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan7_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan7_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -226,7 +226,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan8_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan8_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -234,7 +234,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan9_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan9_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -242,7 +242,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan10_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan10_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -250,7 +250,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan11_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan11_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -258,7 +258,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint16(value)
                 obj.chan12_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.chan12_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -266,7 +266,7 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
             if value == uint8(value)
                 obj.rssi = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_rc_inputs_raw.set.rssi()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

@@ -47,8 +47,8 @@ classdef msg_servo_output_raw < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_servo_output_raw.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -93,7 +93,7 @@ classdef msg_servo_output_raw < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_servo_output_raw.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -190,7 +190,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint32(value)
                 obj.time_usec = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.time_usec()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -198,7 +198,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo1_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo1_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -206,7 +206,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo2_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo2_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -214,7 +214,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo3_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo3_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -222,7 +222,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo4_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo4_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -230,7 +230,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo5_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo5_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -238,7 +238,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo6_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo6_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -246,7 +246,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo7_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo7_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -254,7 +254,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo8_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo8_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -262,7 +262,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo9_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo9_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -270,7 +270,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo10_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo10_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -278,7 +278,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo11_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo11_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -286,7 +286,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo12_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo12_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -294,7 +294,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo13_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo13_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -302,7 +302,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo14_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo14_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -310,7 +310,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo15_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo15_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -318,7 +318,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint16(value)
                 obj.servo16_raw = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.servo16_raw()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -326,7 +326,7 @@ classdef msg_servo_output_raw < mavlink_message
             if value == uint8(value)
                 obj.port = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | servo_output_raw.set.port()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

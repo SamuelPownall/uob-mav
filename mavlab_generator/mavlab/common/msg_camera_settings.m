@@ -42,8 +42,8 @@ classdef msg_camera_settings < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_camera_settings.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -78,7 +78,7 @@ classdef msg_camera_settings < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_camera_settings.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -155,7 +155,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                 
@@ -179,7 +179,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.camera_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.camera_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -187,7 +187,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.aperture_locked = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.aperture_locked()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -195,7 +195,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.shutter_speed_locked = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.shutter_speed_locked()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -203,7 +203,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.iso_sensitivity_locked = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.iso_sensitivity_locked()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -211,7 +211,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.white_balance_locked = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.white_balance_locked()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -219,7 +219,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.mode_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.mode_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -227,7 +227,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.color_mode_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.color_mode_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -235,7 +235,7 @@ classdef msg_camera_settings < mavlink_message
             if value == uint8(value)
                 obj.image_format_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_settings.set.image_format_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

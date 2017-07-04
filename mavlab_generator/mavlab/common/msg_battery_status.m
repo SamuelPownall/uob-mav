@@ -38,8 +38,8 @@ classdef msg_battery_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_battery_status.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -68,7 +68,7 @@ classdef msg_battery_status < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_battery_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -131,7 +131,7 @@ classdef msg_battery_status < mavlink_message
             if value == int32(value)
                 obj.current_consumed = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.current_consumed()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -139,7 +139,7 @@ classdef msg_battery_status < mavlink_message
             if value == int32(value)
                 obj.energy_consumed = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.energy_consumed()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -147,7 +147,7 @@ classdef msg_battery_status < mavlink_message
             if value == int16(value)
                 obj.temperature = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.temperature()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -155,7 +155,7 @@ classdef msg_battery_status < mavlink_message
             if value == uint16(value)
                 obj.voltages = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.voltages()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -163,7 +163,7 @@ classdef msg_battery_status < mavlink_message
             if value == int16(value)
                 obj.current_battery = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.current_battery()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -171,7 +171,7 @@ classdef msg_battery_status < mavlink_message
             if value == uint8(value)
                 obj.id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -179,7 +179,7 @@ classdef msg_battery_status < mavlink_message
             if value == uint8(value)
                 obj.battery_function = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.battery_function()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -187,7 +187,7 @@ classdef msg_battery_status < mavlink_message
             if value == uint8(value)
                 obj.type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -195,7 +195,7 @@ classdef msg_battery_status < mavlink_message
             if value == int8(value)
                 obj.battery_remaining = int8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | battery_status.set.battery_remaining()\n\t Input "value" is not of type "int8"\n');
+                mavlink.throwTypeError('value','int8');
             end
         end
                         

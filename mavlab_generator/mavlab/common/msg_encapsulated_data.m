@@ -31,8 +31,8 @@ classdef msg_encapsulated_data < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_encapsulated_data.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -47,7 +47,7 @@ classdef msg_encapsulated_data < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_encapsulated_data.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -82,7 +82,7 @@ classdef msg_encapsulated_data < mavlink_message
             if value == uint16(value)
                 obj.seqnr = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | encapsulated_data.set.seqnr()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -90,7 +90,7 @@ classdef msg_encapsulated_data < mavlink_message
             if value == uint8(value)
                 obj.data = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | encapsulated_data.set.data()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

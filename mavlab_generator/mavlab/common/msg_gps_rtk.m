@@ -42,8 +42,8 @@ classdef msg_gps_rtk < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_gps_rtk.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -78,7 +78,7 @@ classdef msg_gps_rtk < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_gps_rtk.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -155,7 +155,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint32(value)
                 obj.time_last_baseline_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.time_last_baseline_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -163,7 +163,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint32(value)
                 obj.tow = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.tow()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -171,7 +171,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == int32(value)
                 obj.baseline_a_mm = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.baseline_a_mm()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -179,7 +179,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == int32(value)
                 obj.baseline_b_mm = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.baseline_b_mm()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -187,7 +187,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == int32(value)
                 obj.baseline_c_mm = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.baseline_c_mm()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -195,7 +195,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint32(value)
                 obj.accuracy = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.accuracy()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -203,7 +203,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == int32(value)
                 obj.iar_num_hypotheses = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.iar_num_hypotheses()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -211,7 +211,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint16(value)
                 obj.wn = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.wn()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -219,7 +219,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint8(value)
                 obj.rtk_receiver_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.rtk_receiver_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -227,7 +227,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint8(value)
                 obj.rtk_health = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.rtk_health()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -235,7 +235,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint8(value)
                 obj.rtk_rate = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.rtk_rate()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -243,7 +243,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint8(value)
                 obj.nsats = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.nsats()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -251,7 +251,7 @@ classdef msg_gps_rtk < mavlink_message
             if value == uint8(value)
                 obj.baseline_coords_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_rtk.set.baseline_coords_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

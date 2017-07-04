@@ -516,6 +516,10 @@ classdef mavlink_packet < handle
                 
                 case 268
                     message = msg_logging_ack(obj);                            
+
+                otherwise
+                    mavlink.throwUnsupportedMessageError();
+                    
             end
             
         end

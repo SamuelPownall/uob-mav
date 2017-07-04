@@ -34,8 +34,8 @@ classdef msg_param_value < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_param_value.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -56,7 +56,7 @@ classdef msg_param_value < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_param_value.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -107,7 +107,7 @@ classdef msg_param_value < mavlink_message
             if value == uint16(value)
                 obj.param_count = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | param_value.set.param_count()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -115,7 +115,7 @@ classdef msg_param_value < mavlink_message
             if value == uint16(value)
                 obj.param_index = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | param_value.set.param_index()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -123,7 +123,7 @@ classdef msg_param_value < mavlink_message
             if value == uint8(value)
                 obj.param_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | param_value.set.param_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -131,7 +131,7 @@ classdef msg_param_value < mavlink_message
             if value == uint8(value)
                 obj.param_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | param_value.set.param_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

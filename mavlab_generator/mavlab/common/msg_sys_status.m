@@ -42,8 +42,8 @@ classdef msg_sys_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_sys_status.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -78,7 +78,7 @@ classdef msg_sys_status < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_sys_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -155,7 +155,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint32(value)
                 obj.onboard_control_sensors_present = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.onboard_control_sensors_present()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -163,7 +163,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint32(value)
                 obj.onboard_control_sensors_enabled = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.onboard_control_sensors_enabled()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -171,7 +171,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint32(value)
                 obj.onboard_control_sensors_health = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.onboard_control_sensors_health()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -179,7 +179,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.load = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.load()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -187,7 +187,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.voltage_battery = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.voltage_battery()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -195,7 +195,7 @@ classdef msg_sys_status < mavlink_message
             if value == int16(value)
                 obj.current_battery = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.current_battery()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -203,7 +203,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.drop_rate_comm = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.drop_rate_comm()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -211,7 +211,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.errors_comm = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.errors_comm()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -219,7 +219,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.errors_count1 = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.errors_count1()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -227,7 +227,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.errors_count2 = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.errors_count2()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -235,7 +235,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.errors_count3 = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.errors_count3()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -243,7 +243,7 @@ classdef msg_sys_status < mavlink_message
             if value == uint16(value)
                 obj.errors_count4 = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.errors_count4()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -251,7 +251,7 @@ classdef msg_sys_status < mavlink_message
             if value == int8(value)
                 obj.battery_remaining = int8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sys_status.set.battery_remaining()\n\t Input "value" is not of type "int8"\n');
+                mavlink.throwTypeError('value','int8');
             end
         end
                         

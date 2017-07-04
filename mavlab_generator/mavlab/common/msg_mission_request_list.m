@@ -31,8 +31,8 @@ classdef msg_mission_request_list < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_mission_request_list.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -45,7 +45,7 @@ classdef msg_mission_request_list < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_mission_request_list.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -78,7 +78,7 @@ classdef msg_mission_request_list < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | mission_request_list.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -86,7 +86,7 @@ classdef msg_mission_request_list < mavlink_message
             if value == uint8(value)
                 obj.target_component = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | mission_request_list.set.target_component()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

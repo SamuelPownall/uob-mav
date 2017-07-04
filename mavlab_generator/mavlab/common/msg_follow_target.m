@@ -40,8 +40,8 @@ classdef msg_follow_target < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_follow_target.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -82,7 +82,7 @@ classdef msg_follow_target < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_follow_target.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -161,7 +161,7 @@ classdef msg_follow_target < mavlink_message
             if value == uint64(value)
                 obj.timestamp = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | follow_target.set.timestamp()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -169,7 +169,7 @@ classdef msg_follow_target < mavlink_message
             if value == uint64(value)
                 obj.custom_state = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | follow_target.set.custom_state()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -177,7 +177,7 @@ classdef msg_follow_target < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | follow_target.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -185,7 +185,7 @@ classdef msg_follow_target < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | follow_target.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                 
@@ -217,7 +217,7 @@ classdef msg_follow_target < mavlink_message
             if value == uint8(value)
                 obj.est_capabilities = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | follow_target.set.est_capabilities()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

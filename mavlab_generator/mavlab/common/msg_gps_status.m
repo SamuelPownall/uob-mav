@@ -35,8 +35,8 @@ classdef msg_gps_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_gps_status.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -67,7 +67,7 @@ classdef msg_gps_status < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_gps_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -126,7 +126,7 @@ classdef msg_gps_status < mavlink_message
             if value == uint8(value)
                 obj.satellites_visible = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_status.set.satellites_visible()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -134,7 +134,7 @@ classdef msg_gps_status < mavlink_message
             if value == uint8(value)
                 obj.satellite_prn = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_status.set.satellite_prn()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -142,7 +142,7 @@ classdef msg_gps_status < mavlink_message
             if value == uint8(value)
                 obj.satellite_used = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_status.set.satellite_used()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -150,7 +150,7 @@ classdef msg_gps_status < mavlink_message
             if value == uint8(value)
                 obj.satellite_elevation = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_status.set.satellite_elevation()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -158,7 +158,7 @@ classdef msg_gps_status < mavlink_message
             if value == uint8(value)
                 obj.satellite_azimuth = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_status.set.satellite_azimuth()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -166,7 +166,7 @@ classdef msg_gps_status < mavlink_message
             if value == uint8(value)
                 obj.satellite_snr = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | gps_status.set.satellite_snr()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

@@ -38,8 +38,8 @@ classdef msg_set_attitude_target < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_set_attitude_target.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -68,7 +68,7 @@ classdef msg_set_attitude_target < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_set_attitude_target.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -131,7 +131,7 @@ classdef msg_set_attitude_target < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_attitude_target.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                 
@@ -159,7 +159,7 @@ classdef msg_set_attitude_target < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_attitude_target.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -167,7 +167,7 @@ classdef msg_set_attitude_target < mavlink_message
             if value == uint8(value)
                 obj.target_component = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_attitude_target.set.target_component()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -175,7 +175,7 @@ classdef msg_set_attitude_target < mavlink_message
             if value == uint8(value)
                 obj.type_mask = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_attitude_target.set.type_mask()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

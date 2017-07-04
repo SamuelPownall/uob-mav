@@ -42,8 +42,8 @@ classdef msg_adsb_vehicle < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_adsb_vehicle.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -80,7 +80,7 @@ classdef msg_adsb_vehicle < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_adsb_vehicle.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -159,7 +159,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint32(value)
                 obj.icao_address = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.icao_address()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -167,7 +167,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -175,7 +175,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -183,7 +183,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == int32(value)
                 obj.altitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.altitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -191,7 +191,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint16(value)
                 obj.heading = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.heading()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -199,7 +199,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint16(value)
                 obj.hor_velocity = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.hor_velocity()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -207,7 +207,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == int16(value)
                 obj.ver_velocity = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.ver_velocity()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -215,7 +215,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint16(value)
                 obj.flags = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.flags()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -223,7 +223,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint16(value)
                 obj.squawk = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.squawk()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -231,7 +231,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint8(value)
                 obj.altitude_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.altitude_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -239,7 +239,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint8(value)
                 obj.callsign = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.callsign()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -247,7 +247,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint8(value)
                 obj.emitter_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.emitter_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -255,7 +255,7 @@ classdef msg_adsb_vehicle < mavlink_message
             if value == uint8(value)
                 obj.tslc = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | adsb_vehicle.set.tslc()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

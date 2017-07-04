@@ -43,8 +43,8 @@ classdef msg_hil_gps < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_hil_gps.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -79,7 +79,7 @@ classdef msg_hil_gps < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_hil_gps.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -156,7 +156,7 @@ classdef msg_hil_gps < mavlink_message
             if value == uint64(value)
                 obj.time_usec = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.time_usec()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -164,7 +164,7 @@ classdef msg_hil_gps < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -172,7 +172,7 @@ classdef msg_hil_gps < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -180,7 +180,7 @@ classdef msg_hil_gps < mavlink_message
             if value == int32(value)
                 obj.alt = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.alt()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -188,7 +188,7 @@ classdef msg_hil_gps < mavlink_message
             if value == uint16(value)
                 obj.eph = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.eph()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -196,7 +196,7 @@ classdef msg_hil_gps < mavlink_message
             if value == uint16(value)
                 obj.epv = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.epv()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -204,7 +204,7 @@ classdef msg_hil_gps < mavlink_message
             if value == uint16(value)
                 obj.vel = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.vel()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -212,7 +212,7 @@ classdef msg_hil_gps < mavlink_message
             if value == int16(value)
                 obj.vn = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.vn()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -220,7 +220,7 @@ classdef msg_hil_gps < mavlink_message
             if value == int16(value)
                 obj.ve = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.ve()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -228,7 +228,7 @@ classdef msg_hil_gps < mavlink_message
             if value == int16(value)
                 obj.vd = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.vd()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -236,7 +236,7 @@ classdef msg_hil_gps < mavlink_message
             if value == uint16(value)
                 obj.cog = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.cog()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -244,7 +244,7 @@ classdef msg_hil_gps < mavlink_message
             if value == uint8(value)
                 obj.fix_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.fix_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -252,7 +252,7 @@ classdef msg_hil_gps < mavlink_message
             if value == uint8(value)
                 obj.satellites_visible = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_gps.set.satellites_visible()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

@@ -32,8 +32,8 @@ classdef msg_change_operator_control_ack < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_change_operator_control_ack.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -48,7 +48,7 @@ classdef msg_change_operator_control_ack < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_change_operator_control_ack.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -85,7 +85,7 @@ classdef msg_change_operator_control_ack < mavlink_message
             if value == uint8(value)
                 obj.gcs_system_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | change_operator_control_ack.set.gcs_system_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -93,7 +93,7 @@ classdef msg_change_operator_control_ack < mavlink_message
             if value == uint8(value)
                 obj.control_request = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | change_operator_control_ack.set.control_request()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -101,7 +101,7 @@ classdef msg_change_operator_control_ack < mavlink_message
             if value == uint8(value)
                 obj.ack = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | change_operator_control_ack.set.ack()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

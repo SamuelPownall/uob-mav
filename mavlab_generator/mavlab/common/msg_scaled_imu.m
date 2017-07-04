@@ -39,8 +39,8 @@ classdef msg_scaled_imu < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_scaled_imu.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -69,7 +69,7 @@ classdef msg_scaled_imu < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_scaled_imu.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -134,7 +134,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -142,7 +142,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.xacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.xacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -150,7 +150,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.yacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.yacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -158,7 +158,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.zacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.zacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -166,7 +166,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.xgyro = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.xgyro()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -174,7 +174,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.ygyro = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.ygyro()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -182,7 +182,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.zgyro = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.zgyro()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -190,7 +190,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.xmag = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.xmag()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -198,7 +198,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.ymag = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.ymag()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -206,7 +206,7 @@ classdef msg_scaled_imu < mavlink_message
             if value == int16(value)
                 obj.zmag = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_imu.set.zmag()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                         

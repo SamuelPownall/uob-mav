@@ -45,8 +45,8 @@ classdef msg_set_position_target_global_int < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_set_position_target_global_int.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -87,7 +87,7 @@ classdef msg_set_position_target_global_int < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_set_position_target_global_int.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -176,7 +176,7 @@ classdef msg_set_position_target_global_int < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_global_int.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -184,7 +184,7 @@ classdef msg_set_position_target_global_int < mavlink_message
             if value == int32(value)
                 obj.lat_int = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_global_int.set.lat_int()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -192,7 +192,7 @@ classdef msg_set_position_target_global_int < mavlink_message
             if value == int32(value)
                 obj.lon_int = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_global_int.set.lon_int()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                 
@@ -236,7 +236,7 @@ classdef msg_set_position_target_global_int < mavlink_message
             if value == uint16(value)
                 obj.type_mask = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_global_int.set.type_mask()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -244,7 +244,7 @@ classdef msg_set_position_target_global_int < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_global_int.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -252,7 +252,7 @@ classdef msg_set_position_target_global_int < mavlink_message
             if value == uint8(value)
                 obj.target_component = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_global_int.set.target_component()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -260,7 +260,7 @@ classdef msg_set_position_target_global_int < mavlink_message
             if value == uint8(value)
                 obj.coordinate_frame = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_global_int.set.coordinate_frame()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

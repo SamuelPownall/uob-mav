@@ -39,8 +39,8 @@ classdef msg_global_position_int < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_global_position_int.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -67,7 +67,7 @@ classdef msg_global_position_int < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_global_position_int.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -128,7 +128,7 @@ classdef msg_global_position_int < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -136,7 +136,7 @@ classdef msg_global_position_int < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -144,7 +144,7 @@ classdef msg_global_position_int < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -152,7 +152,7 @@ classdef msg_global_position_int < mavlink_message
             if value == int32(value)
                 obj.alt = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.alt()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -160,7 +160,7 @@ classdef msg_global_position_int < mavlink_message
             if value == int32(value)
                 obj.relative_alt = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.relative_alt()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -168,7 +168,7 @@ classdef msg_global_position_int < mavlink_message
             if value == int16(value)
                 obj.vx = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.vx()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -176,7 +176,7 @@ classdef msg_global_position_int < mavlink_message
             if value == int16(value)
                 obj.vy = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.vy()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -184,7 +184,7 @@ classdef msg_global_position_int < mavlink_message
             if value == int16(value)
                 obj.vz = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.vz()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -192,7 +192,7 @@ classdef msg_global_position_int < mavlink_message
             if value == uint16(value)
                 obj.hdg = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | global_position_int.set.hdg()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                         

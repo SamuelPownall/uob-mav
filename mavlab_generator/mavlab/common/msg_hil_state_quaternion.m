@@ -45,8 +45,8 @@ classdef msg_hil_state_quaternion < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_hil_state_quaternion.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -89,7 +89,7 @@ classdef msg_hil_state_quaternion < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_hil_state_quaternion.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -180,7 +180,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == uint64(value)
                 obj.time_usec = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.time_usec()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -188,7 +188,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -196,7 +196,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -204,7 +204,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int32(value)
                 obj.alt = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.alt()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                 
@@ -228,7 +228,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int16(value)
                 obj.vx = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.vx()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -236,7 +236,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int16(value)
                 obj.vy = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.vy()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -244,7 +244,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int16(value)
                 obj.vz = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.vz()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -252,7 +252,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == uint16(value)
                 obj.ind_airspeed = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.ind_airspeed()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -260,7 +260,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == uint16(value)
                 obj.true_airspeed = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.true_airspeed()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -268,7 +268,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int16(value)
                 obj.xacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.xacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -276,7 +276,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int16(value)
                 obj.yacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.yacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -284,7 +284,7 @@ classdef msg_hil_state_quaternion < mavlink_message
             if value == int16(value)
                 obj.zacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state_quaternion.set.zacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                         

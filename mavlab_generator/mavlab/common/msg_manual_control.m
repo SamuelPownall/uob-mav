@@ -35,8 +35,8 @@ classdef msg_manual_control < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_manual_control.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -57,7 +57,7 @@ classdef msg_manual_control < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_manual_control.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -106,7 +106,7 @@ classdef msg_manual_control < mavlink_message
             if value == int16(value)
                 obj.x = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | manual_control.set.x()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -114,7 +114,7 @@ classdef msg_manual_control < mavlink_message
             if value == int16(value)
                 obj.y = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | manual_control.set.y()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -122,7 +122,7 @@ classdef msg_manual_control < mavlink_message
             if value == int16(value)
                 obj.z = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | manual_control.set.z()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -130,7 +130,7 @@ classdef msg_manual_control < mavlink_message
             if value == int16(value)
                 obj.r = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | manual_control.set.r()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -138,7 +138,7 @@ classdef msg_manual_control < mavlink_message
             if value == uint16(value)
                 obj.buttons = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | manual_control.set.buttons()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -146,7 +146,7 @@ classdef msg_manual_control < mavlink_message
             if value == uint8(value)
                 obj.target = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | manual_control.set.target()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

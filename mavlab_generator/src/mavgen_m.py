@@ -187,8 +187,8 @@ classdef %s < mavlink_message
         %%Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(%s.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -214,12 +214,12 @@ classdef %s < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | %s.pack()\\n\\t Message data in "%%s" is not valid\\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
         \
-        ''' % class_name)
+        ''')
         
         #Generate message unpack function
         fo.write('''\
@@ -299,11 +299,11 @@ classdef %s < mavlink_message
             if value == %s(value)
                 obj.%s = %s(value);
             else
-                fprintf(2,'MAVLAB-ERROR | %s.set.%s()\\n\\t Input "value" is not of type "%s"\\n');
+                mavlink.throwTypeError('value','%s');
             end
         end
         \
-                ''' % (field['name'], field['type'], field['name'], field['type'], name, field['name'], field['type']))
+                ''' % (field['name'], field['type'], field['name'], field['type'], field['type']))
         
         #End of class
         fo.write('\n\tend\nend')
@@ -460,7 +460,10 @@ classdef mavlink_packet < handle
             ''' % (parsed_msg['msgid'], parsed_msg['name']))
             
         fo.write('''
-\
+
+                otherwise
+                    mavlink.throwUnsupportedMessageError();
+                    
             end
             
         end
@@ -486,11 +489,10 @@ def copy_fixed_classes(main_path):
     """
     
     #Copy fixed classes
-    copyfile('../matlab/mavlink_message.m','%s/mavlink_message.m' % main_path)
-    copyfile('../matlab/mavlink_payload.m','%s/mavlink_payload.m' % main_path)
-    copyfile('../matlab/mavlink_parser.m','%s/mavlink_parser.m' % main_path)
-    copyfile('../matlab/mavlink_monitor.m','%s/mavlink_monitor.m' % main_path)
-    copyfile('../matlab/mavlink.m','%s/mavlink.m' % main_path)
+    copyfile('../matlab/mavlink_message_master.m','%s/mavlink_message.m' % main_path)
+    copyfile('../matlab/mavlink_payload_master.m','%s/mavlink_payload.m' % main_path)
+    copyfile('../matlab/mavlink_parser_master.m','%s/mavlink_parser.m' % main_path)
+    copyfile('../matlab/mavlink_master.m','%s/mavlink.m' % main_path)
     
     
 def generate_message_classes(message_path, msg_list):

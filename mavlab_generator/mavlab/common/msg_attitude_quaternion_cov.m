@@ -35,8 +35,8 @@ classdef msg_attitude_quaternion_cov < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_attitude_quaternion_cov.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -61,7 +61,7 @@ classdef msg_attitude_quaternion_cov < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_attitude_quaternion_cov.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -114,7 +114,7 @@ classdef msg_attitude_quaternion_cov < mavlink_message
             if value == uint64(value)
                 obj.time_usec = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | attitude_quaternion_cov.set.time_usec()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                 

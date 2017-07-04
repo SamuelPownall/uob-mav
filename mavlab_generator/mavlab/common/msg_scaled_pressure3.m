@@ -33,8 +33,8 @@ classdef msg_scaled_pressure3 < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_scaled_pressure3.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -51,7 +51,7 @@ classdef msg_scaled_pressure3 < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_scaled_pressure3.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -92,7 +92,7 @@ classdef msg_scaled_pressure3 < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_pressure3.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                 
@@ -108,7 +108,7 @@ classdef msg_scaled_pressure3 < mavlink_message
             if value == int16(value)
                 obj.temperature = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | scaled_pressure3.set.temperature()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                         

@@ -43,8 +43,8 @@ classdef msg_sat_telemetry < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_sat_telemetry.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -81,7 +81,7 @@ classdef msg_sat_telemetry < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_sat_telemetry.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -162,7 +162,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == uint32(value)
                 obj.time = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.time()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -170,7 +170,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == int32(value)
                 obj.latitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.latitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -178,7 +178,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == int32(value)
                 obj.longitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.longitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                 
@@ -194,7 +194,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == uint16(value)
                 obj.nav_bearing = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.nav_bearing()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -202,7 +202,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == uint16(value)
                 obj.air_speed = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.air_speed()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -210,7 +210,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == uint16(value)
                 obj.bat_voltage = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.bat_voltage()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -218,7 +218,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == uint16(value)
                 obj.bat_current = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.bat_current()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -226,7 +226,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == int16(value)
                 obj.roll = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.roll()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -234,7 +234,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == int16(value)
                 obj.pitch = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.pitch()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -242,7 +242,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == int16(value)
                 obj.vertical_speed = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.vertical_speed()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -250,7 +250,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == uint8(value)
                 obj.gps_fixtype = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.gps_fixtype()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -258,7 +258,7 @@ classdef msg_sat_telemetry < mavlink_message
             if value == uint8(value)
                 obj.bat_percent = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | sat_telemetry.set.bat_percent()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

@@ -36,8 +36,8 @@ classdef msg_data_transmission_handshake < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_data_transmission_handshake.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -60,7 +60,7 @@ classdef msg_data_transmission_handshake < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_data_transmission_handshake.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -113,7 +113,7 @@ classdef msg_data_transmission_handshake < mavlink_message
             if value == uint32(value)
                 obj.size = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | data_transmission_handshake.set.size()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -121,7 +121,7 @@ classdef msg_data_transmission_handshake < mavlink_message
             if value == uint16(value)
                 obj.width = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | data_transmission_handshake.set.width()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -129,7 +129,7 @@ classdef msg_data_transmission_handshake < mavlink_message
             if value == uint16(value)
                 obj.height = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | data_transmission_handshake.set.height()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -137,7 +137,7 @@ classdef msg_data_transmission_handshake < mavlink_message
             if value == uint16(value)
                 obj.packets = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | data_transmission_handshake.set.packets()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -145,7 +145,7 @@ classdef msg_data_transmission_handshake < mavlink_message
             if value == uint8(value)
                 obj.type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | data_transmission_handshake.set.type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -153,7 +153,7 @@ classdef msg_data_transmission_handshake < mavlink_message
             if value == uint8(value)
                 obj.payload = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | data_transmission_handshake.set.payload()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -161,7 +161,7 @@ classdef msg_data_transmission_handshake < mavlink_message
             if value == uint8(value)
                 obj.jpg_quality = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | data_transmission_handshake.set.jpg_quality()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

@@ -40,8 +40,8 @@ classdef msg_autopilot_version < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_autopilot_version.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -78,7 +78,7 @@ classdef msg_autopilot_version < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_autopilot_version.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -153,7 +153,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint64(value)
                 obj.capabilities = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.capabilities()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -161,7 +161,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint64(value)
                 obj.uid = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.uid()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -169,7 +169,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint32(value)
                 obj.flight_sw_version = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.flight_sw_version()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -177,7 +177,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint32(value)
                 obj.middleware_sw_version = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.middleware_sw_version()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -185,7 +185,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint32(value)
                 obj.os_sw_version = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.os_sw_version()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -193,7 +193,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint32(value)
                 obj.board_version = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.board_version()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -201,7 +201,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint16(value)
                 obj.vendor_id = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.vendor_id()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -209,7 +209,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint16(value)
                 obj.product_id = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.product_id()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -217,7 +217,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint8(value)
                 obj.flight_custom_version = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.flight_custom_version()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -225,7 +225,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint8(value)
                 obj.middleware_custom_version = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.middleware_custom_version()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -233,7 +233,7 @@ classdef msg_autopilot_version < mavlink_message
             if value == uint8(value)
                 obj.os_custom_version = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | autopilot_version.set.os_custom_version()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

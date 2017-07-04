@@ -39,8 +39,8 @@ classdef msg_camera_capture_status < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_camera_capture_status.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -69,7 +69,7 @@ classdef msg_camera_capture_status < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_camera_capture_status.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -134,7 +134,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                 
@@ -150,7 +150,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint16(value)
                 obj.image_resolution_h = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.image_resolution_h()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -158,7 +158,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint16(value)
                 obj.image_resolution_v = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.image_resolution_v()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -166,7 +166,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint16(value)
                 obj.video_resolution_h = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.video_resolution_h()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -174,7 +174,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint16(value)
                 obj.video_resolution_v = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.video_resolution_v()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -182,7 +182,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint8(value)
                 obj.camera_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.camera_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -190,7 +190,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint8(value)
                 obj.image_status = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.image_status()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -198,7 +198,7 @@ classdef msg_camera_capture_status < mavlink_message
             if value == uint8(value)
                 obj.video_status = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_capture_status.set.video_status()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

@@ -53,8 +53,8 @@ classdef msg_high_latency < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_high_latency.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -111,7 +111,7 @@ classdef msg_high_latency < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_high_latency.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -232,7 +232,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint32(value)
                 obj.custom_mode = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.custom_mode()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -240,7 +240,7 @@ classdef msg_high_latency < mavlink_message
             if value == int32(value)
                 obj.latitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.latitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -248,7 +248,7 @@ classdef msg_high_latency < mavlink_message
             if value == int32(value)
                 obj.longitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.longitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -256,7 +256,7 @@ classdef msg_high_latency < mavlink_message
             if value == int16(value)
                 obj.roll = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.roll()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -264,7 +264,7 @@ classdef msg_high_latency < mavlink_message
             if value == int16(value)
                 obj.pitch = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.pitch()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -272,7 +272,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint16(value)
                 obj.heading = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.heading()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -280,7 +280,7 @@ classdef msg_high_latency < mavlink_message
             if value == int16(value)
                 obj.heading_sp = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.heading_sp()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -288,7 +288,7 @@ classdef msg_high_latency < mavlink_message
             if value == int16(value)
                 obj.altitude_amsl = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.altitude_amsl()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -296,7 +296,7 @@ classdef msg_high_latency < mavlink_message
             if value == int16(value)
                 obj.altitude_sp = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.altitude_sp()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -304,7 +304,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint16(value)
                 obj.wp_distance = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.wp_distance()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -312,7 +312,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.base_mode = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.base_mode()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -320,7 +320,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.landed_state = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.landed_state()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -328,7 +328,7 @@ classdef msg_high_latency < mavlink_message
             if value == int8(value)
                 obj.throttle = int8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.throttle()\n\t Input "value" is not of type "int8"\n');
+                mavlink.throwTypeError('value','int8');
             end
         end
                                     
@@ -336,7 +336,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.airspeed = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.airspeed()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -344,7 +344,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.airspeed_sp = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.airspeed_sp()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -352,7 +352,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.groundspeed = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.groundspeed()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -360,7 +360,7 @@ classdef msg_high_latency < mavlink_message
             if value == int8(value)
                 obj.climb_rate = int8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.climb_rate()\n\t Input "value" is not of type "int8"\n');
+                mavlink.throwTypeError('value','int8');
             end
         end
                                     
@@ -368,7 +368,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.gps_nsat = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.gps_nsat()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -376,7 +376,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.gps_fix_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.gps_fix_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -384,7 +384,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.battery_remaining = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.battery_remaining()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -392,7 +392,7 @@ classdef msg_high_latency < mavlink_message
             if value == int8(value)
                 obj.temperature = int8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.temperature()\n\t Input "value" is not of type "int8"\n');
+                mavlink.throwTypeError('value','int8');
             end
         end
                                     
@@ -400,7 +400,7 @@ classdef msg_high_latency < mavlink_message
             if value == int8(value)
                 obj.temperature_air = int8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.temperature_air()\n\t Input "value" is not of type "int8"\n');
+                mavlink.throwTypeError('value','int8');
             end
         end
                                     
@@ -408,7 +408,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.failsafe = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.failsafe()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -416,7 +416,7 @@ classdef msg_high_latency < mavlink_message
             if value == uint8(value)
                 obj.wp_num = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | high_latency.set.wp_num()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

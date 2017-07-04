@@ -33,8 +33,8 @@ classdef msg_set_gps_global_origin < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_set_gps_global_origin.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -51,7 +51,7 @@ classdef msg_set_gps_global_origin < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_set_gps_global_origin.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -92,7 +92,7 @@ classdef msg_set_gps_global_origin < mavlink_message
             if value == int32(value)
                 obj.latitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_gps_global_origin.set.latitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -100,7 +100,7 @@ classdef msg_set_gps_global_origin < mavlink_message
             if value == int32(value)
                 obj.longitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_gps_global_origin.set.longitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -108,7 +108,7 @@ classdef msg_set_gps_global_origin < mavlink_message
             if value == int32(value)
                 obj.altitude = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_gps_global_origin.set.altitude()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -116,7 +116,7 @@ classdef msg_set_gps_global_origin < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_gps_global_origin.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

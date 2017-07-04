@@ -38,8 +38,8 @@ classdef msg_camera_image_captured < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_camera_image_captured.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -70,7 +70,7 @@ classdef msg_camera_image_captured < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_camera_image_captured.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -135,7 +135,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == uint64(value)
                 obj.time_utc = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.time_utc()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -143,7 +143,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -151,7 +151,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -159,7 +159,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -167,7 +167,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == int32(value)
                 obj.alt = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.alt()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -175,7 +175,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == int32(value)
                 obj.relative_alt = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.relative_alt()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                 
@@ -187,7 +187,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == uint8(value)
                 obj.camera_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.camera_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -195,7 +195,7 @@ classdef msg_camera_image_captured < mavlink_message
             if value == uint8(value)
                 obj.file_path = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | camera_image_captured.set.file_path()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

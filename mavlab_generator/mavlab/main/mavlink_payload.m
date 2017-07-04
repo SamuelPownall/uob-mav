@@ -37,10 +37,10 @@ classdef mavlink_payload < handle
                         obj.incrementIndex(1);
                     end
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.add()\n\t Input "byte" is not of type "uint8"\n');
+                    mavlink.throwTypeError('byte','uint8');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.add()\n\t Current index is out of bounds\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -53,7 +53,7 @@ classdef mavlink_payload < handle
         %bufferSize should be an integer between 0 and MAX_PAYLOAD_SIZE
         function obj = mavlink_payload(payloadLength)
             if payloadLength > obj.MAX_PAYLOAD_SIZE
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload()\n\t Specified payload size is greater than the maximum\n');
+                mavlink.throwCustomError('Payload length has been capped to 255 bytes');
                 obj.byteBuffer = zeros(obj.MAX_PAYLOAD_SIZE, 'uint8');
                 obj.length = obj.MAX_PAYLOAD_SIZE;
             else
@@ -98,7 +98,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index),'int8');
                 obj.incrementIndex(1);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getINT8()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -108,7 +108,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index),'uint8');
                 obj.incrementIndex(1);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getUINT8()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -118,7 +118,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+1),'int16');
                 obj.incrementIndex(2);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getINT16()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -128,7 +128,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+1),'uint16');
                 obj.incrementIndex(2);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getUINT16()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -138,7 +138,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+3),'int32');
                 obj.incrementIndex(4);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getINT32()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -148,7 +148,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+3),'uint32');
                 obj.incrementIndex(4);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getUINT32()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -158,7 +158,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+7),'int64');
                 obj.incrementIndex(8);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getINT64()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -168,7 +168,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+7),'uint64');
                 obj.incrementIndex(8);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getUINT64()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -178,7 +178,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+3),'single');
                 obj.incrementIndex(4);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getSINGLE()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -188,7 +188,7 @@ classdef mavlink_payload < handle
                 value = typecast(obj.byteBuffer(obj.index:obj.index+7),'double');
                 obj.incrementIndex(8);
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.getDOUBLE()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -198,10 +198,10 @@ classdef mavlink_payload < handle
                 if value == int8(value)
                     obj.add(typecast(int8(value),'uint8'));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT8()\n\t Input "value" is not of type "int8"\n');
+                    mavlink.throwTypeError('value','int8');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT8()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -211,10 +211,10 @@ classdef mavlink_payload < handle
                 if value == uint8(value)
                     obj.add(uint8(value));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT8()\n\t Input "value" is not of type "uint8"\n');
+                    mavlink.throwTypeError('value','uint8');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT8()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -226,10 +226,10 @@ classdef mavlink_payload < handle
                     obj.add(data(1));
                     obj.add(data(2));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT16()\n\t Input "value" is not of type "int16"\n');
+                    mavlink.throwTypeError('value','int16');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT16()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -241,10 +241,10 @@ classdef mavlink_payload < handle
                     obj.add(data(1));
                     obj.add(data(2));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT16()\n\t Input "value" is not of type "uint16"\n');
+                    mavlink.throwTypeError('value','uint16');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT16()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -258,10 +258,10 @@ classdef mavlink_payload < handle
                     obj.add(data(3));
                     obj.add(data(4));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT32()\n\t Input "value" is not of type "int32"\n');
+                    mavlink.throwTypeError('value','int32');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT32()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -275,10 +275,10 @@ classdef mavlink_payload < handle
                     obj.add(data(3));
                     obj.add(data(4));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT32()\n\t Input "value" is not of type "uint32"\n');
+                    mavlink.throwTypeError('value','uint32');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT32()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -296,10 +296,10 @@ classdef mavlink_payload < handle
                     obj.add(data(7));
                     obj.add(data(8));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT64()\n\t Input "value" is not of type "int64"\n');
+                    mavlink.throwTypeError('value','int64');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putINT64()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -317,10 +317,10 @@ classdef mavlink_payload < handle
                     obj.add(data(7));
                     obj.add(data(8));
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT64()\n\t Input "value" is not of type "uint64"\n');
+                    mavlink.throwTypeError('value','uint64');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putUINT64()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -333,7 +333,7 @@ classdef mavlink_payload < handle
                 obj.add(data(3));
                 obj.add(data(4));
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putSINGLE()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -350,7 +350,7 @@ classdef mavlink_payload < handle
                 obj.add(data(7));
                 obj.add(data(8));
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.putDOUBLE()\n\t Current index will lead to overflow\n');
+                mavlink.throwIndexError();
             end
         end
         
@@ -360,10 +360,10 @@ classdef mavlink_payload < handle
                 if index == uint64(index)
                     obj.index = index;
                 else
-                    fprintf(2,'MAVLAB-ERROR | mavlink_payload.setIndex()\n\t Specified index is not an integer\n');
+                    mavlink.throwTypeError('index','uint64');
                 end
             else
-                fprintf(2,'MAVLAB-ERROR | mavlink_payload.setIndex()\n\t Specified index is out of bounds\n');
+                mavlink.throwIndexError();
             end
         end
         

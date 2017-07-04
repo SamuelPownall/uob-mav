@@ -31,8 +31,8 @@ classdef msg_extended_sys_state < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_extended_sys_state.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -45,7 +45,7 @@ classdef msg_extended_sys_state < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_extended_sys_state.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -78,7 +78,7 @@ classdef msg_extended_sys_state < mavlink_message
             if value == uint8(value)
                 obj.vtol_state = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | extended_sys_state.set.vtol_state()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -86,7 +86,7 @@ classdef msg_extended_sys_state < mavlink_message
             if value == uint8(value)
                 obj.landed_state = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | extended_sys_state.set.landed_state()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

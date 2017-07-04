@@ -45,8 +45,8 @@ classdef msg_hil_state < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_hil_state.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -87,7 +87,7 @@ classdef msg_hil_state < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_hil_state.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -176,7 +176,7 @@ classdef msg_hil_state < mavlink_message
             if value == uint64(value)
                 obj.time_usec = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.time_usec()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                     
@@ -184,7 +184,7 @@ classdef msg_hil_state < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -192,7 +192,7 @@ classdef msg_hil_state < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -200,7 +200,7 @@ classdef msg_hil_state < mavlink_message
             if value == int32(value)
                 obj.alt = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.alt()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                 
@@ -232,7 +232,7 @@ classdef msg_hil_state < mavlink_message
             if value == int16(value)
                 obj.vx = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.vx()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -240,7 +240,7 @@ classdef msg_hil_state < mavlink_message
             if value == int16(value)
                 obj.vy = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.vy()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -248,7 +248,7 @@ classdef msg_hil_state < mavlink_message
             if value == int16(value)
                 obj.vz = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.vz()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -256,7 +256,7 @@ classdef msg_hil_state < mavlink_message
             if value == int16(value)
                 obj.xacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.xacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -264,7 +264,7 @@ classdef msg_hil_state < mavlink_message
             if value == int16(value)
                 obj.yacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.yacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -272,7 +272,7 @@ classdef msg_hil_state < mavlink_message
             if value == int16(value)
                 obj.zacc = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | hil_state.set.zacc()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                         

@@ -37,8 +37,8 @@ classdef msg_nav_controller_output < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_nav_controller_output.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -63,7 +63,7 @@ classdef msg_nav_controller_output < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_nav_controller_output.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -140,7 +140,7 @@ classdef msg_nav_controller_output < mavlink_message
             if value == int16(value)
                 obj.nav_bearing = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | nav_controller_output.set.nav_bearing()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -148,7 +148,7 @@ classdef msg_nav_controller_output < mavlink_message
             if value == int16(value)
                 obj.target_bearing = int16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | nav_controller_output.set.target_bearing()\n\t Input "value" is not of type "int16"\n');
+                mavlink.throwTypeError('value','int16');
             end
         end
                                     
@@ -156,7 +156,7 @@ classdef msg_nav_controller_output < mavlink_message
             if value == uint16(value)
                 obj.wp_dist = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | nav_controller_output.set.wp_dist()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                         

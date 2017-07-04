@@ -45,8 +45,8 @@ classdef msg_set_position_target_local_ned < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_set_position_target_local_ned.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -87,7 +87,7 @@ classdef msg_set_position_target_local_ned < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_set_position_target_local_ned.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -176,7 +176,7 @@ classdef msg_set_position_target_local_ned < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_local_ned.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                 
@@ -228,7 +228,7 @@ classdef msg_set_position_target_local_ned < mavlink_message
             if value == uint16(value)
                 obj.type_mask = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_local_ned.set.type_mask()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -236,7 +236,7 @@ classdef msg_set_position_target_local_ned < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_local_ned.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -244,7 +244,7 @@ classdef msg_set_position_target_local_ned < mavlink_message
             if value == uint8(value)
                 obj.target_component = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_local_ned.set.target_component()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -252,7 +252,7 @@ classdef msg_set_position_target_local_ned < mavlink_message
             if value == uint8(value)
                 obj.coordinate_frame = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_position_target_local_ned.set.coordinate_frame()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

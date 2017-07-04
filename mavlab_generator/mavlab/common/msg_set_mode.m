@@ -32,8 +32,8 @@ classdef msg_set_mode < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_set_mode.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -48,7 +48,7 @@ classdef msg_set_mode < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_set_mode.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -85,7 +85,7 @@ classdef msg_set_mode < mavlink_message
             if value == uint32(value)
                 obj.custom_mode = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_mode.set.custom_mode()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -93,7 +93,7 @@ classdef msg_set_mode < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_mode.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -101,7 +101,7 @@ classdef msg_set_mode < mavlink_message
             if value == uint8(value)
                 obj.base_mode = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | set_mode.set.base_mode()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

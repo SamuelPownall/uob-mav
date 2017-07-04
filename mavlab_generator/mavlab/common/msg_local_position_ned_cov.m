@@ -41,8 +41,8 @@ classdef msg_local_position_ned_cov < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_local_position_ned_cov.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -77,7 +77,7 @@ classdef msg_local_position_ned_cov < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_local_position_ned_cov.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -152,7 +152,7 @@ classdef msg_local_position_ned_cov < mavlink_message
             if value == uint64(value)
                 obj.time_usec = uint64(value);
             else
-                fprintf(2,'MAVLAB-ERROR | local_position_ned_cov.set.time_usec()\n\t Input "value" is not of type "uint64"\n');
+                mavlink.throwTypeError('value','uint64');
             end
         end
                                 
@@ -200,7 +200,7 @@ classdef msg_local_position_ned_cov < mavlink_message
             if value == uint8(value)
                 obj.estimator_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | local_position_ned_cov.set.estimator_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

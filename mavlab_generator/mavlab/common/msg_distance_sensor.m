@@ -37,8 +37,8 @@ classdef msg_distance_sensor < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_distance_sensor.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -63,7 +63,7 @@ classdef msg_distance_sensor < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_distance_sensor.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -120,7 +120,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint32(value)
                 obj.time_boot_ms = uint32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.time_boot_ms()\n\t Input "value" is not of type "uint32"\n');
+                mavlink.throwTypeError('value','uint32');
             end
         end
                                     
@@ -128,7 +128,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint16(value)
                 obj.min_distance = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.min_distance()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -136,7 +136,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint16(value)
                 obj.max_distance = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.max_distance()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -144,7 +144,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint16(value)
                 obj.current_distance = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.current_distance()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -152,7 +152,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint8(value)
                 obj.type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -160,7 +160,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint8(value)
                 obj.id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -168,7 +168,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint8(value)
                 obj.orientation = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.orientation()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -176,7 +176,7 @@ classdef msg_distance_sensor < mavlink_message
             if value == uint8(value)
                 obj.covariance = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | distance_sensor.set.covariance()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

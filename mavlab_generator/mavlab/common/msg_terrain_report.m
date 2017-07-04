@@ -36,8 +36,8 @@ classdef msg_terrain_report < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_terrain_report.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -60,7 +60,7 @@ classdef msg_terrain_report < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_terrain_report.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -113,7 +113,7 @@ classdef msg_terrain_report < mavlink_message
             if value == int32(value)
                 obj.lat = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | terrain_report.set.lat()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                     
@@ -121,7 +121,7 @@ classdef msg_terrain_report < mavlink_message
             if value == int32(value)
                 obj.lon = int32(value);
             else
-                fprintf(2,'MAVLAB-ERROR | terrain_report.set.lon()\n\t Input "value" is not of type "int32"\n');
+                mavlink.throwTypeError('value','int32');
             end
         end
                                 
@@ -137,7 +137,7 @@ classdef msg_terrain_report < mavlink_message
             if value == uint16(value)
                 obj.spacing = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | terrain_report.set.spacing()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -145,7 +145,7 @@ classdef msg_terrain_report < mavlink_message
             if value == uint16(value)
                 obj.pending = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | terrain_report.set.pending()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -153,7 +153,7 @@ classdef msg_terrain_report < mavlink_message
             if value == uint16(value)
                 obj.loaded = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | terrain_report.set.loaded()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                         

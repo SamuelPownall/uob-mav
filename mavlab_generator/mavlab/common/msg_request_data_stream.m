@@ -34,8 +34,8 @@ classdef msg_request_data_stream < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_request_data_stream.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -54,7 +54,7 @@ classdef msg_request_data_stream < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_request_data_stream.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -99,7 +99,7 @@ classdef msg_request_data_stream < mavlink_message
             if value == uint16(value)
                 obj.req_message_rate = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | request_data_stream.set.req_message_rate()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -107,7 +107,7 @@ classdef msg_request_data_stream < mavlink_message
             if value == uint8(value)
                 obj.target_system = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | request_data_stream.set.target_system()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -115,7 +115,7 @@ classdef msg_request_data_stream < mavlink_message
             if value == uint8(value)
                 obj.target_component = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | request_data_stream.set.target_component()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -123,7 +123,7 @@ classdef msg_request_data_stream < mavlink_message
             if value == uint8(value)
                 obj.req_stream_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | request_data_stream.set.req_stream_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -131,7 +131,7 @@ classdef msg_request_data_stream < mavlink_message
             if value == uint8(value)
                 obj.start_stop = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | request_data_stream.set.start_stop()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

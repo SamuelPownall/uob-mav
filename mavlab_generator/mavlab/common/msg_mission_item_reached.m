@@ -30,8 +30,8 @@ classdef msg_mission_item_reached < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_mission_item_reached.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -42,7 +42,7 @@ classdef msg_mission_item_reached < mavlink_message
         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_mission_item_reached.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -71,7 +71,7 @@ classdef msg_mission_item_reached < mavlink_message
             if value == uint16(value)
                 obj.seq = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | mission_item_reached.set.seq()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                         

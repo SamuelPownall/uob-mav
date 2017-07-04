@@ -34,8 +34,8 @@ classdef msg_resource_request < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_resource_request.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -58,7 +58,7 @@ classdef msg_resource_request < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_resource_request.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -107,7 +107,7 @@ classdef msg_resource_request < mavlink_message
             if value == uint8(value)
                 obj.request_id = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | resource_request.set.request_id()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -115,7 +115,7 @@ classdef msg_resource_request < mavlink_message
             if value == uint8(value)
                 obj.uri_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | resource_request.set.uri_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -123,7 +123,7 @@ classdef msg_resource_request < mavlink_message
             if value == uint8(value)
                 obj.uri = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | resource_request.set.uri()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -131,7 +131,7 @@ classdef msg_resource_request < mavlink_message
             if value == uint8(value)
                 obj.transfer_type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | resource_request.set.transfer_type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -139,7 +139,7 @@ classdef msg_resource_request < mavlink_message
             if value == uint8(value)
                 obj.storage = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | resource_request.set.storage()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                         

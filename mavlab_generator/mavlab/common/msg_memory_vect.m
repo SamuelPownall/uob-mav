@@ -33,8 +33,8 @@ classdef msg_memory_vect < mavlink_message
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
         
-            emptyField = obj.verify();
-            if emptyField == 0
+            errorField = obj.verify();
+            if errorField == 0
         
                 packet = mavlink_packet(msg_memory_vect.LEN);
                 packet.sysid = mavlink.SYSID;
@@ -53,7 +53,7 @@ classdef msg_memory_vect < mavlink_message
                                         
             else
                 packet = [];
-                fprintf(2,'MAVLAB-ERROR | msg_memory_vect.pack()\n\t Message data in "%s" is not valid\n',emptyField);
+                mavlink.throwPackingError(errorField);
             end
             
         end
@@ -96,7 +96,7 @@ classdef msg_memory_vect < mavlink_message
             if value == uint16(value)
                 obj.address = uint16(value);
             else
-                fprintf(2,'MAVLAB-ERROR | memory_vect.set.address()\n\t Input "value" is not of type "uint16"\n');
+                mavlink.throwTypeError('value','uint16');
             end
         end
                                     
@@ -104,7 +104,7 @@ classdef msg_memory_vect < mavlink_message
             if value == uint8(value)
                 obj.ver = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | memory_vect.set.ver()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -112,7 +112,7 @@ classdef msg_memory_vect < mavlink_message
             if value == uint8(value)
                 obj.type = uint8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | memory_vect.set.type()\n\t Input "value" is not of type "uint8"\n');
+                mavlink.throwTypeError('value','uint8');
             end
         end
                                     
@@ -120,7 +120,7 @@ classdef msg_memory_vect < mavlink_message
             if value == int8(value)
                 obj.value = int8(value);
             else
-                fprintf(2,'MAVLAB-ERROR | memory_vect.set.value()\n\t Input "value" is not of type "int8"\n');
+                mavlink.throwTypeError('value','int8');
             end
         end
                         
