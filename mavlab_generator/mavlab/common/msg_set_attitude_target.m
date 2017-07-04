@@ -23,16 +23,39 @@ classdef msg_set_attitude_target < mavlink_message
     methods
         
         %Constructor: msg_set_attitude_target
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_set_attitude_target(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_set_attitude_target(packet,time_boot_ms,q,body_roll_rate,body_pitch_rate,body_yaw_rate,thrust,target_system,target_component,type_mask)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 10
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.q = q;
+				obj.body_roll_rate = body_roll_rate;
+				obj.body_pitch_rate = body_pitch_rate;
+				obj.body_yaw_rate = body_yaw_rate;
+				obj.thrust = thrust;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.type_mask = type_mask;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -518,7 +518,7 @@ classdef mavlink_packet < handle
                     message = msg_logging_ack(obj);                            
 
                 otherwise
-                    mavlink.throwUnsupportedMessageError();
+                    mavlink.throwUnsupportedMessageError(obj.msgid);
                     
             end
             

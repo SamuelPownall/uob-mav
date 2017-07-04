@@ -6,15 +6,7 @@ parser = mavlink_parser();
 msg = [];
 messages = 0;
 
-tmsg = msg_distance_sensor();
-tmsg.time_boot_ms = 166;
-tmsg.min_distance = 22;
-tmsg.max_distance = 122;
-tmsg.current_distance = 77;
-tmsg.type = 12;
-tmsg.id = 33;
-tmsg.orientation = 100;
-tmsg.covariance = 44;
+tmsg = msg_distance_sensor([],166,22,122,77,12,33,100,44);
 packet = tmsg.pack();
 if ~isempty(packet)
     buffer = packet.encode();

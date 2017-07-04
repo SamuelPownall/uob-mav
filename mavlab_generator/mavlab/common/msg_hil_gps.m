@@ -28,16 +28,43 @@ classdef msg_hil_gps < mavlink_message
     methods
         
         %Constructor: msg_hil_gps
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_hil_gps(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_hil_gps(packet,time_usec,lat,lon,alt,eph,epv,vel,vn,ve,vd,cog,fix_type,satellites_visible)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 14
+                
+				obj.time_usec = time_usec;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.eph = eph;
+				obj.epv = epv;
+				obj.vel = vel;
+				obj.vn = vn;
+				obj.ve = ve;
+				obj.vd = vd;
+				obj.cog = cog;
+				obj.fix_type = fix_type;
+				obj.satellites_visible = satellites_visible;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

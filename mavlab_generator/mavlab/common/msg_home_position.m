@@ -24,16 +24,40 @@ classdef msg_home_position < mavlink_message
     methods
         
         %Constructor: msg_home_position
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_home_position(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_home_position(packet,latitude,longitude,altitude,x,y,z,q,approach_x,approach_y,approach_z)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.latitude = latitude;
+				obj.longitude = longitude;
+				obj.altitude = altitude;
+				obj.x = x;
+				obj.y = y;
+				obj.z = z;
+				obj.q = q;
+				obj.approach_x = approach_x;
+				obj.approach_y = approach_y;
+				obj.approach_z = approach_z;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

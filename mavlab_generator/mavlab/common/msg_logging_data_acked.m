@@ -20,16 +20,36 @@ classdef msg_logging_data_acked < mavlink_message
     methods
         
         %Constructor: msg_logging_data_acked
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_logging_data_acked(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_logging_data_acked(packet,sequence,target_system,target_component,length,first_message_offset,data)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 7
+                
+				obj.sequence = sequence;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.length = length;
+				obj.first_message_offset = first_message_offset;
+				obj.data = data;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

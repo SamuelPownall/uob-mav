@@ -27,16 +27,43 @@ classdef msg_gps2_rtk < mavlink_message
     methods
         
         %Constructor: msg_gps2_rtk
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_gps2_rtk(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_gps2_rtk(packet,time_last_baseline_ms,tow,baseline_a_mm,baseline_b_mm,baseline_c_mm,accuracy,iar_num_hypotheses,wn,rtk_receiver_id,rtk_health,rtk_rate,nsats,baseline_coords_type)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 14
+                
+				obj.time_last_baseline_ms = time_last_baseline_ms;
+				obj.tow = tow;
+				obj.baseline_a_mm = baseline_a_mm;
+				obj.baseline_b_mm = baseline_b_mm;
+				obj.baseline_c_mm = baseline_c_mm;
+				obj.accuracy = accuracy;
+				obj.iar_num_hypotheses = iar_num_hypotheses;
+				obj.wn = wn;
+				obj.rtk_receiver_id = rtk_receiver_id;
+				obj.rtk_health = rtk_health;
+				obj.rtk_rate = rtk_rate;
+				obj.nsats = nsats;
+				obj.baseline_coords_type = baseline_coords_type;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

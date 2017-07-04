@@ -19,16 +19,35 @@ classdef msg_param_value < mavlink_message
     methods
         
         %Constructor: msg_param_value
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_param_value(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_param_value(packet,param_value,param_count,param_index,param_id,param_type)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 6
+                
+				obj.param_value = param_value;
+				obj.param_count = param_count;
+				obj.param_index = param_index;
+				obj.param_id = param_id;
+				obj.param_type = param_type;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

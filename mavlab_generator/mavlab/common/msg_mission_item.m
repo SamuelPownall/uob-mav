@@ -29,16 +29,44 @@ classdef msg_mission_item < mavlink_message
     methods
         
         %Constructor: msg_mission_item
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_mission_item(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_mission_item(packet,param1,param2,param3,param4,x,y,z,seq,command,target_system,target_component,frame,current,autocontinue)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 15
+                
+				obj.param1 = param1;
+				obj.param2 = param2;
+				obj.param3 = param3;
+				obj.param4 = param4;
+				obj.x = x;
+				obj.y = y;
+				obj.z = z;
+				obj.seq = seq;
+				obj.command = command;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.frame = frame;
+				obj.current = current;
+				obj.autocontinue = autocontinue;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

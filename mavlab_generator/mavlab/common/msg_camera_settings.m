@@ -27,16 +27,43 @@ classdef msg_camera_settings < mavlink_message
     methods
         
         %Constructor: msg_camera_settings
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_camera_settings(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_camera_settings(packet,time_boot_ms,aperture,shutter_speed,iso_sensitivity,white_balance,camera_id,aperture_locked,shutter_speed_locked,iso_sensitivity_locked,white_balance_locked,mode_id,color_mode_id,image_format_id)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 14
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.aperture = aperture;
+				obj.shutter_speed = shutter_speed;
+				obj.iso_sensitivity = iso_sensitivity;
+				obj.white_balance = white_balance;
+				obj.camera_id = camera_id;
+				obj.aperture_locked = aperture_locked;
+				obj.shutter_speed_locked = shutter_speed_locked;
+				obj.iso_sensitivity_locked = iso_sensitivity_locked;
+				obj.white_balance_locked = white_balance_locked;
+				obj.mode_id = mode_id;
+				obj.color_mode_id = color_mode_id;
+				obj.image_format_id = image_format_id;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -30,16 +30,46 @@ classdef msg_hil_state_quaternion < mavlink_message
     methods
         
         %Constructor: msg_hil_state_quaternion
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_hil_state_quaternion(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_hil_state_quaternion(packet,time_usec,lat,lon,alt,attitude_quaternion,rollspeed,pitchspeed,yawspeed,vx,vy,vz,ind_airspeed,true_airspeed,xacc,yacc,zacc)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 17
+                
+				obj.time_usec = time_usec;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.attitude_quaternion = attitude_quaternion;
+				obj.rollspeed = rollspeed;
+				obj.pitchspeed = pitchspeed;
+				obj.yawspeed = yawspeed;
+				obj.vx = vx;
+				obj.vy = vy;
+				obj.vz = vz;
+				obj.ind_airspeed = ind_airspeed;
+				obj.true_airspeed = true_airspeed;
+				obj.xacc = xacc;
+				obj.yacc = yacc;
+				obj.zacc = zacc;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

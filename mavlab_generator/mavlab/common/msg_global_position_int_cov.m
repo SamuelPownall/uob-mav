@@ -24,16 +24,40 @@ classdef msg_global_position_int_cov < mavlink_message
     methods
         
         %Constructor: msg_global_position_int_cov
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_global_position_int_cov(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_global_position_int_cov(packet,time_usec,lat,lon,alt,relative_alt,vx,vy,vz,covariance,estimator_type)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.time_usec = time_usec;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.relative_alt = relative_alt;
+				obj.vx = vx;
+				obj.vy = vy;
+				obj.vz = vz;
+				obj.covariance = covariance;
+				obj.estimator_type = estimator_type;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

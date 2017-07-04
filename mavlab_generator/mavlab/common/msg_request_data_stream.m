@@ -19,16 +19,35 @@ classdef msg_request_data_stream < mavlink_message
     methods
         
         %Constructor: msg_request_data_stream
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_request_data_stream(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_request_data_stream(packet,req_message_rate,target_system,target_component,req_stream_id,start_stop)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 6
+                
+				obj.req_message_rate = req_message_rate;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.req_stream_id = req_stream_id;
+				obj.start_stop = start_stop;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

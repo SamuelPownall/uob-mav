@@ -28,16 +28,44 @@ classdef msg_position_target_global_int < mavlink_message
     methods
         
         %Constructor: msg_position_target_global_int
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_position_target_global_int(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_position_target_global_int(packet,time_boot_ms,lat_int,lon_int,alt,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,coordinate_frame)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 15
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.lat_int = lat_int;
+				obj.lon_int = lon_int;
+				obj.alt = alt;
+				obj.vx = vx;
+				obj.vy = vy;
+				obj.vz = vz;
+				obj.afx = afx;
+				obj.afy = afy;
+				obj.afz = afz;
+				obj.yaw = yaw;
+				obj.yaw_rate = yaw_rate;
+				obj.type_mask = type_mask;
+				obj.coordinate_frame = coordinate_frame;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -25,16 +25,40 @@ classdef msg_gps_raw_int < mavlink_message
     methods
         
         %Constructor: msg_gps_raw_int
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_gps_raw_int(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_gps_raw_int(packet,time_usec,lat,lon,alt,eph,epv,vel,cog,fix_type,satellites_visible)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.time_usec = time_usec;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.eph = eph;
+				obj.epv = epv;
+				obj.vel = vel;
+				obj.cog = cog;
+				obj.fix_type = fix_type;
+				obj.satellites_visible = satellites_visible;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

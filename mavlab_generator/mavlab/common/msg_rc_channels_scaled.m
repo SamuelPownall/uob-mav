@@ -25,16 +25,41 @@ classdef msg_rc_channels_scaled < mavlink_message
     methods
         
         %Constructor: msg_rc_channels_scaled
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_rc_channels_scaled(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_rc_channels_scaled(packet,time_boot_ms,chan1_scaled,chan2_scaled,chan3_scaled,chan4_scaled,chan5_scaled,chan6_scaled,chan7_scaled,chan8_scaled,port,rssi)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 12
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.chan1_scaled = chan1_scaled;
+				obj.chan2_scaled = chan2_scaled;
+				obj.chan3_scaled = chan3_scaled;
+				obj.chan4_scaled = chan4_scaled;
+				obj.chan5_scaled = chan5_scaled;
+				obj.chan6_scaled = chan6_scaled;
+				obj.chan7_scaled = chan7_scaled;
+				obj.chan8_scaled = chan8_scaled;
+				obj.port = port;
+				obj.rssi = rssi;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

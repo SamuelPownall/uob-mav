@@ -24,16 +24,40 @@ classdef msg_raw_imu < mavlink_message
     methods
         
         %Constructor: msg_raw_imu
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_raw_imu(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_raw_imu(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.time_usec = time_usec;
+				obj.xacc = xacc;
+				obj.yacc = yacc;
+				obj.zacc = zacc;
+				obj.xgyro = xgyro;
+				obj.ygyro = ygyro;
+				obj.zgyro = zgyro;
+				obj.xmag = xmag;
+				obj.ymag = ymag;
+				obj.zmag = zmag;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

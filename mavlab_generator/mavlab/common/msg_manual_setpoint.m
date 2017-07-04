@@ -21,16 +21,37 @@ classdef msg_manual_setpoint < mavlink_message
     methods
         
         %Constructor: msg_manual_setpoint
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_manual_setpoint(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_manual_setpoint(packet,time_boot_ms,roll,pitch,yaw,thrust,mode_switch,manual_override_switch)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 8
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.roll = roll;
+				obj.pitch = pitch;
+				obj.yaw = yaw;
+				obj.thrust = thrust;
+				obj.mode_switch = mode_switch;
+				obj.manual_override_switch = manual_override_switch;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

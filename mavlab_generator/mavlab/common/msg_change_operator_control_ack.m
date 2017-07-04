@@ -17,16 +17,33 @@ classdef msg_change_operator_control_ack < mavlink_message
     methods
         
         %Constructor: msg_change_operator_control_ack
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_change_operator_control_ack(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_change_operator_control_ack(packet,gcs_system_id,control_request,ack)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 4
+                
+				obj.gcs_system_id = gcs_system_id;
+				obj.control_request = control_request;
+				obj.ack = ack;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

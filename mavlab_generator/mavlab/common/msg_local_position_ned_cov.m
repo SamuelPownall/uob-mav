@@ -26,16 +26,42 @@ classdef msg_local_position_ned_cov < mavlink_message
     methods
         
         %Constructor: msg_local_position_ned_cov
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_local_position_ned_cov(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_local_position_ned_cov(packet,time_usec,x,y,z,vx,vy,vz,ax,ay,az,covariance,estimator_type)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 13
+                
+				obj.time_usec = time_usec;
+				obj.x = x;
+				obj.y = y;
+				obj.z = z;
+				obj.vx = vx;
+				obj.vy = vy;
+				obj.vz = vz;
+				obj.ax = ax;
+				obj.ay = ay;
+				obj.az = az;
+				obj.covariance = covariance;
+				obj.estimator_type = estimator_type;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

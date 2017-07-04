@@ -25,16 +25,41 @@ classdef msg_follow_target < mavlink_message
     methods
         
         %Constructor: msg_follow_target
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_follow_target(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_follow_target(packet,timestamp,custom_state,lat,lon,alt,vel,acc,attitude_q,rates,position_cov,est_capabilities)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 12
+                
+				obj.timestamp = timestamp;
+				obj.custom_state = custom_state;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.vel = vel;
+				obj.acc = acc;
+				obj.attitude_q = attitude_q;
+				obj.rates = rates;
+				obj.position_cov = position_cov;
+				obj.est_capabilities = est_capabilities;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

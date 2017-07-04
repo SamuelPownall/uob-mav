@@ -17,16 +17,33 @@ classdef msg_power_status < mavlink_message
     methods
         
         %Constructor: msg_power_status
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_power_status(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_power_status(packet,vcc,vservo,flags)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 4
+                
+				obj.vcc = vcc;
+				obj.vservo = vservo;
+				obj.flags = flags;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -23,16 +23,39 @@ classdef msg_param_map_rc < mavlink_message
     methods
         
         %Constructor: msg_param_map_rc
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_param_map_rc(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_param_map_rc(packet,param_value0,scale,param_value_min,param_value_max,param_index,target_system,target_component,param_id,parameter_rc_channel_index)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 10
+                
+				obj.param_value0 = param_value0;
+				obj.scale = scale;
+				obj.param_value_min = param_value_min;
+				obj.param_value_max = param_value_max;
+				obj.param_index = param_index;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.param_id = param_id;
+				obj.parameter_rc_channel_index = parameter_rc_channel_index;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

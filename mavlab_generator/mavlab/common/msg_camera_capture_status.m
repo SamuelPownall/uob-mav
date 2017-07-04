@@ -24,16 +24,40 @@ classdef msg_camera_capture_status < mavlink_message
     methods
         
         %Constructor: msg_camera_capture_status
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_camera_capture_status(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_camera_capture_status(packet,time_boot_ms,image_interval,video_framerate,image_resolution_h,image_resolution_v,video_resolution_h,video_resolution_v,camera_id,image_status,video_status)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.image_interval = image_interval;
+				obj.video_framerate = video_framerate;
+				obj.image_resolution_h = image_resolution_h;
+				obj.image_resolution_v = image_resolution_v;
+				obj.video_resolution_h = video_resolution_h;
+				obj.video_resolution_v = video_resolution_v;
+				obj.camera_id = camera_id;
+				obj.image_status = image_status;
+				obj.video_status = video_status;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

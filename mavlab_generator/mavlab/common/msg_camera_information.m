@@ -24,16 +24,40 @@ classdef msg_camera_information < mavlink_message
     methods
         
         %Constructor: msg_camera_information
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_camera_information(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_camera_information(packet,time_boot_ms,focal_length,sensor_size_h,sensor_size_v,resolution_h,resolution_v,camera_id,vendor_name,model_name,lense_id)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.focal_length = focal_length;
+				obj.sensor_size_h = sensor_size_h;
+				obj.sensor_size_v = sensor_size_v;
+				obj.resolution_h = resolution_h;
+				obj.resolution_v = resolution_v;
+				obj.camera_id = camera_id;
+				obj.vendor_name = vendor_name;
+				obj.model_name = model_name;
+				obj.lense_id = lense_id;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -23,16 +23,39 @@ classdef msg_safety_set_allowed_area < mavlink_message
     methods
         
         %Constructor: msg_safety_set_allowed_area
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_safety_set_allowed_area(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_safety_set_allowed_area(packet,p1x,p1y,p1z,p2x,p2y,p2z,target_system,target_component,frame)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 10
+                
+				obj.p1x = p1x;
+				obj.p1y = p1y;
+				obj.p1z = p1z;
+				obj.p2x = p2x;
+				obj.p2y = p2y;
+				obj.p2z = p2z;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.frame = frame;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

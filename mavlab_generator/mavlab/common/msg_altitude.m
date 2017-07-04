@@ -21,16 +21,37 @@ classdef msg_altitude < mavlink_message
     methods
         
         %Constructor: msg_altitude
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_altitude(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_altitude(packet,time_usec,altitude_monotonic,altitude_amsl,altitude_local,altitude_relative,altitude_terrain,bottom_clearance)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 8
+                
+				obj.time_usec = time_usec;
+				obj.altitude_monotonic = altitude_monotonic;
+				obj.altitude_amsl = altitude_amsl;
+				obj.altitude_local = altitude_local;
+				obj.altitude_relative = altitude_relative;
+				obj.altitude_terrain = altitude_terrain;
+				obj.bottom_clearance = bottom_clearance;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -25,16 +25,41 @@ classdef msg_autopilot_version < mavlink_message
     methods
         
         %Constructor: msg_autopilot_version
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_autopilot_version(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_autopilot_version(packet,capabilities,uid,flight_sw_version,middleware_sw_version,os_sw_version,board_version,vendor_id,product_id,flight_custom_version,middleware_custom_version,os_custom_version)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 12
+                
+				obj.capabilities = capabilities;
+				obj.uid = uid;
+				obj.flight_sw_version = flight_sw_version;
+				obj.middleware_sw_version = middleware_sw_version;
+				obj.os_sw_version = os_sw_version;
+				obj.board_version = board_version;
+				obj.vendor_id = vendor_id;
+				obj.product_id = product_id;
+				obj.flight_custom_version = flight_custom_version;
+				obj.middleware_custom_version = middleware_custom_version;
+				obj.os_custom_version = os_custom_version;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

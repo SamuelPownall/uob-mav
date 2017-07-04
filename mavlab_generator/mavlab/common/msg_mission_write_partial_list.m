@@ -18,16 +18,34 @@ classdef msg_mission_write_partial_list < mavlink_message
     methods
         
         %Constructor: msg_mission_write_partial_list
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_mission_write_partial_list(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_mission_write_partial_list(packet,start_index,end_index,target_system,target_component)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 5
+                
+				obj.start_index = start_index;
+				obj.end_index = end_index;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

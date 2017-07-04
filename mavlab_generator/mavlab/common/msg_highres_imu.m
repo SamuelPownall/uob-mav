@@ -29,16 +29,45 @@ classdef msg_highres_imu < mavlink_message
     methods
         
         %Constructor: msg_highres_imu
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_highres_imu(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_highres_imu(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature,fields_updated)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 16
+                
+				obj.time_usec = time_usec;
+				obj.xacc = xacc;
+				obj.yacc = yacc;
+				obj.zacc = zacc;
+				obj.xgyro = xgyro;
+				obj.ygyro = ygyro;
+				obj.zgyro = zgyro;
+				obj.xmag = xmag;
+				obj.ymag = ymag;
+				obj.zmag = zmag;
+				obj.abs_pressure = abs_pressure;
+				obj.diff_pressure = diff_pressure;
+				obj.pressure_alt = pressure_alt;
+				obj.temperature = temperature;
+				obj.fields_updated = fields_updated;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

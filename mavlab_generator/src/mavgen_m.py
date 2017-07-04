@@ -167,19 +167,47 @@ classdef %s < mavlink_message
     methods
         
         %%Constructor: %s
-        %%packet should be a fully constructed MAVLINK packet
-        function obj = %s(packet)
+        %%packet should be a fully constructed MAVLINK packet\
+        \
+        ''' % class_name)
+        
+        fo.write('\n\t\tfunction obj = %s(packet' % class_name)
+        for field in fields:
+            fo.write(',%s' % field['name'])
+        fo.write(')')
+        
+        fo.write('''
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == %s
+        \
+        ''' % str(len(fields)+1))
+        
+        for field in fields:
+            fo.write('\n\t\t\t\tobj.%s = %s;' % (field['name'],field['name']))
+            
+        fo.write('''
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
         \
-        ''' % (class_name, class_name))
+        ''')
         
         #Generate message pack function
         fo.write('''\
@@ -462,7 +490,7 @@ classdef mavlink_packet < handle
         fo.write('''
 
                 otherwise
-                    mavlink.throwUnsupportedMessageError();
+                    mavlink.throwUnsupportedMessageError(obj.msgid);
                     
             end
             

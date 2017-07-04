@@ -23,16 +23,39 @@ classdef msg_camera_image_captured < mavlink_message
     methods
         
         %Constructor: msg_camera_image_captured
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_camera_image_captured(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_camera_image_captured(packet,time_utc,time_boot_ms,lat,lon,alt,relative_alt,q,camera_id,file_path)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 10
+                
+				obj.time_utc = time_utc;
+				obj.time_boot_ms = time_boot_ms;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.relative_alt = relative_alt;
+				obj.q = q;
+				obj.camera_id = camera_id;
+				obj.file_path = file_path;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

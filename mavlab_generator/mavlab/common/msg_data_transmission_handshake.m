@@ -21,16 +21,37 @@ classdef msg_data_transmission_handshake < mavlink_message
     methods
         
         %Constructor: msg_data_transmission_handshake
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_data_transmission_handshake(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_data_transmission_handshake(packet,size,width,height,packets,type,payload,jpg_quality)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 8
+                
+				obj.size = size;
+				obj.width = width;
+				obj.height = height;
+				obj.packets = packets;
+				obj.type = type;
+				obj.payload = payload;
+				obj.jpg_quality = jpg_quality;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -38,16 +38,54 @@ classdef msg_high_latency < mavlink_message
     methods
         
         %Constructor: msg_high_latency
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_high_latency(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_high_latency(packet,custom_mode,latitude,longitude,roll,pitch,heading,heading_sp,altitude_amsl,altitude_sp,wp_distance,base_mode,landed_state,throttle,airspeed,airspeed_sp,groundspeed,climb_rate,gps_nsat,gps_fix_type,battery_remaining,temperature,temperature_air,failsafe,wp_num)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 25
+                
+				obj.custom_mode = custom_mode;
+				obj.latitude = latitude;
+				obj.longitude = longitude;
+				obj.roll = roll;
+				obj.pitch = pitch;
+				obj.heading = heading;
+				obj.heading_sp = heading_sp;
+				obj.altitude_amsl = altitude_amsl;
+				obj.altitude_sp = altitude_sp;
+				obj.wp_distance = wp_distance;
+				obj.base_mode = base_mode;
+				obj.landed_state = landed_state;
+				obj.throttle = throttle;
+				obj.airspeed = airspeed;
+				obj.airspeed_sp = airspeed_sp;
+				obj.groundspeed = groundspeed;
+				obj.climb_rate = climb_rate;
+				obj.gps_nsat = gps_nsat;
+				obj.gps_fix_type = gps_fix_type;
+				obj.battery_remaining = battery_remaining;
+				obj.temperature = temperature;
+				obj.temperature_air = temperature_air;
+				obj.failsafe = failsafe;
+				obj.wp_num = wp_num;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

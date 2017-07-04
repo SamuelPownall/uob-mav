@@ -24,16 +24,40 @@ classdef msg_estimator_status < mavlink_message
     methods
         
         %Constructor: msg_estimator_status
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_estimator_status(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_estimator_status(packet,time_usec,vel_ratio,pos_horiz_ratio,pos_vert_ratio,mag_ratio,hagl_ratio,tas_ratio,pos_horiz_accuracy,pos_vert_accuracy,flags)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.time_usec = time_usec;
+				obj.vel_ratio = vel_ratio;
+				obj.pos_horiz_ratio = pos_horiz_ratio;
+				obj.pos_vert_ratio = pos_vert_ratio;
+				obj.mag_ratio = mag_ratio;
+				obj.hagl_ratio = hagl_ratio;
+				obj.tas_ratio = tas_ratio;
+				obj.pos_horiz_accuracy = pos_horiz_accuracy;
+				obj.pos_vert_accuracy = pos_vert_accuracy;
+				obj.flags = flags;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

@@ -21,16 +21,37 @@ classdef msg_collision < mavlink_message
     methods
         
         %Constructor: msg_collision
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_collision(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_collision(packet,id,time_to_minimum_delta,altitude_minimum_delta,horizontal_minimum_delta,src,action,threat_level)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 8
+                
+				obj.id = id;
+				obj.time_to_minimum_delta = time_to_minimum_delta;
+				obj.altitude_minimum_delta = altitude_minimum_delta;
+				obj.horizontal_minimum_delta = horizontal_minimum_delta;
+				obj.src = src;
+				obj.action = action;
+				obj.threat_level = threat_level;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

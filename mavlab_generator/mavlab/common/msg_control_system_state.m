@@ -31,16 +31,47 @@ classdef msg_control_system_state < mavlink_message
     methods
         
         %Constructor: msg_control_system_state
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_control_system_state(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_control_system_state(packet,time_usec,x_acc,y_acc,z_acc,x_vel,y_vel,z_vel,x_pos,y_pos,z_pos,airspeed,vel_variance,pos_variance,q,roll_rate,pitch_rate,yaw_rate)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 18
+                
+				obj.time_usec = time_usec;
+				obj.x_acc = x_acc;
+				obj.y_acc = y_acc;
+				obj.z_acc = z_acc;
+				obj.x_vel = x_vel;
+				obj.y_vel = y_vel;
+				obj.z_vel = z_vel;
+				obj.x_pos = x_pos;
+				obj.y_pos = y_pos;
+				obj.z_pos = z_pos;
+				obj.airspeed = airspeed;
+				obj.vel_variance = vel_variance;
+				obj.pos_variance = pos_variance;
+				obj.q = q;
+				obj.roll_rate = roll_rate;
+				obj.pitch_rate = pitch_rate;
+				obj.yaw_rate = yaw_rate;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

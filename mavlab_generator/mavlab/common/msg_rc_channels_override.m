@@ -24,16 +24,40 @@ classdef msg_rc_channels_override < mavlink_message
     methods
         
         %Constructor: msg_rc_channels_override
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_rc_channels_override(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_rc_channels_override(packet,chan1_raw,chan2_raw,chan3_raw,chan4_raw,chan5_raw,chan6_raw,chan7_raw,chan8_raw,target_system,target_component)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 11
+                
+				obj.chan1_raw = chan1_raw;
+				obj.chan2_raw = chan2_raw;
+				obj.chan3_raw = chan3_raw;
+				obj.chan4_raw = chan4_raw;
+				obj.chan5_raw = chan5_raw;
+				obj.chan6_raw = chan6_raw;
+				obj.chan7_raw = chan7_raw;
+				obj.chan8_raw = chan8_raw;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

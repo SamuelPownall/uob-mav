@@ -21,16 +21,37 @@ classdef msg_radio_status < mavlink_message
     methods
         
         %Constructor: msg_radio_status
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_radio_status(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_radio_status(packet,rxerrors,fixed,rssi,remrssi,txbuf,noise,remnoise)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 8
+                
+				obj.rxerrors = rxerrors;
+				obj.fixed = fixed;
+				obj.rssi = rssi;
+				obj.remrssi = remrssi;
+				obj.txbuf = txbuf;
+				obj.noise = noise;
+				obj.remnoise = remnoise;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

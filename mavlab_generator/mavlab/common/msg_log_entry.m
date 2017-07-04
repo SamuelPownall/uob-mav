@@ -19,16 +19,35 @@ classdef msg_log_entry < mavlink_message
     methods
         
         %Constructor: msg_log_entry
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_log_entry(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_log_entry(packet,time_utc,size,id,num_logs,last_log_num)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 6
+                
+				obj.time_utc = time_utc;
+				obj.size = size;
+				obj.id = id;
+				obj.num_logs = num_logs;
+				obj.last_log_num = last_log_num;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

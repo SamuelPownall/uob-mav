@@ -30,16 +30,46 @@ classdef msg_hil_state < mavlink_message
     methods
         
         %Constructor: msg_hil_state
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_hil_state(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_hil_state(packet,time_usec,lat,lon,alt,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed,vx,vy,vz,xacc,yacc,zacc)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 17
+                
+				obj.time_usec = time_usec;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.roll = roll;
+				obj.pitch = pitch;
+				obj.yaw = yaw;
+				obj.rollspeed = rollspeed;
+				obj.pitchspeed = pitchspeed;
+				obj.yawspeed = yawspeed;
+				obj.vx = vx;
+				obj.vy = vy;
+				obj.vz = vz;
+				obj.xacc = xacc;
+				obj.yacc = yacc;
+				obj.zacc = zacc;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

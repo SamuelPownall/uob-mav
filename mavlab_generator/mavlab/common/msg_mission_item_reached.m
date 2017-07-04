@@ -15,16 +15,31 @@ classdef msg_mission_item_reached < mavlink_message
     methods
         
         %Constructor: msg_mission_item_reached
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_mission_item_reached(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_mission_item_reached(packet,seq)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 2
+                
+				obj.seq = seq;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

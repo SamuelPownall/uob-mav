@@ -27,16 +27,43 @@ classdef msg_sys_status < mavlink_message
     methods
         
         %Constructor: msg_sys_status
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_sys_status(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_sys_status(packet,onboard_control_sensors_present,onboard_control_sensors_enabled,onboard_control_sensors_health,load,voltage_battery,current_battery,drop_rate_comm,errors_comm,errors_count1,errors_count2,errors_count3,errors_count4,battery_remaining)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 14
+                
+				obj.onboard_control_sensors_present = onboard_control_sensors_present;
+				obj.onboard_control_sensors_enabled = onboard_control_sensors_enabled;
+				obj.onboard_control_sensors_health = onboard_control_sensors_health;
+				obj.load = load;
+				obj.voltage_battery = voltage_battery;
+				obj.current_battery = current_battery;
+				obj.drop_rate_comm = drop_rate_comm;
+				obj.errors_comm = errors_comm;
+				obj.errors_count1 = errors_count1;
+				obj.errors_count2 = errors_count2;
+				obj.errors_count3 = errors_count3;
+				obj.errors_count4 = errors_count4;
+				obj.battery_remaining = battery_remaining;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

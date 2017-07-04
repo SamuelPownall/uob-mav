@@ -27,16 +27,43 @@ classdef msg_adsb_vehicle < mavlink_message
     methods
         
         %Constructor: msg_adsb_vehicle
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_adsb_vehicle(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_adsb_vehicle(packet,icao_address,lat,lon,altitude,heading,hor_velocity,ver_velocity,flags,squawk,altitude_type,callsign,emitter_type,tslc)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 14
+                
+				obj.icao_address = icao_address;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.altitude = altitude;
+				obj.heading = heading;
+				obj.hor_velocity = hor_velocity;
+				obj.ver_velocity = ver_velocity;
+				obj.flags = flags;
+				obj.squawk = squawk;
+				obj.altitude_type = altitude_type;
+				obj.callsign = callsign;
+				obj.emitter_type = emitter_type;
+				obj.tslc = tslc;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

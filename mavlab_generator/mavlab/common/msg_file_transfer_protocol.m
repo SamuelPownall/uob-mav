@@ -18,16 +18,34 @@ classdef msg_file_transfer_protocol < mavlink_message
     methods
         
         %Constructor: msg_file_transfer_protocol
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_file_transfer_protocol(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_file_transfer_protocol(packet,target_network,target_system,target_component,payload)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 5
+                
+				obj.target_network = target_network;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.payload = payload;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

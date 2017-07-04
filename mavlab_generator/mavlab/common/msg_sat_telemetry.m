@@ -28,16 +28,44 @@ classdef msg_sat_telemetry < mavlink_message
     methods
         
         %Constructor: msg_sat_telemetry
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_sat_telemetry(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_sat_telemetry(packet,time,latitude,longitude,altitude,nav_distance,nav_bearing,air_speed,bat_voltage,bat_current,roll,pitch,vertical_speed,gps_fixtype,bat_percent)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 15
+                
+				obj.time = time;
+				obj.latitude = latitude;
+				obj.longitude = longitude;
+				obj.altitude = altitude;
+				obj.nav_distance = nav_distance;
+				obj.nav_bearing = nav_bearing;
+				obj.air_speed = air_speed;
+				obj.bat_voltage = bat_voltage;
+				obj.bat_current = bat_current;
+				obj.roll = roll;
+				obj.pitch = pitch;
+				obj.vertical_speed = vertical_speed;
+				obj.gps_fixtype = gps_fixtype;
+				obj.bat_percent = bat_percent;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

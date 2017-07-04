@@ -30,16 +30,46 @@ classdef msg_set_position_target_local_ned < mavlink_message
     methods
         
         %Constructor: msg_set_position_target_local_ned
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_set_position_target_local_ned(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_set_position_target_local_ned(packet,time_boot_ms,x,y,z,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,target_system,target_component,coordinate_frame)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 17
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.x = x;
+				obj.y = y;
+				obj.z = z;
+				obj.vx = vx;
+				obj.vy = vy;
+				obj.vz = vz;
+				obj.afx = afx;
+				obj.afy = afy;
+				obj.afz = afz;
+				obj.yaw = yaw;
+				obj.yaw_rate = yaw_rate;
+				obj.type_mask = type_mask;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+				obj.coordinate_frame = coordinate_frame;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

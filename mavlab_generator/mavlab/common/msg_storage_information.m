@@ -22,16 +22,38 @@ classdef msg_storage_information < mavlink_message
     methods
         
         %Constructor: msg_storage_information
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_storage_information(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_storage_information(packet,time_boot_ms,total_capacity,used_capacity,available_capacity,read_speed,write_speed,storage_id,status)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 9
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.total_capacity = total_capacity;
+				obj.used_capacity = used_capacity;
+				obj.available_capacity = available_capacity;
+				obj.read_speed = read_speed;
+				obj.write_speed = write_speed;
+				obj.storage_id = storage_id;
+				obj.status = status;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

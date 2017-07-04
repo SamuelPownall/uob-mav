@@ -16,16 +16,32 @@ classdef msg_timesync < mavlink_message
     methods
         
         %Constructor: msg_timesync
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_timesync(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_timesync(packet,tc1,ts1)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 3
+                
+				obj.tc1 = tc1;
+				obj.ts1 = ts1;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

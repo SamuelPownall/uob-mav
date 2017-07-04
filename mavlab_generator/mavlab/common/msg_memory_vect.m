@@ -18,16 +18,34 @@ classdef msg_memory_vect < mavlink_message
     methods
         
         %Constructor: msg_memory_vect
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_memory_vect(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_memory_vect(packet,address,ver,type,value)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 5
+                
+				obj.address = address;
+				obj.ver = ver;
+				obj.type = type;
+				obj.value = value;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

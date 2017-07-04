@@ -25,16 +25,41 @@ classdef msg_hil_controls < mavlink_message
     methods
         
         %Constructor: msg_hil_controls
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_hil_controls(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_hil_controls(packet,time_usec,roll_ailerons,pitch_elevator,yaw_rudder,throttle,aux1,aux2,aux3,aux4,mode,nav_mode)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 12
+                
+				obj.time_usec = time_usec;
+				obj.roll_ailerons = roll_ailerons;
+				obj.pitch_elevator = pitch_elevator;
+				obj.yaw_rudder = yaw_rudder;
+				obj.throttle = throttle;
+				obj.aux1 = aux1;
+				obj.aux2 = aux2;
+				obj.aux3 = aux3;
+				obj.aux4 = aux4;
+				obj.mode = mode;
+				obj.nav_mode = nav_mode;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

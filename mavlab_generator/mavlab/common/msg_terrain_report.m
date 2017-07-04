@@ -21,16 +21,37 @@ classdef msg_terrain_report < mavlink_message
     methods
         
         %Constructor: msg_terrain_report
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_terrain_report(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_terrain_report(packet,lat,lon,terrain_height,current_height,spacing,pending,loaded)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 8
+                
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.terrain_height = terrain_height;
+				obj.current_height = current_height;
+				obj.spacing = spacing;
+				obj.pending = pending;
+				obj.loaded = loaded;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

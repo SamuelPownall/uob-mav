@@ -21,16 +21,37 @@ classdef msg_vibration < mavlink_message
     methods
         
         %Constructor: msg_vibration
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_vibration(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_vibration(packet,time_usec,clipping_0,clipping_1,clipping_2,vibration_x,vibration_y,vibration_z)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 8
+                
+				obj.time_usec = time_usec;
+				obj.clipping_0 = clipping_0;
+				obj.clipping_1 = clipping_1;
+				obj.clipping_2 = clipping_2;
+				obj.vibration_x = vibration_x;
+				obj.vibration_y = vibration_y;
+				obj.vibration_z = vibration_z;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

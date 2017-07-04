@@ -22,16 +22,38 @@ classdef msg_nav_controller_output < mavlink_message
     methods
         
         %Constructor: msg_nav_controller_output
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_nav_controller_output(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_nav_controller_output(packet,nav_roll,nav_pitch,alt_error,aspd_error,xtrack_error,nav_bearing,target_bearing,wp_dist)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 9
+                
+				obj.nav_roll = nav_roll;
+				obj.nav_pitch = nav_pitch;
+				obj.alt_error = alt_error;
+				obj.aspd_error = aspd_error;
+				obj.xtrack_error = xtrack_error;
+				obj.nav_bearing = nav_bearing;
+				obj.target_bearing = target_bearing;
+				obj.wp_dist = wp_dist;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

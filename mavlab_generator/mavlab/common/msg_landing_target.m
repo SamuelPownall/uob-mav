@@ -22,16 +22,38 @@ classdef msg_landing_target < mavlink_message
     methods
         
         %Constructor: msg_landing_target
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_landing_target(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_landing_target(packet,time_usec,angle_x,angle_y,distance,size_x,size_y,target_num,frame)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 9
+                
+				obj.time_usec = time_usec;
+				obj.angle_x = angle_x;
+				obj.angle_y = angle_y;
+				obj.distance = distance;
+				obj.size_x = size_x;
+				obj.size_y = size_y;
+				obj.target_num = target_num;
+				obj.frame = frame;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

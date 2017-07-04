@@ -28,16 +28,44 @@ classdef msg_hil_rc_inputs_raw < mavlink_message
     methods
         
         %Constructor: msg_hil_rc_inputs_raw
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_hil_rc_inputs_raw(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_hil_rc_inputs_raw(packet,time_usec,chan1_raw,chan2_raw,chan3_raw,chan4_raw,chan5_raw,chan6_raw,chan7_raw,chan8_raw,chan9_raw,chan10_raw,chan11_raw,chan12_raw,rssi)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 15
+                
+				obj.time_usec = time_usec;
+				obj.chan1_raw = chan1_raw;
+				obj.chan2_raw = chan2_raw;
+				obj.chan3_raw = chan3_raw;
+				obj.chan4_raw = chan4_raw;
+				obj.chan5_raw = chan5_raw;
+				obj.chan6_raw = chan6_raw;
+				obj.chan7_raw = chan7_raw;
+				obj.chan8_raw = chan8_raw;
+				obj.chan9_raw = chan9_raw;
+				obj.chan10_raw = chan10_raw;
+				obj.chan11_raw = chan11_raw;
+				obj.chan12_raw = chan12_raw;
+				obj.rssi = rssi;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

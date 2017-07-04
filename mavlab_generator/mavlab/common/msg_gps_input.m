@@ -32,16 +32,48 @@ classdef msg_gps_input < mavlink_message
     methods
         
         %Constructor: msg_gps_input
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_gps_input(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_gps_input(packet,time_usec,time_week_ms,lat,lon,alt,hdop,vdop,vn,ve,vd,speed_accuracy,horiz_accuracy,vert_accuracy,ignore_flags,time_week,gps_id,fix_type,satellites_visible)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 19
+                
+				obj.time_usec = time_usec;
+				obj.time_week_ms = time_week_ms;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.hdop = hdop;
+				obj.vdop = vdop;
+				obj.vn = vn;
+				obj.ve = ve;
+				obj.vd = vd;
+				obj.speed_accuracy = speed_accuracy;
+				obj.horiz_accuracy = horiz_accuracy;
+				obj.vert_accuracy = vert_accuracy;
+				obj.ignore_flags = ignore_flags;
+				obj.time_week = time_week;
+				obj.gps_id = gps_id;
+				obj.fix_type = fix_type;
+				obj.satellites_visible = satellites_visible;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

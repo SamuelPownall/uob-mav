@@ -19,16 +19,35 @@ classdef msg_raw_pressure < mavlink_message
     methods
         
         %Constructor: msg_raw_pressure
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_raw_pressure(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_raw_pressure(packet,time_usec,press_abs,press_diff1,press_diff2,temperature)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 6
+                
+				obj.time_usec = time_usec;
+				obj.press_abs = press_abs;
+				obj.press_diff1 = press_diff1;
+				obj.press_diff2 = press_diff2;
+				obj.temperature = temperature;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

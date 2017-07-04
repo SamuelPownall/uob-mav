@@ -19,16 +19,35 @@ classdef msg_att_pos_mocap < mavlink_message
     methods
         
         %Constructor: msg_att_pos_mocap
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_att_pos_mocap(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_att_pos_mocap(packet,time_usec,q,x,y,z)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 6
+                
+				obj.time_usec = time_usec;
+				obj.q = q;
+				obj.x = x;
+				obj.y = y;
+				obj.z = z;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

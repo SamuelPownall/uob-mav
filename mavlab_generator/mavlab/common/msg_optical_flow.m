@@ -22,16 +22,38 @@ classdef msg_optical_flow < mavlink_message
     methods
         
         %Constructor: msg_optical_flow
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_optical_flow(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_optical_flow(packet,time_usec,flow_comp_m_x,flow_comp_m_y,ground_distance,flow_x,flow_y,sensor_id,quality)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 9
+                
+				obj.time_usec = time_usec;
+				obj.flow_comp_m_x = flow_comp_m_x;
+				obj.flow_comp_m_y = flow_comp_m_y;
+				obj.ground_distance = ground_distance;
+				obj.flow_x = flow_x;
+				obj.flow_y = flow_y;
+				obj.sensor_id = sensor_id;
+				obj.quality = quality;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

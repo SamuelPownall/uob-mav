@@ -32,16 +32,48 @@ classdef msg_servo_output_raw < mavlink_message
     methods
         
         %Constructor: msg_servo_output_raw
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_servo_output_raw(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_servo_output_raw(packet,time_usec,servo1_raw,servo2_raw,servo3_raw,servo4_raw,servo5_raw,servo6_raw,servo7_raw,servo8_raw,servo9_raw,servo10_raw,servo11_raw,servo12_raw,servo13_raw,servo14_raw,servo15_raw,servo16_raw,port)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 19
+                
+				obj.time_usec = time_usec;
+				obj.servo1_raw = servo1_raw;
+				obj.servo2_raw = servo2_raw;
+				obj.servo3_raw = servo3_raw;
+				obj.servo4_raw = servo4_raw;
+				obj.servo5_raw = servo5_raw;
+				obj.servo6_raw = servo6_raw;
+				obj.servo7_raw = servo7_raw;
+				obj.servo8_raw = servo8_raw;
+				obj.servo9_raw = servo9_raw;
+				obj.servo10_raw = servo10_raw;
+				obj.servo11_raw = servo11_raw;
+				obj.servo12_raw = servo12_raw;
+				obj.servo13_raw = servo13_raw;
+				obj.servo14_raw = servo14_raw;
+				obj.servo15_raw = servo15_raw;
+				obj.servo16_raw = servo16_raw;
+				obj.port = port;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

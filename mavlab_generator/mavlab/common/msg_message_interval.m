@@ -16,16 +16,32 @@ classdef msg_message_interval < mavlink_message
     methods
         
         %Constructor: msg_message_interval
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_message_interval(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_message_interval(packet,interval_us,message_id)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 3
+                
+				obj.interval_us = interval_us;
+				obj.message_id = message_id;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

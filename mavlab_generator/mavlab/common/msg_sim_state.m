@@ -35,16 +35,51 @@ classdef msg_sim_state < mavlink_message
     methods
         
         %Constructor: msg_sim_state
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_sim_state(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_sim_state(packet,q1,q2,q3,q4,roll,pitch,yaw,xacc,yacc,zacc,xgyro,ygyro,zgyro,lat,lon,alt,std_dev_horz,std_dev_vert,vn,ve,vd)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 22
+                
+				obj.q1 = q1;
+				obj.q2 = q2;
+				obj.q3 = q3;
+				obj.q4 = q4;
+				obj.roll = roll;
+				obj.pitch = pitch;
+				obj.yaw = yaw;
+				obj.xacc = xacc;
+				obj.yacc = yacc;
+				obj.zacc = zacc;
+				obj.xgyro = xgyro;
+				obj.ygyro = ygyro;
+				obj.zgyro = zgyro;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
+				obj.std_dev_horz = std_dev_horz;
+				obj.std_dev_vert = std_dev_vert;
+				obj.vn = vn;
+				obj.ve = ve;
+				obj.vd = vd;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

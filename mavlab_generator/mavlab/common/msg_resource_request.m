@@ -19,16 +19,35 @@ classdef msg_resource_request < mavlink_message
     methods
         
         %Constructor: msg_resource_request
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_resource_request(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_resource_request(packet,request_id,uri_type,uri,transfer_type,storage)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 6
+                
+				obj.request_id = request_id;
+				obj.uri_type = uri_type;
+				obj.uri = uri;
+				obj.transfer_type = transfer_type;
+				obj.storage = storage;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

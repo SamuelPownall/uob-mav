@@ -16,16 +16,32 @@ classdef msg_encapsulated_data < mavlink_message
     methods
         
         %Constructor: msg_encapsulated_data
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_encapsulated_data(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_encapsulated_data(packet,seqnr,data)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 3
+                
+				obj.seqnr = seqnr;
+				obj.data = data;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

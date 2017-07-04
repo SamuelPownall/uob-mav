@@ -18,16 +18,34 @@ classdef msg_flight_information < mavlink_message
     methods
         
         %Constructor: msg_flight_information
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_flight_information(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_flight_information(packet,arming_time_utc,takeoff_time_utc,flight_uuid,time_boot_ms)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 5
+                
+				obj.arming_time_utc = arming_time_utc;
+				obj.takeoff_time_utc = takeoff_time_utc;
+				obj.flight_uuid = flight_uuid;
+				obj.time_boot_ms = time_boot_ms;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

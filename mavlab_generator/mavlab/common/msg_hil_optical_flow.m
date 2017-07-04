@@ -26,16 +26,42 @@ classdef msg_hil_optical_flow < mavlink_message
     methods
         
         %Constructor: msg_hil_optical_flow
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_hil_optical_flow(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_hil_optical_flow(packet,time_usec,integration_time_us,time_delta_distance_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,distance,temperature,sensor_id,quality)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 13
+                
+				obj.time_usec = time_usec;
+				obj.integration_time_us = integration_time_us;
+				obj.time_delta_distance_us = time_delta_distance_us;
+				obj.integrated_x = integrated_x;
+				obj.integrated_y = integrated_y;
+				obj.integrated_xgyro = integrated_xgyro;
+				obj.integrated_ygyro = integrated_ygyro;
+				obj.integrated_zgyro = integrated_zgyro;
+				obj.distance = distance;
+				obj.temperature = temperature;
+				obj.sensor_id = sensor_id;
+				obj.quality = quality;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission

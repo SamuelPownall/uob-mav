@@ -17,16 +17,33 @@ classdef msg_named_value_int < mavlink_message
     methods
         
         %Constructor: msg_named_value_int
-        %packet should be a fully constructed MAVLINK packet
-        function obj = msg_named_value_int(packet)
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_named_value_int(packet,time_boot_ms,value,name)
         
             obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
             if nargin == 1
-                obj.sysid = packet.sysid;
-                obj.compid = packet.compid;
-                obj.unpack(packet.payload)
-            end
             
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 4
+                
+				obj.time_boot_ms = time_boot_ms;
+				obj.value = value;
+				obj.name = name;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
         end
                         
         %Function: Packs this MAVLINK message into a packet for transmission
