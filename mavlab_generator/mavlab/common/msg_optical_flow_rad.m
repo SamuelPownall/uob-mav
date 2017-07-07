@@ -11,12 +11,12 @@ classdef msg_optical_flow_rad < mavlink_message
     properties        
 		time_usec	%Timestamp (microseconds, synced to UNIX time or since system boot) (uint64)
 		integration_time_us	%Integration time in microseconds. Divide integrated_x and integrated_y by the integration time to obtain average flow. The integration time also indicates the. (uint32)
-		time_delta_distance_us	%Time in microseconds since the distance was sampled. (uint32)
 		integrated_x	%Flow in radians around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor linear motion along the positive Y axis induces a negative flow.) (single)
 		integrated_y	%Flow in radians around Y axis (Sensor RH rotation about the Y axis induces a positive flow. Sensor linear motion along the positive X axis induces a positive flow.) (single)
 		integrated_xgyro	%RH rotation around X axis (rad) (single)
 		integrated_ygyro	%RH rotation around Y axis (rad) (single)
 		integrated_zgyro	%RH rotation around Z axis (rad) (single)
+		time_delta_distance_us	%Time in microseconds since the distance was sampled. (uint32)
 		distance	%Distance to the center of the flow field in meters. Positive value (including zero): distance known. Negative value: Unknown distance. (single)
 		temperature	%Temperature * 100 in centi-degrees Celsius (int16)
 		sensor_id	%Sensor ID (uint8)
@@ -27,7 +27,7 @@ classdef msg_optical_flow_rad < mavlink_message
         
         %Constructor: msg_optical_flow_rad
         %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_optical_flow_rad(packet,time_usec,integration_time_us,time_delta_distance_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,distance,temperature,sensor_id,quality)
+		function obj = msg_optical_flow_rad(packet,time_usec,integration_time_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,time_delta_distance_us,distance,temperature,sensor_id,quality)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -47,12 +47,12 @@ classdef msg_optical_flow_rad < mavlink_message
                 
 				obj.time_usec = time_usec;
 				obj.integration_time_us = integration_time_us;
-				obj.time_delta_distance_us = time_delta_distance_us;
 				obj.integrated_x = integrated_x;
 				obj.integrated_y = integrated_y;
 				obj.integrated_xgyro = integrated_xgyro;
 				obj.integrated_ygyro = integrated_ygyro;
 				obj.integrated_zgyro = integrated_zgyro;
+				obj.time_delta_distance_us = time_delta_distance_us;
 				obj.distance = distance;
 				obj.temperature = temperature;
 				obj.sensor_id = sensor_id;
@@ -79,8 +79,6 @@ classdef msg_optical_flow_rad < mavlink_message
 
 				packet.payload.putUINT32(obj.integration_time_us);
 
-				packet.payload.putUINT32(obj.time_delta_distance_us);
-
 				packet.payload.putSINGLE(obj.integrated_x);
 
 				packet.payload.putSINGLE(obj.integrated_y);
@@ -90,6 +88,8 @@ classdef msg_optical_flow_rad < mavlink_message
 				packet.payload.putSINGLE(obj.integrated_ygyro);
 
 				packet.payload.putSINGLE(obj.integrated_zgyro);
+
+				packet.payload.putUINT32(obj.time_delta_distance_us);
 
 				packet.payload.putSINGLE(obj.distance);
 
@@ -115,8 +115,6 @@ classdef msg_optical_flow_rad < mavlink_message
 
 			obj.integration_time_us = payload.getUINT32();
 
-			obj.time_delta_distance_us = payload.getUINT32();
-
 			obj.integrated_x = payload.getSINGLE();
 
 			obj.integrated_y = payload.getSINGLE();
@@ -126,6 +124,8 @@ classdef msg_optical_flow_rad < mavlink_message
 			obj.integrated_ygyro = payload.getSINGLE();
 
 			obj.integrated_zgyro = payload.getSINGLE();
+
+			obj.time_delta_distance_us = payload.getUINT32();
 
 			obj.distance = payload.getSINGLE();
 
@@ -144,8 +144,6 @@ classdef msg_optical_flow_rad < mavlink_message
                 result = 'time_usec';                                        
             elseif size(obj.integration_time_us,2) ~= 1
                 result = 'integration_time_us';                                        
-            elseif size(obj.time_delta_distance_us,2) ~= 1
-                result = 'time_delta_distance_us';                                        
             elseif size(obj.integrated_x,2) ~= 1
                 result = 'integrated_x';                                        
             elseif size(obj.integrated_y,2) ~= 1
@@ -156,6 +154,8 @@ classdef msg_optical_flow_rad < mavlink_message
                 result = 'integrated_ygyro';                                        
             elseif size(obj.integrated_zgyro,2) ~= 1
                 result = 'integrated_zgyro';                                        
+            elseif size(obj.time_delta_distance_us,2) ~= 1
+                result = 'time_delta_distance_us';                                        
             elseif size(obj.distance,2) ~= 1
                 result = 'distance';                                        
             elseif size(obj.temperature,2) ~= 1
@@ -185,14 +185,6 @@ classdef msg_optical_flow_rad < mavlink_message
                 mavlink.throwTypeError('value','uint32');
             end
         end
-                                    
-        function set.time_delta_distance_us(obj,value)
-            if value == uint32(value)
-                obj.time_delta_distance_us = uint32(value);
-            else
-                mavlink.throwTypeError('value','uint32');
-            end
-        end
                                 
         function set.integrated_x(obj,value)
             obj.integrated_x = single(value);
@@ -212,6 +204,14 @@ classdef msg_optical_flow_rad < mavlink_message
                                 
         function set.integrated_zgyro(obj,value)
             obj.integrated_zgyro = single(value);
+        end
+                                    
+        function set.time_delta_distance_us(obj,value)
+            if value == uint32(value)
+                obj.time_delta_distance_us = uint32(value);
+            else
+                mavlink.throwTypeError('value','uint32');
+            end
         end
                                 
         function set.distance(obj,value)

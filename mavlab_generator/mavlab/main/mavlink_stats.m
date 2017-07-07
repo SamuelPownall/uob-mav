@@ -3,12 +3,22 @@ classdef mavlink_stats < handle
     %Contains information such as error counts and packet drops
     
     properties
+        failedCRC = 0;
         packetsDropped = 0;
         packetsReceived = 0;
         packetLoss = 0;
     end
     
     methods
+        
+        %Increment failed CRC ounter
+        function incrementFailedCRC(obj, incr)
+            if nargin == 2
+                obj.faiedCRC = obj.failedCRC + incr; 
+            else
+                obj.failedCRC = obj.failedCRC + 1; 
+            end
+        end
         
         %Increment packet drop counter
         function incrementPacketsDropped(obj, incr)
@@ -31,7 +41,7 @@ classdef mavlink_stats < handle
         %Calculate current packet loss
         function packetLoss = get.packetLoss(obj)
             if obj.packetsReceived > 0
-                packetLoss = 100 * obj.packetsDropped / (obj.packetsDropped + obj.packetsReceived);
+                packetLoss = obj.packetsDropped / (obj.packetsDropped + obj.packetsReceived);
             else
                 packetLoss = -1;
             end

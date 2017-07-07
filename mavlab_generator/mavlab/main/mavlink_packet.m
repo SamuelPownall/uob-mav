@@ -67,6 +67,177 @@ classdef mavlink_packet < handle
             message = [];
             switch obj.msgid        
                 
+                case 150
+                    message = msg_sensor_offsets(obj);                            
+                
+                case 151
+                    message = msg_set_mag_offsets(obj);                            
+                
+                case 152
+                    message = msg_meminfo(obj);                            
+                
+                case 153
+                    message = msg_ap_adc(obj);                            
+                
+                case 154
+                    message = msg_digicam_configure(obj);                            
+                
+                case 155
+                    message = msg_digicam_control(obj);                            
+                
+                case 156
+                    message = msg_mount_configure(obj);                            
+                
+                case 157
+                    message = msg_mount_control(obj);                            
+                
+                case 158
+                    message = msg_mount_status(obj);                            
+                
+                case 160
+                    message = msg_fence_point(obj);                            
+                
+                case 161
+                    message = msg_fence_fetch_point(obj);                            
+                
+                case 162
+                    message = msg_fence_status(obj);                            
+                
+                case 163
+                    message = msg_ahrs(obj);                            
+                
+                case 164
+                    message = msg_simstate(obj);                            
+                
+                case 165
+                    message = msg_hwstatus(obj);                            
+                
+                case 166
+                    message = msg_radio(obj);                            
+                
+                case 167
+                    message = msg_limits_status(obj);                            
+                
+                case 168
+                    message = msg_wind(obj);                            
+                
+                case 169
+                    message = msg_data16(obj);                            
+                
+                case 170
+                    message = msg_data32(obj);                            
+                
+                case 171
+                    message = msg_data64(obj);                            
+                
+                case 172
+                    message = msg_data96(obj);                            
+                
+                case 173
+                    message = msg_rangefinder(obj);                            
+                
+                case 174
+                    message = msg_airspeed_autocal(obj);                            
+                
+                case 175
+                    message = msg_rally_point(obj);                            
+                
+                case 176
+                    message = msg_rally_fetch_point(obj);                            
+                
+                case 177
+                    message = msg_compassmot_status(obj);                            
+                
+                case 178
+                    message = msg_ahrs2(obj);                            
+                
+                case 179
+                    message = msg_camera_status(obj);                            
+                
+                case 180
+                    message = msg_camera_feedback(obj);                            
+                
+                case 181
+                    message = msg_battery2(obj);                            
+                
+                case 182
+                    message = msg_ahrs3(obj);                            
+                
+                case 183
+                    message = msg_autopilot_version_request(obj);                            
+                
+                case 186
+                    message = msg_led_control(obj);                            
+                
+                case 191
+                    message = msg_mag_cal_progress(obj);                            
+                
+                case 192
+                    message = msg_mag_cal_report(obj);                            
+                
+                case 193
+                    message = msg_ekf_status_report(obj);                            
+                
+                case 194
+                    message = msg_pid_tuning(obj);                            
+                
+                case 200
+                    message = msg_gimbal_report(obj);                            
+                
+                case 201
+                    message = msg_gimbal_control(obj);                            
+                
+                case 202
+                    message = msg_gimbal_reset(obj);                            
+                
+                case 203
+                    message = msg_gimbal_axis_calibration_progress(obj);                            
+                
+                case 204
+                    message = msg_gimbal_set_home_offsets(obj);                            
+                
+                case 205
+                    message = msg_gimbal_home_offset_calibration_result(obj);                            
+                
+                case 206
+                    message = msg_gimbal_set_factory_parameters(obj);                            
+                
+                case 207
+                    message = msg_gimbal_factory_parameters_loaded(obj);                            
+                
+                case 208
+                    message = msg_gimbal_erase_firmware_and_config(obj);                            
+                
+                case 209
+                    message = msg_gimbal_perform_factory_tests(obj);                            
+                
+                case 210
+                    message = msg_gimbal_report_factory_tests_progress(obj);                            
+                
+                case 211
+                    message = msg_gimbal_request_axis_calibration_status(obj);                            
+                
+                case 212
+                    message = msg_gimbal_report_axis_calibration_status(obj);                            
+                
+                case 213
+                    message = msg_gimbal_request_axis_calibration(obj);                            
+                
+                case 215
+                    message = msg_gopro_heartbeat(obj);                            
+                
+                case 216
+                    message = msg_gopro_get_request(obj);                            
+                
+                case 217
+                    message = msg_gopro_get_response(obj);                            
+                
+                case 218
+                    message = msg_gopro_set_request(obj);                            
+                
+                case 219
+                    message = msg_gopro_set_response(obj);                            
+                
                 case 0
                     message = msg_heartbeat(obj);                            
                 
@@ -417,9 +588,6 @@ classdef mavlink_packet < handle
                 
                 case 149
                     message = msg_landing_target(obj);                            
-                
-                case 180
-                    message = msg_sat_telemetry(obj);                            
                 
                 case 230
                     message = msg_estimator_status(obj);                            

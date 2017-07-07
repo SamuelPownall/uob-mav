@@ -90,7 +90,7 @@ classdef %s < mavlink_message
                       'char' : 1, 'uint8_t_mavlink_version' : 1}
         
         sort_mapping = {'double' : 0, 'int64_t' : 0, 'uint64_t': 0, 'int32_t' : 1, 'uint32_t': 1,
-                      'float' : 2, 'int16_t' : 3, 'uint16_t': 3, 'int8_t' : 4, 'uint8_t' : 4,
+                      'float' : 1, 'int16_t' : 3, 'uint16_t': 3, 'int8_t' : 4, 'uint8_t' : 4,
                       'char' : 4, 'uint8_t_mavlink_version' : 4}
             
         #Get message fields
@@ -666,47 +666,56 @@ def generate(xml_path, output_path):
     Parameters
     ----------
     xml_path: string
-        Path to the MAVLINK XML source file
+        Path to the folder containing the MAVLINK XML dialect files
     output_path: string
         Path to the generation location for MAVLAB
     ----------
     
     """
     
-    #Load the MAVLINK message definition XML document and get the root
-    tree = ET.parse(xml_path)
-    root = tree.getroot()
-    xml_name = basename(xml_path).split('.')[0]
+    full_parsed_msg_list = []
     
     #Create the folder system at the output path
     mavlab_path = '%s/mavlab' % output_path
-    message_path = '%s/%s' % (mavlab_path, xml_name)
-    main_path = '%s/main' % mavlab_path
-    
     if not os.path.exists(mavlab_path):
         os.makedirs(mavlab_path)
-        
-    if not os.path.exists(message_path):
-        os.makedirs(message_path)
-        
+            
+    main_path = '%s/main' % mavlab_path    
     if not os.path.exists(main_path):
         os.makedirs(main_path)
     
-    #Find the message list and generate a MATLAB class file for each message
-    msg_list = root.find('messages')
-    parsed_msg_list = generate_message_classes(message_path, msg_list)
+    for filename in os.listdir(xml_path):
+        if not filename.endswith('.xml'):
+            continue
+        fullname = os.path.join(xml_path, filename)
+    
+        #Load the MAVLINK message definition XML document and get the root
+        tree = ET.parse(fullname)
+        root = tree.getroot()
+        xml_name = basename(fullname).split('.')[0]
+    
+        #Create a folder for this dialect
+        message_path = '%s/%s' % (mavlab_path, xml_name)
+        if not os.path.exists(message_path):
+            os.makedirs(message_path)
+    
+        #Find the message list and generate a MATLAB class file for each message
+        msg_list = root.find('messages')
+        parsed_msg_list = generate_message_classes(message_path, msg_list)
         
-    #Generate the enumeration class for this XML file
-    enum_list = root.find('enums')
-    generate_enum_class(message_path, xml_name, enum_list)
+        #Generate the enumeration class for this XML file
+        enum_list = root.find('enums')
+        generate_enum_class(message_path, xml_name, enum_list)
+        
+        full_parsed_msg_list += parsed_msg_list
     
     #Generate the MAVLINK packet class
-    generate_packet_class(main_path, parsed_msg_list)
+    generate_packet_class(main_path, full_parsed_msg_list)
     
     #Generate the MAVLINK CRC class
-    generate_crc_class(main_path, parsed_msg_list)
+    generate_crc_class(main_path, full_parsed_msg_list)
         
     #Copy fixed classes into the main folder
     copy_fixed_classes(main_path)
         
-generate('../data/common.xml', '../')
+generate('../data', '../')

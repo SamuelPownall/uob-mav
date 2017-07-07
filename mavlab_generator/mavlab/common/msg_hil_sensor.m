@@ -10,7 +10,6 @@ classdef msg_hil_sensor < mavlink_message
     
     properties        
 		time_usec	%Timestamp (microseconds, synced to UNIX time or since system boot) (uint64)
-		fields_updated	%Bitmask for fields that have updated since last message, bit 0 = xacc, bit 12: temperature, bit 31: full reset of attitude/position/velocities/etc was performed in sim. (uint32)
 		xacc	%X acceleration (m/s^2) (single)
 		yacc	%Y acceleration (m/s^2) (single)
 		zacc	%Z acceleration (m/s^2) (single)
@@ -24,13 +23,14 @@ classdef msg_hil_sensor < mavlink_message
 		diff_pressure	%Differential pressure (airspeed) in millibar (single)
 		pressure_alt	%Altitude calculated from pressure (single)
 		temperature	%Temperature in degrees celsius (single)
+		fields_updated	%Bitmask for fields that have updated since last message, bit 0 = xacc, bit 12: temperature, bit 31: full reset of attitude/position/velocities/etc was performed in sim. (uint32)
 	end
     
     methods
         
         %Constructor: msg_hil_sensor
         %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_hil_sensor(packet,time_usec,fields_updated,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature)
+		function obj = msg_hil_sensor(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature,fields_updated)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -49,7 +49,6 @@ classdef msg_hil_sensor < mavlink_message
             elseif nargin == 16
                 
 				obj.time_usec = time_usec;
-				obj.fields_updated = fields_updated;
 				obj.xacc = xacc;
 				obj.yacc = yacc;
 				obj.zacc = zacc;
@@ -63,6 +62,7 @@ classdef msg_hil_sensor < mavlink_message
 				obj.diff_pressure = diff_pressure;
 				obj.pressure_alt = pressure_alt;
 				obj.temperature = temperature;
+				obj.fields_updated = fields_updated;
         
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructor arguments is not valid');
@@ -82,8 +82,6 @@ classdef msg_hil_sensor < mavlink_message
                 packet.msgid = msg_hil_sensor.ID;
                 
 				packet.payload.putUINT64(obj.time_usec);
-
-				packet.payload.putUINT32(obj.fields_updated);
 
 				packet.payload.putSINGLE(obj.xacc);
 
@@ -110,6 +108,8 @@ classdef msg_hil_sensor < mavlink_message
 				packet.payload.putSINGLE(obj.pressure_alt);
 
 				packet.payload.putSINGLE(obj.temperature);
+
+				packet.payload.putUINT32(obj.fields_updated);
         
             else
                 packet = [];
@@ -124,8 +124,6 @@ classdef msg_hil_sensor < mavlink_message
             payload.resetIndex();
         
 			obj.time_usec = payload.getUINT64();
-
-			obj.fields_updated = payload.getUINT32();
 
 			obj.xacc = payload.getSINGLE();
 
@@ -153,6 +151,8 @@ classdef msg_hil_sensor < mavlink_message
 
 			obj.temperature = payload.getSINGLE();
 
+			obj.fields_updated = payload.getUINT32();
+
 		end
         
         %Function: Returns either 0 or the name of the first encountered empty field.
@@ -160,8 +160,6 @@ classdef msg_hil_sensor < mavlink_message
                             
             if size(obj.time_usec,2) ~= 1
                 result = 'time_usec';                                        
-            elseif size(obj.fields_updated,2) ~= 1
-                result = 'fields_updated';                                        
             elseif size(obj.xacc,2) ~= 1
                 result = 'xacc';                                        
             elseif size(obj.yacc,2) ~= 1
@@ -187,7 +185,9 @@ classdef msg_hil_sensor < mavlink_message
             elseif size(obj.pressure_alt,2) ~= 1
                 result = 'pressure_alt';                                        
             elseif size(obj.temperature,2) ~= 1
-                result = 'temperature';                            
+                result = 'temperature';                                        
+            elseif size(obj.fields_updated,2) ~= 1
+                result = 'fields_updated';                            
             else
                 result = 0;
             end
@@ -199,14 +199,6 @@ classdef msg_hil_sensor < mavlink_message
                 obj.time_usec = uint64(value);
             else
                 mavlink.throwTypeError('value','uint64');
-            end
-        end
-                                    
-        function set.fields_updated(obj,value)
-            if value == uint32(value)
-                obj.fields_updated = uint32(value);
-            else
-                mavlink.throwTypeError('value','uint32');
             end
         end
                                 
@@ -260,6 +252,14 @@ classdef msg_hil_sensor < mavlink_message
                                 
         function set.temperature(obj,value)
             obj.temperature = single(value);
+        end
+                                    
+        function set.fields_updated(obj,value)
+            if value == uint32(value)
+                obj.fields_updated = uint32(value);
+            else
+                mavlink.throwTypeError('value','uint32');
+            end
         end
                         
 	end

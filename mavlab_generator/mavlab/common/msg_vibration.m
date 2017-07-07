@@ -10,19 +10,19 @@ classdef msg_vibration < mavlink_message
     
     properties        
 		time_usec	%Timestamp (micros since boot or Unix epoch) (uint64)
-		clipping_0	%first accelerometer clipping count (uint32)
-		clipping_1	%second accelerometer clipping count (uint32)
-		clipping_2	%third accelerometer clipping count (uint32)
 		vibration_x	%Vibration levels on X-axis (single)
 		vibration_y	%Vibration levels on Y-axis (single)
 		vibration_z	%Vibration levels on Z-axis (single)
+		clipping_0	%first accelerometer clipping count (uint32)
+		clipping_1	%second accelerometer clipping count (uint32)
+		clipping_2	%third accelerometer clipping count (uint32)
 	end
     
     methods
         
         %Constructor: msg_vibration
         %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_vibration(packet,time_usec,clipping_0,clipping_1,clipping_2,vibration_x,vibration_y,vibration_z)
+		function obj = msg_vibration(packet,time_usec,vibration_x,vibration_y,vibration_z,clipping_0,clipping_1,clipping_2)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -41,12 +41,12 @@ classdef msg_vibration < mavlink_message
             elseif nargin == 8
                 
 				obj.time_usec = time_usec;
-				obj.clipping_0 = clipping_0;
-				obj.clipping_1 = clipping_1;
-				obj.clipping_2 = clipping_2;
 				obj.vibration_x = vibration_x;
 				obj.vibration_y = vibration_y;
 				obj.vibration_z = vibration_z;
+				obj.clipping_0 = clipping_0;
+				obj.clipping_1 = clipping_1;
+				obj.clipping_2 = clipping_2;
         
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructor arguments is not valid');
@@ -67,17 +67,17 @@ classdef msg_vibration < mavlink_message
                 
 				packet.payload.putUINT64(obj.time_usec);
 
-				packet.payload.putUINT32(obj.clipping_0);
-
-				packet.payload.putUINT32(obj.clipping_1);
-
-				packet.payload.putUINT32(obj.clipping_2);
-
 				packet.payload.putSINGLE(obj.vibration_x);
 
 				packet.payload.putSINGLE(obj.vibration_y);
 
 				packet.payload.putSINGLE(obj.vibration_z);
+
+				packet.payload.putUINT32(obj.clipping_0);
+
+				packet.payload.putUINT32(obj.clipping_1);
+
+				packet.payload.putUINT32(obj.clipping_2);
         
             else
                 packet = [];
@@ -93,17 +93,17 @@ classdef msg_vibration < mavlink_message
         
 			obj.time_usec = payload.getUINT64();
 
-			obj.clipping_0 = payload.getUINT32();
-
-			obj.clipping_1 = payload.getUINT32();
-
-			obj.clipping_2 = payload.getUINT32();
-
 			obj.vibration_x = payload.getSINGLE();
 
 			obj.vibration_y = payload.getSINGLE();
 
 			obj.vibration_z = payload.getSINGLE();
+
+			obj.clipping_0 = payload.getUINT32();
+
+			obj.clipping_1 = payload.getUINT32();
+
+			obj.clipping_2 = payload.getUINT32();
 
 		end
         
@@ -112,18 +112,18 @@ classdef msg_vibration < mavlink_message
                             
             if size(obj.time_usec,2) ~= 1
                 result = 'time_usec';                                        
-            elseif size(obj.clipping_0,2) ~= 1
-                result = 'clipping_0';                                        
-            elseif size(obj.clipping_1,2) ~= 1
-                result = 'clipping_1';                                        
-            elseif size(obj.clipping_2,2) ~= 1
-                result = 'clipping_2';                                        
             elseif size(obj.vibration_x,2) ~= 1
                 result = 'vibration_x';                                        
             elseif size(obj.vibration_y,2) ~= 1
                 result = 'vibration_y';                                        
             elseif size(obj.vibration_z,2) ~= 1
-                result = 'vibration_z';                            
+                result = 'vibration_z';                                        
+            elseif size(obj.clipping_0,2) ~= 1
+                result = 'clipping_0';                                        
+            elseif size(obj.clipping_1,2) ~= 1
+                result = 'clipping_1';                                        
+            elseif size(obj.clipping_2,2) ~= 1
+                result = 'clipping_2';                            
             else
                 result = 0;
             end
@@ -136,6 +136,18 @@ classdef msg_vibration < mavlink_message
             else
                 mavlink.throwTypeError('value','uint64');
             end
+        end
+                                
+        function set.vibration_x(obj,value)
+            obj.vibration_x = single(value);
+        end
+                                
+        function set.vibration_y(obj,value)
+            obj.vibration_y = single(value);
+        end
+                                
+        function set.vibration_z(obj,value)
+            obj.vibration_z = single(value);
         end
                                     
         function set.clipping_0(obj,value)
@@ -160,18 +172,6 @@ classdef msg_vibration < mavlink_message
             else
                 mavlink.throwTypeError('value','uint32');
             end
-        end
-                                
-        function set.vibration_x(obj,value)
-            obj.vibration_x = single(value);
-        end
-                                
-        function set.vibration_y(obj,value)
-            obj.vibration_y = single(value);
-        end
-                                
-        function set.vibration_z(obj,value)
-            obj.vibration_z = single(value);
         end
                         
 	end

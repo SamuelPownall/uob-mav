@@ -1,0 +1,230 @@
+classdef msg_gimbal_report < mavlink_message
+    %MAVLINK Message Class
+    %Name: gimbal_report	ID: 200
+    %Description: 3 axis gimbal mesuraments
+            
+    properties(Constant)
+        ID = 200
+        LEN = 42
+    end
+    
+    properties        
+		delta_time	%Time since last update (seconds) (single)
+		delta_angle_x	%Delta angle X (radians) (single)
+		delta_angle_y	%Delta angle Y (radians) (single)
+		delta_angle_z	%Delta angle X (radians) (single)
+		delta_velocity_x	%Delta velocity X (m/s) (single)
+		delta_velocity_y	%Delta velocity Y (m/s) (single)
+		delta_velocity_z	%Delta velocity Z (m/s) (single)
+		joint_roll	% Joint ROLL (radians) (single)
+		joint_el	% Joint EL (radians) (single)
+		joint_az	% Joint AZ (radians) (single)
+		target_system	%System ID (uint8)
+		target_component	%Component ID (uint8)
+	end
+    
+    methods
+        
+        %Constructor: msg_gimbal_report
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_gimbal_report(packet,delta_time,delta_angle_x,delta_angle_y,delta_angle_z,delta_velocity_x,delta_velocity_y,delta_velocity_z,joint_roll,joint_el,joint_az,target_system,target_component)
+        
+            obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
+            if nargin == 1
+            
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 13
+                
+				obj.delta_time = delta_time;
+				obj.delta_angle_x = delta_angle_x;
+				obj.delta_angle_y = delta_angle_y;
+				obj.delta_angle_z = delta_angle_z;
+				obj.delta_velocity_x = delta_velocity_x;
+				obj.delta_velocity_y = delta_velocity_y;
+				obj.delta_velocity_z = delta_velocity_z;
+				obj.joint_roll = joint_roll;
+				obj.joint_el = joint_el;
+				obj.joint_az = joint_az;
+				obj.target_system = target_system;
+				obj.target_component = target_component;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
+        end
+                        
+        %Function: Packs this MAVLINK message into a packet for transmission
+        function packet = pack(obj)
+        
+            errorField = obj.verify();
+            if errorField == 0
+        
+                packet = mavlink_packet(msg_gimbal_report.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_gimbal_report.ID;
+                
+				packet.payload.putSINGLE(obj.delta_time);
+
+				packet.payload.putSINGLE(obj.delta_angle_x);
+
+				packet.payload.putSINGLE(obj.delta_angle_y);
+
+				packet.payload.putSINGLE(obj.delta_angle_z);
+
+				packet.payload.putSINGLE(obj.delta_velocity_x);
+
+				packet.payload.putSINGLE(obj.delta_velocity_y);
+
+				packet.payload.putSINGLE(obj.delta_velocity_z);
+
+				packet.payload.putSINGLE(obj.joint_roll);
+
+				packet.payload.putSINGLE(obj.joint_el);
+
+				packet.payload.putSINGLE(obj.joint_az);
+
+				packet.payload.putUINT8(obj.target_system);
+
+				packet.payload.putUINT8(obj.target_component);
+        
+            else
+                packet = [];
+                mavlink.throwPackingError(errorField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
+        function unpack(obj, payload)
+        
+            payload.resetIndex();
+        
+			obj.delta_time = payload.getSINGLE();
+
+			obj.delta_angle_x = payload.getSINGLE();
+
+			obj.delta_angle_y = payload.getSINGLE();
+
+			obj.delta_angle_z = payload.getSINGLE();
+
+			obj.delta_velocity_x = payload.getSINGLE();
+
+			obj.delta_velocity_y = payload.getSINGLE();
+
+			obj.delta_velocity_z = payload.getSINGLE();
+
+			obj.joint_roll = payload.getSINGLE();
+
+			obj.joint_el = payload.getSINGLE();
+
+			obj.joint_az = payload.getSINGLE();
+
+			obj.target_system = payload.getUINT8();
+
+			obj.target_component = payload.getUINT8();
+
+		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.delta_time,2) ~= 1
+                result = 'delta_time';                                        
+            elseif size(obj.delta_angle_x,2) ~= 1
+                result = 'delta_angle_x';                                        
+            elseif size(obj.delta_angle_y,2) ~= 1
+                result = 'delta_angle_y';                                        
+            elseif size(obj.delta_angle_z,2) ~= 1
+                result = 'delta_angle_z';                                        
+            elseif size(obj.delta_velocity_x,2) ~= 1
+                result = 'delta_velocity_x';                                        
+            elseif size(obj.delta_velocity_y,2) ~= 1
+                result = 'delta_velocity_y';                                        
+            elseif size(obj.delta_velocity_z,2) ~= 1
+                result = 'delta_velocity_z';                                        
+            elseif size(obj.joint_roll,2) ~= 1
+                result = 'joint_roll';                                        
+            elseif size(obj.joint_el,2) ~= 1
+                result = 'joint_el';                                        
+            elseif size(obj.joint_az,2) ~= 1
+                result = 'joint_az';                                        
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';                                        
+            elseif size(obj.target_component,2) ~= 1
+                result = 'target_component';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
+        function set.delta_time(obj,value)
+            obj.delta_time = single(value);
+        end
+                                
+        function set.delta_angle_x(obj,value)
+            obj.delta_angle_x = single(value);
+        end
+                                
+        function set.delta_angle_y(obj,value)
+            obj.delta_angle_y = single(value);
+        end
+                                
+        function set.delta_angle_z(obj,value)
+            obj.delta_angle_z = single(value);
+        end
+                                
+        function set.delta_velocity_x(obj,value)
+            obj.delta_velocity_x = single(value);
+        end
+                                
+        function set.delta_velocity_y(obj,value)
+            obj.delta_velocity_y = single(value);
+        end
+                                
+        function set.delta_velocity_z(obj,value)
+            obj.delta_velocity_z = single(value);
+        end
+                                
+        function set.joint_roll(obj,value)
+            obj.joint_roll = single(value);
+        end
+                                
+        function set.joint_el(obj,value)
+            obj.joint_el = single(value);
+        end
+                                
+        function set.joint_az(obj,value)
+            obj.joint_az = single(value);
+        end
+                                    
+        function set.target_system(obj,value)
+            if value == uint8(value)
+                obj.target_system = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                                    
+        function set.target_component(obj,value)
+            if value == uint8(value)
+                obj.target_component = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                        
+	end
+end

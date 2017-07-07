@@ -1,0 +1,214 @@
+classdef msg_mag_cal_progress < mavlink_message
+    %MAVLINK Message Class
+    %Name: mag_cal_progress	ID: 191
+    %Description: Reports progress of compass calibration.
+            
+    properties(Constant)
+        ID = 191
+        LEN = 27
+    end
+    
+    properties        
+		direction_x	%Body frame direction vector for display (single)
+		direction_y	%Body frame direction vector for display (single)
+		direction_z	%Body frame direction vector for display (single)
+		compass_id	%Compass being calibrated (uint8)
+		cal_mask	%Bitmask of compasses being calibrated (uint8)
+		cal_status	%Status (see MAG_CAL_STATUS enum) (uint8)
+		attempt	%Attempt number (uint8)
+		completion_pct	%Completion percentage (uint8)
+		completion_mask	%Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid) (uint8[10])
+	end
+    
+    methods
+        
+        %Constructor: msg_mag_cal_progress
+        %packet should be a fully constructed MAVLINK packet                
+		function obj = msg_mag_cal_progress(packet,direction_x,direction_y,direction_z,compass_id,cal_mask,cal_status,attempt,completion_pct,completion_mask)
+        
+            obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
+            if nargin == 1
+            
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+                
+            elseif nargin == 10
+                
+				obj.direction_x = direction_x;
+				obj.direction_y = direction_y;
+				obj.direction_z = direction_z;
+				obj.compass_id = compass_id;
+				obj.cal_mask = cal_mask;
+				obj.cal_status = cal_status;
+				obj.attempt = attempt;
+				obj.completion_pct = completion_pct;
+				obj.completion_mask = completion_mask;
+        
+            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructor arguments is not valid');
+            end
+        
+        end
+                        
+        %Function: Packs this MAVLINK message into a packet for transmission
+        function packet = pack(obj)
+        
+            errorField = obj.verify();
+            if errorField == 0
+        
+                packet = mavlink_packet(msg_mag_cal_progress.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_mag_cal_progress.ID;
+                
+				packet.payload.putSINGLE(obj.direction_x);
+
+				packet.payload.putSINGLE(obj.direction_y);
+
+				packet.payload.putSINGLE(obj.direction_z);
+
+				packet.payload.putUINT8(obj.compass_id);
+
+				packet.payload.putUINT8(obj.cal_mask);
+
+				packet.payload.putUINT8(obj.cal_status);
+
+				packet.payload.putUINT8(obj.attempt);
+
+				packet.payload.putUINT8(obj.completion_pct);
+            
+                for i = 1:10
+                    packet.payload.putUINT8(obj.completion_mask(i));
+                end
+                                        
+            else
+                packet = [];
+                mavlink.throwPackingError(errorField);
+            end
+            
+        end
+                        
+        %Function: Unpacks a MAVLINK payload and stores the data in this message
+        function unpack(obj, payload)
+        
+            payload.resetIndex();
+        
+			obj.direction_x = payload.getSINGLE();
+
+			obj.direction_y = payload.getSINGLE();
+
+			obj.direction_z = payload.getSINGLE();
+
+			obj.compass_id = payload.getUINT8();
+
+			obj.cal_mask = payload.getUINT8();
+
+			obj.cal_status = payload.getUINT8();
+
+			obj.attempt = payload.getUINT8();
+
+			obj.completion_pct = payload.getUINT8();
+            
+            for i = 1:10
+                obj.completion_mask(i) = payload.getUINT8();
+            end
+                            
+		end
+        
+        %Function: Returns either 0 or the name of the first encountered empty field.
+        function result = verify(obj)
+                            
+            if size(obj.direction_x,2) ~= 1
+                result = 'direction_x';                                        
+            elseif size(obj.direction_y,2) ~= 1
+                result = 'direction_y';                                        
+            elseif size(obj.direction_z,2) ~= 1
+                result = 'direction_z';                                        
+            elseif size(obj.compass_id,2) ~= 1
+                result = 'compass_id';                                        
+            elseif size(obj.cal_mask,2) ~= 1
+                result = 'cal_mask';                                        
+            elseif size(obj.cal_status,2) ~= 1
+                result = 'cal_status';                                        
+            elseif size(obj.attempt,2) ~= 1
+                result = 'attempt';                                        
+            elseif size(obj.completion_pct,2) ~= 1
+                result = 'completion_pct';                                        
+            elseif size(obj.completion_mask,2) ~= 10
+                result = 'completion_mask';                            
+            else
+                result = 0;
+            end
+            
+        end
+                            
+        function set.direction_x(obj,value)
+            obj.direction_x = single(value);
+        end
+                                
+        function set.direction_y(obj,value)
+            obj.direction_y = single(value);
+        end
+                                
+        function set.direction_z(obj,value)
+            obj.direction_z = single(value);
+        end
+                                    
+        function set.compass_id(obj,value)
+            if value == uint8(value)
+                obj.compass_id = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                                    
+        function set.cal_mask(obj,value)
+            if value == uint8(value)
+                obj.cal_mask = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                                    
+        function set.cal_status(obj,value)
+            if value == uint8(value)
+                obj.cal_status = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                                    
+        function set.attempt(obj,value)
+            if value == uint8(value)
+                obj.attempt = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                                    
+        function set.completion_pct(obj,value)
+            if value == uint8(value)
+                obj.completion_pct = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                                    
+        function set.completion_mask(obj,value)
+            if value == uint8(value)
+                obj.completion_mask = uint8(value);
+            else
+                mavlink.throwTypeError('value','uint8');
+            end
+        end
+                        
+	end
+end

@@ -9,12 +9,12 @@ classdef msg_command_int < mavlink_message
     end
     
     properties        
-		x	%PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7 (int32)
-		y	%PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7 (int32)
 		param1	%PARAM1, see MAV_CMD enum (single)
 		param2	%PARAM2, see MAV_CMD enum (single)
 		param3	%PARAM3, see MAV_CMD enum (single)
 		param4	%PARAM4, see MAV_CMD enum (single)
+		x	%PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7 (int32)
+		y	%PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7 (int32)
 		z	%PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame. (single)
 		command	%The scheduled action for the mission item. see MAV_CMD in common.xml MAVLink specs (uint16)
 		target_system	%System ID (uint8)
@@ -28,7 +28,7 @@ classdef msg_command_int < mavlink_message
         
         %Constructor: msg_command_int
         %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_command_int(packet,x,y,param1,param2,param3,param4,z,command,target_system,target_component,frame,current,autocontinue)
+		function obj = msg_command_int(packet,param1,param2,param3,param4,x,y,z,command,target_system,target_component,frame,current,autocontinue)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -46,12 +46,12 @@ classdef msg_command_int < mavlink_message
                 
             elseif nargin == 14
                 
-				obj.x = x;
-				obj.y = y;
 				obj.param1 = param1;
 				obj.param2 = param2;
 				obj.param3 = param3;
 				obj.param4 = param4;
+				obj.x = x;
+				obj.y = y;
 				obj.z = z;
 				obj.command = command;
 				obj.target_system = target_system;
@@ -77,10 +77,6 @@ classdef msg_command_int < mavlink_message
                 packet.compid = mavlink.COMPID;
                 packet.msgid = msg_command_int.ID;
                 
-				packet.payload.putINT32(obj.x);
-
-				packet.payload.putINT32(obj.y);
-
 				packet.payload.putSINGLE(obj.param1);
 
 				packet.payload.putSINGLE(obj.param2);
@@ -88,6 +84,10 @@ classdef msg_command_int < mavlink_message
 				packet.payload.putSINGLE(obj.param3);
 
 				packet.payload.putSINGLE(obj.param4);
+
+				packet.payload.putINT32(obj.x);
+
+				packet.payload.putINT32(obj.y);
 
 				packet.payload.putSINGLE(obj.z);
 
@@ -115,10 +115,6 @@ classdef msg_command_int < mavlink_message
         
             payload.resetIndex();
         
-			obj.x = payload.getINT32();
-
-			obj.y = payload.getINT32();
-
 			obj.param1 = payload.getSINGLE();
 
 			obj.param2 = payload.getSINGLE();
@@ -126,6 +122,10 @@ classdef msg_command_int < mavlink_message
 			obj.param3 = payload.getSINGLE();
 
 			obj.param4 = payload.getSINGLE();
+
+			obj.x = payload.getINT32();
+
+			obj.y = payload.getINT32();
 
 			obj.z = payload.getSINGLE();
 
@@ -146,11 +146,7 @@ classdef msg_command_int < mavlink_message
         %Function: Returns either 0 or the name of the first encountered empty field.
         function result = verify(obj)
                             
-            if size(obj.x,2) ~= 1
-                result = 'x';                                        
-            elseif size(obj.y,2) ~= 1
-                result = 'y';                                        
-            elseif size(obj.param1,2) ~= 1
+            if size(obj.param1,2) ~= 1
                 result = 'param1';                                        
             elseif size(obj.param2,2) ~= 1
                 result = 'param2';                                        
@@ -158,6 +154,10 @@ classdef msg_command_int < mavlink_message
                 result = 'param3';                                        
             elseif size(obj.param4,2) ~= 1
                 result = 'param4';                                        
+            elseif size(obj.x,2) ~= 1
+                result = 'x';                                        
+            elseif size(obj.y,2) ~= 1
+                result = 'y';                                        
             elseif size(obj.z,2) ~= 1
                 result = 'z';                                        
             elseif size(obj.command,2) ~= 1
@@ -177,23 +177,7 @@ classdef msg_command_int < mavlink_message
             end
             
         end
-                                
-        function set.x(obj,value)
-            if value == int32(value)
-                obj.x = int32(value);
-            else
-                mavlink.throwTypeError('value','int32');
-            end
-        end
-                                    
-        function set.y(obj,value)
-            if value == int32(value)
-                obj.y = int32(value);
-            else
-                mavlink.throwTypeError('value','int32');
-            end
-        end
-                                
+                            
         function set.param1(obj,value)
             obj.param1 = single(value);
         end
@@ -208,6 +192,22 @@ classdef msg_command_int < mavlink_message
                                 
         function set.param4(obj,value)
             obj.param4 = single(value);
+        end
+                                    
+        function set.x(obj,value)
+            if value == int32(value)
+                obj.x = int32(value);
+            else
+                mavlink.throwTypeError('value','int32');
+            end
+        end
+                                    
+        function set.y(obj,value)
+            if value == int32(value)
+                obj.y = int32(value);
+            else
+                mavlink.throwTypeError('value','int32');
+            end
         end
                                 
         function set.z(obj,value)

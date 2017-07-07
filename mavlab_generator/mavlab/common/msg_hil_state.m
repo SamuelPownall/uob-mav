@@ -10,15 +10,15 @@ classdef msg_hil_state < mavlink_message
     
     properties        
 		time_usec	%Timestamp (microseconds since UNIX epoch or microseconds since system boot) (uint64)
-		lat	%Latitude, expressed as * 1E7 (int32)
-		lon	%Longitude, expressed as * 1E7 (int32)
-		alt	%Altitude in meters, expressed as * 1000 (millimeters) (int32)
 		roll	%Roll angle (rad) (single)
 		pitch	%Pitch angle (rad) (single)
 		yaw	%Yaw angle (rad) (single)
 		rollspeed	%Body frame roll / phi angular speed (rad/s) (single)
 		pitchspeed	%Body frame pitch / theta angular speed (rad/s) (single)
 		yawspeed	%Body frame yaw / psi angular speed (rad/s) (single)
+		lat	%Latitude, expressed as * 1E7 (int32)
+		lon	%Longitude, expressed as * 1E7 (int32)
+		alt	%Altitude in meters, expressed as * 1000 (millimeters) (int32)
 		vx	%Ground X Speed (Latitude), expressed as m/s * 100 (int16)
 		vy	%Ground Y Speed (Longitude), expressed as m/s * 100 (int16)
 		vz	%Ground Z Speed (Altitude), expressed as m/s * 100 (int16)
@@ -31,7 +31,7 @@ classdef msg_hil_state < mavlink_message
         
         %Constructor: msg_hil_state
         %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_hil_state(packet,time_usec,lat,lon,alt,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed,vx,vy,vz,xacc,yacc,zacc)
+		function obj = msg_hil_state(packet,time_usec,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed,lat,lon,alt,vx,vy,vz,xacc,yacc,zacc)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -50,15 +50,15 @@ classdef msg_hil_state < mavlink_message
             elseif nargin == 17
                 
 				obj.time_usec = time_usec;
-				obj.lat = lat;
-				obj.lon = lon;
-				obj.alt = alt;
 				obj.roll = roll;
 				obj.pitch = pitch;
 				obj.yaw = yaw;
 				obj.rollspeed = rollspeed;
 				obj.pitchspeed = pitchspeed;
 				obj.yawspeed = yawspeed;
+				obj.lat = lat;
+				obj.lon = lon;
+				obj.alt = alt;
 				obj.vx = vx;
 				obj.vy = vy;
 				obj.vz = vz;
@@ -85,12 +85,6 @@ classdef msg_hil_state < mavlink_message
                 
 				packet.payload.putUINT64(obj.time_usec);
 
-				packet.payload.putINT32(obj.lat);
-
-				packet.payload.putINT32(obj.lon);
-
-				packet.payload.putINT32(obj.alt);
-
 				packet.payload.putSINGLE(obj.roll);
 
 				packet.payload.putSINGLE(obj.pitch);
@@ -102,6 +96,12 @@ classdef msg_hil_state < mavlink_message
 				packet.payload.putSINGLE(obj.pitchspeed);
 
 				packet.payload.putSINGLE(obj.yawspeed);
+
+				packet.payload.putINT32(obj.lat);
+
+				packet.payload.putINT32(obj.lon);
+
+				packet.payload.putINT32(obj.alt);
 
 				packet.payload.putINT16(obj.vx);
 
@@ -129,12 +129,6 @@ classdef msg_hil_state < mavlink_message
         
 			obj.time_usec = payload.getUINT64();
 
-			obj.lat = payload.getINT32();
-
-			obj.lon = payload.getINT32();
-
-			obj.alt = payload.getINT32();
-
 			obj.roll = payload.getSINGLE();
 
 			obj.pitch = payload.getSINGLE();
@@ -146,6 +140,12 @@ classdef msg_hil_state < mavlink_message
 			obj.pitchspeed = payload.getSINGLE();
 
 			obj.yawspeed = payload.getSINGLE();
+
+			obj.lat = payload.getINT32();
+
+			obj.lon = payload.getINT32();
+
+			obj.alt = payload.getINT32();
 
 			obj.vx = payload.getINT16();
 
@@ -166,12 +166,6 @@ classdef msg_hil_state < mavlink_message
                             
             if size(obj.time_usec,2) ~= 1
                 result = 'time_usec';                                        
-            elseif size(obj.lat,2) ~= 1
-                result = 'lat';                                        
-            elseif size(obj.lon,2) ~= 1
-                result = 'lon';                                        
-            elseif size(obj.alt,2) ~= 1
-                result = 'alt';                                        
             elseif size(obj.roll,2) ~= 1
                 result = 'roll';                                        
             elseif size(obj.pitch,2) ~= 1
@@ -184,6 +178,12 @@ classdef msg_hil_state < mavlink_message
                 result = 'pitchspeed';                                        
             elseif size(obj.yawspeed,2) ~= 1
                 result = 'yawspeed';                                        
+            elseif size(obj.lat,2) ~= 1
+                result = 'lat';                                        
+            elseif size(obj.lon,2) ~= 1
+                result = 'lon';                                        
+            elseif size(obj.alt,2) ~= 1
+                result = 'alt';                                        
             elseif size(obj.vx,2) ~= 1
                 result = 'vx';                                        
             elseif size(obj.vy,2) ~= 1
@@ -209,30 +209,6 @@ classdef msg_hil_state < mavlink_message
                 mavlink.throwTypeError('value','uint64');
             end
         end
-                                    
-        function set.lat(obj,value)
-            if value == int32(value)
-                obj.lat = int32(value);
-            else
-                mavlink.throwTypeError('value','int32');
-            end
-        end
-                                    
-        function set.lon(obj,value)
-            if value == int32(value)
-                obj.lon = int32(value);
-            else
-                mavlink.throwTypeError('value','int32');
-            end
-        end
-                                    
-        function set.alt(obj,value)
-            if value == int32(value)
-                obj.alt = int32(value);
-            else
-                mavlink.throwTypeError('value','int32');
-            end
-        end
                                 
         function set.roll(obj,value)
             obj.roll = single(value);
@@ -256,6 +232,30 @@ classdef msg_hil_state < mavlink_message
                                 
         function set.yawspeed(obj,value)
             obj.yawspeed = single(value);
+        end
+                                    
+        function set.lat(obj,value)
+            if value == int32(value)
+                obj.lat = int32(value);
+            else
+                mavlink.throwTypeError('value','int32');
+            end
+        end
+                                    
+        function set.lon(obj,value)
+            if value == int32(value)
+                obj.lon = int32(value);
+            else
+                mavlink.throwTypeError('value','int32');
+            end
+        end
+                                    
+        function set.alt(obj,value)
+            if value == int32(value)
+                obj.alt = int32(value);
+            else
+                mavlink.throwTypeError('value','int32');
+            end
         end
                                     
         function set.vx(obj,value)

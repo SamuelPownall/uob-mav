@@ -21,6 +21,7 @@ classdef mavlink_parser < handle
         msg_received;
         packet;
         state;
+        last_seq;
     end
     
     %Public object methods
@@ -69,7 +70,7 @@ classdef mavlink_parser < handle
                     %Get the message ID 
                     case obj.STATE_GOT_COMPID
                         obj.packet.msgid = char;
-                        if obj.packet.msgid == 0
+                        if obj.packet.len == 0
                             obj.state = obj.STATE_GOT_PAYLOAD;
                         else
                             obj.state = obj.STATE_GOT_MSGID;
@@ -87,6 +88,7 @@ classdef mavlink_parser < handle
                         obj.packet.generateCRC();
                         if char ~= obj.packet.crc.getLSB()
                             obj.state = obj.STATE_IDLE;
+                            mavlink.stats.incrementFailedCRC();
                             if char == mavlink_packet.STX
                                 obj.state = obj.STATE_GOT_STX;
                             end
@@ -98,6 +100,7 @@ classdef mavlink_parser < handle
                     case obj.STATE_GOT_CRC1
                         if char ~= obj.packet.crc.getMSB()
                             obj.state = obj.STATE_IDLE;
+                            mavlink.stats.incrementFailedCRC();
                             if char == mavlink_packet.STX
                                 obj.state = obj.STATE_GOT_STX;
                             end
@@ -110,6 +113,18 @@ classdef mavlink_parser < handle
                 %If the packet is complete return it
                 if obj.msg_received
                     packet = obj.packet;
+                    
+                    %Check whether any packets have been dropped
+                    if ~isempty(obj.last_seq)
+                        seq_diff = double(packet.seq) - double(obj.last_seq);
+                        if seq_diff < 0
+                            seq_diff = seq_diff + 256;
+                        end
+                        mavlink.stats.incrementPacketsDropped(seq_diff - 1);
+                    end
+                    
+                    obj.last_seq = packet.seq;
+                    mavlink.stats.incrementPacketsReceived()
                 else
                     packet = [];
                 end

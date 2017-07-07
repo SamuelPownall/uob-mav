@@ -3610,26 +3610,6 @@
             <field type="float" name="size_x">Size in radians of target along x-axis</field>
             <field type="float" name="size_y">Size in radians of target along y-axis</field>
         </message>
-		
-		<!-- SATCOMM MESSAGES -->
-		
-		<message id="180" name="SAT_TELEMETRY">
-			<description>Custom MAVLink message for telemetry over IridiumSBD</description>
-			<field type="uint32_t" name="time">Description of the field</field>
-			<field type="int32_t" name="latitude">Description of the field</field>
-			<field type="int32_t" name="longitude">Description of the field</field>
-			<field type="float" name="altitude">Description of the field</field>
-			<field type="uint16_t" name="nav_bearing">Description of the field</field>
-			<field type="float" name="nav_distance">Description of the field</field>
-			<field type="uint16_t" name="air_speed">Description of the field</field>
-			<field type="uint8_t" name="gps_fixtype">Description of the field</field>
-			<field type="uint16_t" name="bat_voltage">Description of the field</field>
-			<field type="uint8_t" name="bat_percent">Description of the field</field>
-			<field type="uint16_t" name="bat_current">Description of the field</field>
-			<field type="int16_t" name="roll">Description of the field</field>
-			<field type="int16_t" name="pitch">Description of the field</field>
-			<field type="int16_t" name="vertical_speed">Description of the field</field>
-		</message>
 
         <!-- MESSAGE IDs 180 - 229: Space for custom messages in individual projectname_messages.xml files -->
 		
