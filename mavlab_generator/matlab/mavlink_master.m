@@ -54,6 +54,15 @@ classdef mavlink
            mavlink.throwError();
            fprintf(2,'%s\n\n',description)
         end
+        
+        %Holds a persistent stat object
+        function mavstats = stats()
+            persistent stats;
+            if isempty(stats)
+                stats = mavlink_stats();
+            end
+            mavstats = stats;
+        end
              
     end
     

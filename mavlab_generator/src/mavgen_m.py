@@ -520,6 +520,7 @@ def copy_fixed_classes(main_path):
     copyfile('../matlab/mavlink_message_master.m','%s/mavlink_message.m' % main_path)
     copyfile('../matlab/mavlink_payload_master.m','%s/mavlink_payload.m' % main_path)
     copyfile('../matlab/mavlink_parser_master.m','%s/mavlink_parser.m' % main_path)
+    copyfile('../matlab/mavlink_stats_master.m','%s/mavlink_stats.m' % main_path)
     copyfile('../matlab/mavlink_master.m','%s/mavlink.m' % main_path)
     
     
