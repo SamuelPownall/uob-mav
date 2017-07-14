@@ -1,8 +1,7 @@
 classdef msg_gps_raw_int < mavlink_message
     %MAVLINK Message Class
     %Name: gps_raw_int	ID: 24
-    %Description: The global position, as returned by the Global Positioning System (GPS). This is
-                NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate. Coordinate frame is right-handed, Z-axis up (GPS frame).
+    %Description: The global position, as returned by the Global Positioning System (GPS). This is                 NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate. Coordinate frame is right-handed, Z-axis up (GPS frame).
             
     properties(Constant)
         ID = 24

@@ -1,9 +1,7 @@
 classdef msg_gimbal_home_offset_calibration_result < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_home_offset_calibration_result	ID: 205
-    %Description: 
-            Sent by the gimbal after it receives a SET_HOME_OFFSETS message to indicate the result of the home offset calibration
-        
+    %Description:              Sent by the gimbal after it receives a SET_HOME_OFFSETS message to indicate the result of the home offset calibration         
             
     properties(Constant)
         ID = 205

@@ -1,13 +1,7 @@
 classdef msg_gimbal_erase_firmware_and_config < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_erase_firmware_and_config	ID: 208
-    %Description: 
-            Commands the gimbal to erase its firmware image and flash configuration, leaving only the bootloader.  The gimbal will then reboot into the bootloader,
-            ready for the load of a new application firmware image.  Erasing the flash configuration will cause the gimbal to re-perform axis calibration when a
-            new firmware image is loaded, and will cause all tuning parameters to return to their factory defaults.  WARNING: sending this command will render a
-            gimbal inoperable until a new firmware image is loaded onto it.  For this reason, a particular "knock" value must be sent for the command to take effect.
-            Use this command at your own risk
-        
+    %Description:              Commands the gimbal to erase its firmware image and flash configuration, leaving only the bootloader.  The gimbal will then reboot into the bootloader,             ready for the load of a new application firmware image.  Erasing the flash configuration will cause the gimbal to re-perform axis calibration when a             new firmware image is loaded, and will cause all tuning parameters to return to their factory defaults.  WARNING: sending this command will render a             gimbal inoperable until a new firmware image is loaded onto it.  For this reason, a particular "knock" value must be sent for the command to take effect.             Use this command at your own risk         
             
     properties(Constant)
         ID = 208

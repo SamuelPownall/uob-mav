@@ -1,10 +1,7 @@
 classdef msg_gimbal_request_axis_calibration < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_request_axis_calibration	ID: 213
-    %Description: 
-			Requests any currently uncalibrated gimbal axes to run the axis calibration procedure.  An axis is considered uncalibrated if its commutation calibration
-			slope and intercept are 0
-		
+    %Description:  			Requests any currently uncalibrated gimbal axes to run the axis calibration procedure.  An axis is considered uncalibrated if its commutation calibration 			slope and intercept are 0 		
             
     properties(Constant)
         ID = 213

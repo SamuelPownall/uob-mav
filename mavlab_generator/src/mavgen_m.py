@@ -70,7 +70,7 @@ def generate_class_from_msg(msg_path, msg):
         
         #Get message description if available
         if msg.find('description') != None:
-            desc = msg.find('description').text
+            desc = msg.find('description').text.replace('\n',' ')
         else:
             desc = "None"
             
@@ -112,7 +112,7 @@ classdef %s < mavlink_message
             
             fields.append({'type' : field_type, 
                            'name' : field.attrib.get('name'), 
-                           'desc' : field.text,
+                           'desc' : field.text.replace('\n',' '),
                            'size' : array_size})
             
         #Sort message fields

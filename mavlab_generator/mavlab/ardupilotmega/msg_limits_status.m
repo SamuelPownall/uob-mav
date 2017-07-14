@@ -1,8 +1,7 @@
 classdef msg_limits_status < mavlink_message
     %MAVLINK Message Class
     %Name: limits_status	ID: 167
-    %Description: Status of AP_Limits. Sent in extended
-	    status stream when AP_Limits is enabled
+    %Description: Status of AP_Limits. Sent in extended 	    status stream when AP_Limits is enabled
             
     properties(Constant)
         ID = 167

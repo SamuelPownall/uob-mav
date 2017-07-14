@@ -1,9 +1,7 @@
 classdef msg_gimbal_reset < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_reset	ID: 202
-    %Description: 
-            Causes the gimbal to reset and boot as if it was just powered on
-        
+    %Description:              Causes the gimbal to reset and boot as if it was just powered on         
             
     properties(Constant)
         ID = 202

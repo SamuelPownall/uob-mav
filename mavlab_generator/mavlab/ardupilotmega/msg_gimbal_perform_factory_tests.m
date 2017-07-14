@@ -1,9 +1,7 @@
 classdef msg_gimbal_perform_factory_tests < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_perform_factory_tests	ID: 209
-    %Description: 
-            Command the gimbal to perform a series of factory tests.  Should not be needed by end users
-        
+    %Description:              Command the gimbal to perform a series of factory tests.  Should not be needed by end users         
             
     properties(Constant)
         ID = 209

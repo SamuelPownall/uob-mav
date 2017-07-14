@@ -1,9 +1,7 @@
 classdef msg_gimbal_report_factory_tests_progress < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_report_factory_tests_progress	ID: 210
-    %Description: 
-            Reports the current status of a section of a running factory test
-        
+    %Description:              Reports the current status of a section of a running factory test         
             
     properties(Constant)
         ID = 210

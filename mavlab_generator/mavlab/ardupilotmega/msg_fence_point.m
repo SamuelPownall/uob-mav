@@ -1,8 +1,7 @@
 classdef msg_fence_point < mavlink_message
     %MAVLINK Message Class
     %Name: fence_point	ID: 160
-    %Description: A fence point. Used to set a point when from
-	      GCS -> MAV. Also used to return a point from MAV -> GCS
+    %Description: A fence point. Used to set a point when from 	      GCS -> MAV. Also used to return a point from MAV -> GCS
             
     properties(Constant)
         ID = 160

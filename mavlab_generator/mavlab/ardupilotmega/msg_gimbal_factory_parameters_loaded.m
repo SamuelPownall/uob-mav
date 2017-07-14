@@ -1,9 +1,7 @@
 classdef msg_gimbal_factory_parameters_loaded < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_factory_parameters_loaded	ID: 207
-    %Description: 
-            Sent by the gimbal after the factory parameters are successfully loaded, to inform the factory software that the load is complete
-        
+    %Description:              Sent by the gimbal after the factory parameters are successfully loaded, to inform the factory software that the load is complete         
             
     properties(Constant)
         ID = 207

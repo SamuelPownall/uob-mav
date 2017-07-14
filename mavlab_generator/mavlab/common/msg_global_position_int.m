@@ -1,8 +1,7 @@
 classdef msg_global_position_int < mavlink_message
     %MAVLINK Message Class
     %Name: global_position_int	ID: 33
-    %Description: The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It
-               is designed as scaled integer message since the resolution of float is not sufficient.
+    %Description: The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It                is designed as scaled integer message since the resolution of float is not sufficient.
             
     properties(Constant)
         ID = 33

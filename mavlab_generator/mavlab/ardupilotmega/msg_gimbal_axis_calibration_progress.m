@@ -1,9 +1,7 @@
 classdef msg_gimbal_axis_calibration_progress < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_axis_calibration_progress	ID: 203
-    %Description: 
-            Reports progress and success or failure of gimbal axis calibration procedure
-        
+    %Description:              Reports progress and success or failure of gimbal axis calibration procedure         
             
     properties(Constant)
         ID = 203

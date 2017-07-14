@@ -1,9 +1,7 @@
 classdef msg_gimbal_report_axis_calibration_status < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_report_axis_calibration_status	ID: 212
-    %Description: 
-    		Reports the calibration status for each gimbal axis (whether the axis requires calibration or not)
-    	
+    %Description:      		Reports the calibration status for each gimbal axis (whether the axis requires calibration or not)     	
             
     properties(Constant)
         ID = 212

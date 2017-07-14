@@ -1,8 +1,7 @@
 classdef msg_hil_gps < mavlink_message
     %MAVLINK Message Class
     %Name: hil_gps	ID: 113
-    %Description: The global position, as returned by the Global Positioning System (GPS). This is
-                 NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate. Coordinate frame is right-handed, Z-axis up (GPS frame).
+    %Description: The global position, as returned by the Global Positioning System (GPS). This is                  NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate. Coordinate frame is right-handed, Z-axis up (GPS frame).
             
     properties(Constant)
         ID = 113

@@ -1,8 +1,7 @@
 classdef msg_sensor_offsets < mavlink_message
     %MAVLINK Message Class
     %Name: sensor_offsets	ID: 150
-    %Description: Offsets and calibrations values for hardware
-        sensors. This makes it easier to debug the calibration process.
+    %Description: Offsets and calibrations values for hardware         sensors. This makes it easier to debug the calibration process.
             
     properties(Constant)
         ID = 150

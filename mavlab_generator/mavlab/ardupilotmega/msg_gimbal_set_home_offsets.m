@@ -1,9 +1,7 @@
 classdef msg_gimbal_set_home_offsets < mavlink_message
     %MAVLINK Message Class
     %Name: gimbal_set_home_offsets	ID: 204
-    %Description: 
-            Instructs the gimbal to set its current position as its new home position.  Will primarily be used for factory calibration
-        
+    %Description:              Instructs the gimbal to set its current position as its new home position.  Will primarily be used for factory calibration         
             
     properties(Constant)
         ID = 204

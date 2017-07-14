@@ -1,8 +1,7 @@
 classdef msg_fence_status < mavlink_message
     %MAVLINK Message Class
     %Name: fence_status	ID: 162
-    %Description: Status of geo-fencing. Sent in extended
-	    status stream when fencing enabled
+    %Description: Status of geo-fencing. Sent in extended 	    status stream when fencing enabled
             
     properties(Constant)
         ID = 162
