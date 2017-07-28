@@ -1,26 +1,33 @@
 classdef msg_log_request_data < mavlink_message
-    %MAVLINK Message Class
-    %Name: log_request_data	ID: 119
-    %Description: Request a chunk of a log
-            
-    properties(Constant)
-        ID = 119
-        LEN = 12
-    end
-    
-    properties        
-		ofs	%Offset into the log (uint32)
-		count	%Number of bytes (uint32)
-		id	%Log id (from LOG_ENTRY reply) (uint16)
-		target_system	%System ID (uint8)
-		target_component	%Component ID (uint8)
+	%MSG_LOG_REQUEST_DATA(packet,ofs,count,id,target_system,target_component): MAVLINK Message ID = 119
+    %Description:
+    %    Request a chunk of a log
+    %    If constructing from fields, packet argument should be set to []
+	%Fields:
+    %    ofs(uint32): Offset into the log
+    %    count(uint32): Number of bytes
+    %    id(uint16): Log id (from LOG_ENTRY reply)
+    %    target_system(uint8): System ID
+    %    target_component(uint8): Component ID
+	
+	properties(Constant)
+		ID = 119
+		LEN = 12
 	end
-    
+	
+	properties
+        ofs	%Offset into the log	|	(uint32)
+        count	%Number of bytes	|	(uint32)
+        id	%Log id (from LOG_ENTRY reply)	|	(uint16)
+        target_system	%System ID	|	(uint8)
+        target_component	%Component ID	|	(uint8)
+    end
+
     methods
-        
+
         %Constructor: msg_log_request_data
-        %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_log_request_data(packet,ofs,count,id,target_system,target_component)
+        %packet should be a fully constructed MAVLINK packet
+        function obj = msg_log_request_data(packet,ofs,count,id,target_system,target_component)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -35,85 +42,76 @@ classdef msg_log_request_data < mavlink_message
                 else
                     mavlink.throwTypeError('packet','mavlink_packet');
                 end
-                
-            elseif nargin == 6
-                
-				obj.ofs = ofs;
-				obj.count = count;
-				obj.id = id;
-				obj.target_system = target_system;
-				obj.target_component = target_component;
-        
+            
+            elseif nargin-1 == 5
+                obj.ofs = ofs;
+                obj.count = count;
+                obj.id = id;
+                obj.target_system = target_system;
+                obj.target_component = target_component;
             elseif nargin ~= 0
-                mavlink.throwCustomError('The number of constructor arguments is not valid');
+                mavlink.throwCustomError('The number of constructer arguments is not valid');
             end
-        
+
         end
-                        
+
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
-        
+
             errorField = obj.verify();
             if errorField == 0
-        
+
                 packet = mavlink_packet(msg_log_request_data.LEN);
                 packet.sysid = mavlink.SYSID;
                 packet.compid = mavlink.COMPID;
                 packet.msgid = msg_log_request_data.ID;
                 
-				packet.payload.putUINT32(obj.ofs);
+                packet.payload.putUINT32(obj.ofs);
+                packet.payload.putUINT32(obj.count);
+                packet.payload.putUINT16(obj.id);
+                packet.payload.putUINT8(obj.target_system);
+                packet.payload.putUINT8(obj.target_component);
 
-				packet.payload.putUINT32(obj.count);
-
-				packet.payload.putUINT16(obj.id);
-
-				packet.payload.putUINT8(obj.target_system);
-
-				packet.payload.putUINT8(obj.target_component);
-        
             else
                 packet = [];
                 mavlink.throwPackingError(errorField);
             end
-            
+
         end
-                        
+
         %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
-        
+
             payload.resetIndex();
+            
+            obj.ofs = payload.getUINT32();
+            obj.count = payload.getUINT32();
+            obj.id = payload.getUINT16();
+            obj.target_system = payload.getUINT8();
+            obj.target_component = payload.getUINT8();
+
+        end
         
-			obj.ofs = payload.getUINT32();
-
-			obj.count = payload.getUINT32();
-
-			obj.id = payload.getUINT16();
-
-			obj.target_system = payload.getUINT8();
-
-			obj.target_component = payload.getUINT8();
-
-		end
-        
-        %Function: Returns either 0 or the name of the first encountered empty field.
+        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
-                            
-            if size(obj.ofs,2) ~= 1
-                result = 'ofs';                                        
+
+            if 1==0
+            elseif size(obj.ofs,2) ~= 1
+                result = 'ofs';
             elseif size(obj.count,2) ~= 1
-                result = 'count';                                        
+                result = 'count';
             elseif size(obj.id,2) ~= 1
-                result = 'id';                                        
+                result = 'id';
             elseif size(obj.target_system,2) ~= 1
-                result = 'target_system';                                        
+                result = 'target_system';
             elseif size(obj.target_component,2) ~= 1
-                result = 'target_component';                            
+                result = 'target_component';
+
             else
                 result = 0;
             end
-            
         end
-                                
+
         function set.ofs(obj,value)
             if value == uint32(value)
                 obj.ofs = uint32(value);
@@ -121,7 +119,7 @@ classdef msg_log_request_data < mavlink_message
                 mavlink.throwTypeError('value','uint32');
             end
         end
-                                    
+        
         function set.count(obj,value)
             if value == uint32(value)
                 obj.count = uint32(value);
@@ -129,7 +127,7 @@ classdef msg_log_request_data < mavlink_message
                 mavlink.throwTypeError('value','uint32');
             end
         end
-                                    
+        
         function set.id(obj,value)
             if value == uint16(value)
                 obj.id = uint16(value);
@@ -137,7 +135,7 @@ classdef msg_log_request_data < mavlink_message
                 mavlink.throwTypeError('value','uint16');
             end
         end
-                                    
+        
         function set.target_system(obj,value)
             if value == uint8(value)
                 obj.target_system = uint8(value);
@@ -145,7 +143,7 @@ classdef msg_log_request_data < mavlink_message
                 mavlink.throwTypeError('value','uint8');
             end
         end
-                                    
+        
         function set.target_component(obj,value)
             if value == uint8(value)
                 obj.target_component = uint8(value);
@@ -153,6 +151,7 @@ classdef msg_log_request_data < mavlink_message
                 mavlink.throwTypeError('value','uint8');
             end
         end
-                        
-	end
+        
+    end
+
 end

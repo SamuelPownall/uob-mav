@@ -1,28 +1,37 @@
 classdef msg_pid_tuning < mavlink_message
-    %MAVLINK Message Class
-    %Name: pid_tuning	ID: 194
-    %Description: PID tuning information
-            
-    properties(Constant)
-        ID = 194
-        LEN = 25
-    end
-    
-    properties        
-		desired	%desired rate (degrees/s) (single)
-		achieved	%achieved rate (degrees/s) (single)
-		ff	%FF component (single)
-		p	%P component (single)
-		i	%I component (single)
-		d	%D component (single)
-		axis	%axis (uint8)
+	%MSG_PID_TUNING(packet,desired,achieved,FF,P,I,D,axis): MAVLINK Message ID = 194
+    %Description:
+    %    PID tuning information
+    %    If constructing from fields, packet argument should be set to []
+	%Fields:
+    %    desired(single): desired rate (degrees/s)
+    %    achieved(single): achieved rate (degrees/s)
+    %    FF(single): FF component
+    %    P(single): P component
+    %    I(single): I component
+    %    D(single): D component
+    %    axis(uint8): axis
+	
+	properties(Constant)
+		ID = 194
+		LEN = 25
 	end
-    
+	
+	properties
+        desired	%desired rate (degrees/s)	|	(single)
+        achieved	%achieved rate (degrees/s)	|	(single)
+        FF	%FF component	|	(single)
+        P	%P component	|	(single)
+        I	%I component	|	(single)
+        D	%D component	|	(single)
+        axis	%axis	|	(uint8)
+    end
+
     methods
-        
+
         %Constructor: msg_pid_tuning
-        %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_pid_tuning(packet,desired,achieved,ff,p,i,d,axis)
+        %packet should be a fully constructed MAVLINK packet
+        function obj = msg_pid_tuning(packet,desired,achieved,FF,P,I,D,axis)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -37,123 +46,110 @@ classdef msg_pid_tuning < mavlink_message
                 else
                     mavlink.throwTypeError('packet','mavlink_packet');
                 end
-                
-            elseif nargin == 8
-                
-				obj.desired = desired;
-				obj.achieved = achieved;
-				obj.ff = ff;
-				obj.p = p;
-				obj.i = i;
-				obj.d = d;
-				obj.axis = axis;
-        
+            
+            elseif nargin-1 == 7
+                obj.desired = desired;
+                obj.achieved = achieved;
+                obj.FF = FF;
+                obj.P = P;
+                obj.I = I;
+                obj.D = D;
+                obj.axis = axis;
             elseif nargin ~= 0
-                mavlink.throwCustomError('The number of constructor arguments is not valid');
+                mavlink.throwCustomError('The number of constructer arguments is not valid');
             end
-        
+
         end
-                        
+
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
-        
+
             errorField = obj.verify();
             if errorField == 0
-        
+
                 packet = mavlink_packet(msg_pid_tuning.LEN);
                 packet.sysid = mavlink.SYSID;
                 packet.compid = mavlink.COMPID;
                 packet.msgid = msg_pid_tuning.ID;
                 
-				packet.payload.putSINGLE(obj.desired);
+                packet.payload.putSINGLE(obj.desired);
+                packet.payload.putSINGLE(obj.achieved);
+                packet.payload.putSINGLE(obj.FF);
+                packet.payload.putSINGLE(obj.P);
+                packet.payload.putSINGLE(obj.I);
+                packet.payload.putSINGLE(obj.D);
+                packet.payload.putUINT8(obj.axis);
 
-				packet.payload.putSINGLE(obj.achieved);
-
-				packet.payload.putSINGLE(obj.ff);
-
-				packet.payload.putSINGLE(obj.p);
-
-				packet.payload.putSINGLE(obj.i);
-
-				packet.payload.putSINGLE(obj.d);
-
-				packet.payload.putUINT8(obj.axis);
-        
             else
                 packet = [];
                 mavlink.throwPackingError(errorField);
             end
-            
+
         end
-                        
+
         %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
-        
+
             payload.resetIndex();
+            
+            obj.desired = payload.getSINGLE();
+            obj.achieved = payload.getSINGLE();
+            obj.FF = payload.getSINGLE();
+            obj.P = payload.getSINGLE();
+            obj.I = payload.getSINGLE();
+            obj.D = payload.getSINGLE();
+            obj.axis = payload.getUINT8();
+
+        end
         
-			obj.desired = payload.getSINGLE();
-
-			obj.achieved = payload.getSINGLE();
-
-			obj.ff = payload.getSINGLE();
-
-			obj.p = payload.getSINGLE();
-
-			obj.i = payload.getSINGLE();
-
-			obj.d = payload.getSINGLE();
-
-			obj.axis = payload.getUINT8();
-
-		end
-        
-        %Function: Returns either 0 or the name of the first encountered empty field.
+        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
-                            
-            if size(obj.desired,2) ~= 1
-                result = 'desired';                                        
+
+            if 1==0
+            elseif size(obj.desired,2) ~= 1
+                result = 'desired';
             elseif size(obj.achieved,2) ~= 1
-                result = 'achieved';                                        
-            elseif size(obj.ff,2) ~= 1
-                result = 'ff';                                        
-            elseif size(obj.p,2) ~= 1
-                result = 'p';                                        
-            elseif size(obj.i,2) ~= 1
-                result = 'i';                                        
-            elseif size(obj.d,2) ~= 1
-                result = 'd';                                        
+                result = 'achieved';
+            elseif size(obj.FF,2) ~= 1
+                result = 'FF';
+            elseif size(obj.P,2) ~= 1
+                result = 'P';
+            elseif size(obj.I,2) ~= 1
+                result = 'I';
+            elseif size(obj.D,2) ~= 1
+                result = 'D';
             elseif size(obj.axis,2) ~= 1
-                result = 'axis';                            
+                result = 'axis';
+
             else
                 result = 0;
             end
-            
         end
-                            
+
         function set.desired(obj,value)
             obj.desired = single(value);
         end
-                                
+        
         function set.achieved(obj,value)
             obj.achieved = single(value);
         end
-                                
-        function set.ff(obj,value)
-            obj.ff = single(value);
+        
+        function set.FF(obj,value)
+            obj.FF = single(value);
         end
-                                
-        function set.p(obj,value)
-            obj.p = single(value);
+        
+        function set.P(obj,value)
+            obj.P = single(value);
         end
-                                
-        function set.i(obj,value)
-            obj.i = single(value);
+        
+        function set.I(obj,value)
+            obj.I = single(value);
         end
-                                
-        function set.d(obj,value)
-            obj.d = single(value);
+        
+        function set.D(obj,value)
+            obj.D = single(value);
         end
-                                    
+        
         function set.axis(obj,value)
             if value == uint8(value)
                 obj.axis = uint8(value);
@@ -161,6 +157,7 @@ classdef msg_pid_tuning < mavlink_message
                 mavlink.throwTypeError('value','uint8');
             end
         end
-                        
-	end
+        
+    end
+
 end

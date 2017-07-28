@@ -1,23 +1,27 @@
 classdef msg_rangefinder < mavlink_message
-    %MAVLINK Message Class
-    %Name: rangefinder	ID: 173
-    %Description: Rangefinder reporting
-            
-    properties(Constant)
-        ID = 173
-        LEN = 8
-    end
-    
-    properties        
-		distance	%distance in meters (single)
-		voltage	%raw voltage if available, zero otherwise (single)
+	%MSG_RANGEFINDER(packet,distance,voltage): MAVLINK Message ID = 173
+    %Description:
+    %    Rangefinder reporting
+    %    If constructing from fields, packet argument should be set to []
+	%Fields:
+    %    distance(single): distance in meters
+    %    voltage(single): raw voltage if available, zero otherwise
+	
+	properties(Constant)
+		ID = 173
+		LEN = 8
 	end
-    
+	
+	properties
+        distance	%distance in meters	|	(single)
+        voltage	%raw voltage if available, zero otherwise	|	(single)
+    end
+
     methods
-        
+
         %Constructor: msg_rangefinder
-        %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_rangefinder(packet,distance,voltage)
+        %packet should be a fully constructed MAVLINK packet
+        function obj = msg_rangefinder(packet,distance,voltage)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -32,71 +36,69 @@ classdef msg_rangefinder < mavlink_message
                 else
                     mavlink.throwTypeError('packet','mavlink_packet');
                 end
-                
-            elseif nargin == 3
-                
-				obj.distance = distance;
-				obj.voltage = voltage;
-        
+            
+            elseif nargin-1 == 2
+                obj.distance = distance;
+                obj.voltage = voltage;
             elseif nargin ~= 0
-                mavlink.throwCustomError('The number of constructor arguments is not valid');
+                mavlink.throwCustomError('The number of constructer arguments is not valid');
             end
-        
+
         end
-                        
+
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
-        
+
             errorField = obj.verify();
             if errorField == 0
-        
+
                 packet = mavlink_packet(msg_rangefinder.LEN);
                 packet.sysid = mavlink.SYSID;
                 packet.compid = mavlink.COMPID;
                 packet.msgid = msg_rangefinder.ID;
                 
-				packet.payload.putSINGLE(obj.distance);
+                packet.payload.putSINGLE(obj.distance);
+                packet.payload.putSINGLE(obj.voltage);
 
-				packet.payload.putSINGLE(obj.voltage);
-        
             else
                 packet = [];
                 mavlink.throwPackingError(errorField);
             end
-            
+
         end
-                        
+
         %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
-        
+
             payload.resetIndex();
-        
-			obj.distance = payload.getSINGLE();
+            
+            obj.distance = payload.getSINGLE();
+            obj.voltage = payload.getSINGLE();
 
-			obj.voltage = payload.getSINGLE();
-
-		end
+        end
         
-        %Function: Returns either 0 or the name of the first encountered empty field.
+        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
-                            
-            if size(obj.distance,2) ~= 1
-                result = 'distance';                                        
+
+            if 1==0
+            elseif size(obj.distance,2) ~= 1
+                result = 'distance';
             elseif size(obj.voltage,2) ~= 1
-                result = 'voltage';                            
+                result = 'voltage';
+
             else
                 result = 0;
             end
-            
         end
-                            
+
         function set.distance(obj,value)
             obj.distance = single(value);
         end
-                                
+        
         function set.voltage(obj,value)
             obj.voltage = single(value);
         end
-                        
-	end
+        
+    end
+
 end

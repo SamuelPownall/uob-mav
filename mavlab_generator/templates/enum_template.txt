@@ -1,0 +1,8 @@
+classdef ${xmlName}$ < uint16
+    %%${xmlNameUpper}$: Enumeration class for the '${xmlName}$' dialect
+    
+    enumeration #{enum<#>
+        ${name}$ (${value}$) %%${desc}$}#
+    end
+        
+end

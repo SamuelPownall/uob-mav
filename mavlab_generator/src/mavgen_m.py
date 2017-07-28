@@ -122,12 +122,12 @@ classdef %s < mavlink_message
         crc = 0xffff
         crc = accumulate(crc,name.upper() + ' ')
         
-        for field in fields:
+        for field in fields:            
             crc = accumulate(crc,field['type'] + ' ')
             crc = accumulate(crc,field['name'] + ' ')
             if field['size'] > 1:
                 crc = accumulate(crc,chr(field['size']))
-                
+              
         crc = (crc&0xFF) ^ (crc>>8)
         
         #Re-format field strings
@@ -517,11 +517,11 @@ def copy_fixed_classes(main_path):
     """
     
     #Copy fixed classes
-    copyfile('../matlab/mavlink_message_master.m','%s/mavlink_message.m' % main_path)
-    copyfile('../matlab/mavlink_payload_master.m','%s/mavlink_payload.m' % main_path)
-    copyfile('../matlab/mavlink_parser_master.m','%s/mavlink_parser.m' % main_path)
-    copyfile('../matlab/mavlink_stats_master.m','%s/mavlink_stats.m' % main_path)
-    copyfile('../matlab/mavlink_master.m','%s/mavlink.m' % main_path)
+    copyfile('../master/mavlink_message_master.m','%s/mavlink_message.m' % main_path)
+    copyfile('../master/mavlink_payload_master.m','%s/mavlink_payload.m' % main_path)
+    copyfile('../master/mavlink_parser_master.m','%s/mavlink_parser.m' % main_path)
+    copyfile('../master/mavlink_stats_master.m','%s/mavlink_stats.m' % main_path)
+    copyfile('../master/mavlink_master.m','%s/mavlink.m' % main_path)
     
     
 def generate_message_classes(message_path, msg_list):

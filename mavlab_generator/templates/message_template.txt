@@ -1,0 +1,105 @@
+classdef msg_${name}$ < mavlink_message
+	%%MSG_${nameUpper}$(packet#{orderedFields<#>,${name}$}#): MAVLINK Message ID = ${msgid}$
+    %%Description:
+    %%    ${desc}$
+    %%    If constructing from fields, packet argument should be set to []
+	%%Fields:
+#{orderedFields<#>    %%    ${name}$(${type}$?{${size}$>1<?>[${size}$]<?>}?): ${desc}$
+}#	
+	properties(Constant)
+		ID = ${msgid}$
+		LEN = ${msglen}$
+	end
+	
+	properties
+#{orderedFields<#>        ${name}$	%%${desc}$	|	(${type}$?{${size}$>1<?>[${size}$]<?>}?)\n}#    end
+
+    methods
+
+        %%Constructor: msg_${name}$
+        %%packet should be a fully constructed MAVLINK packet
+        function obj = msg_${name}$(packet#{orderedFields<#>,${name}$}#)
+        
+            obj.msgid = obj.ID;
+            obj.sysid = mavlink.SYSID;
+            obj.compid = mavlink.COMPID;
+
+            if nargin == 1
+            
+                if isa(packet,'mavlink_packet')
+                    obj.sysid = packet.sysid;
+                    obj.compid = packet.compid;
+                    obj.unpack(packet.payload);
+                else
+                    mavlink.throwTypeError('packet','mavlink_packet');
+                end
+            
+            elseif nargin-1 == ${numFields}$
+#{orderedFields<#>                obj.${name}$ = ${name}$;\n}#            elseif nargin ~= 0
+                mavlink.throwCustomError('The number of constructer arguments is not valid');
+            end
+
+        end
+
+        %%Function: Packs this MAVLINK message into a packet for transmission
+        function packet = pack(obj)
+
+            errorField = obj.verify();
+            if errorField == 0
+
+                packet = mavlink_packet(msg_${name}$.LEN);
+                packet.sysid = mavlink.SYSID;
+                packet.compid = mavlink.COMPID;
+                packet.msgid = msg_${name}$.ID;
+                #{orderedFields<#>?{${size}$>1<?>
+                for i=1:1:${size}$
+                    packet.payload.put${typeUpper}$(obj.${name}$(i));
+                end<?>
+                packet.payload.put${typeUpper}$(obj.${name}$);}?}#
+
+            else
+                packet = [];
+                mavlink.throwPackingError(errorField);
+            end
+
+        end
+
+        %%Function: Unpacks a MAVLINK payload and stores the data in this message
+        function unpack(obj, payload)
+
+            payload.resetIndex();
+            #{orderedFields<#>?{${size}$>1<?>
+            for i=1:1:${size}$
+                obj.${name}$(i) = payload.get${typeUpper}$();
+            end<?>
+            obj.${name}$ = payload.get${typeUpper}$();}?}#
+
+        end
+        
+        %%Function: Returns either 0 or the name of the first encountered empty field
+        function result = verify(obj)
+
+            if 1==0
+#{orderedFields<#>            elseif size(obj.${name}$,2) ~= ${size}$
+                result = '${name}$';
+}#
+            else
+                result = 0;
+            end
+        end
+#{orderedFields<#>?{strcmp('${type}$','double') || strcmp('${type}$','single')<?>
+        function set.${name}$(obj,value)
+            obj.${name}$ = ${type}$(value);
+        end
+        <?>
+        function set.${name}$(obj,value)
+            if value == ${type}$(value)
+                obj.${name}$ = ${type}$(value);
+            else
+                mavlink.throwTypeError('value','${type}$');
+            end
+        end
+        }?}#
+    end
+
+end

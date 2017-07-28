@@ -1,28 +1,37 @@
 classdef msg_vicon_position_estimate < mavlink_message
-    %MAVLINK Message Class
-    %Name: vicon_position_estimate	ID: 104
-    %Description: None
-            
-    properties(Constant)
-        ID = 104
-        LEN = 32
-    end
-    
-    properties        
-		usec	%Timestamp (microseconds, synced to UNIX time or since system boot) (uint64)
-		x	%Global X position (single)
-		y	%Global Y position (single)
-		z	%Global Z position (single)
-		roll	%Roll angle in rad (single)
-		pitch	%Pitch angle in rad (single)
-		yaw	%Yaw angle in rad (single)
+	%MSG_VICON_POSITION_ESTIMATE(packet,usec,x,y,z,roll,pitch,yaw): MAVLINK Message ID = 104
+    %Description:
+    %    No description available
+    %    If constructing from fields, packet argument should be set to []
+	%Fields:
+    %    usec(uint64): Timestamp (microseconds, synced to UNIX time or since system boot)
+    %    x(single): Global X position
+    %    y(single): Global Y position
+    %    z(single): Global Z position
+    %    roll(single): Roll angle in rad
+    %    pitch(single): Pitch angle in rad
+    %    yaw(single): Yaw angle in rad
+	
+	properties(Constant)
+		ID = 104
+		LEN = 32
 	end
-    
+	
+	properties
+        usec	%Timestamp (microseconds, synced to UNIX time or since system boot)	|	(uint64)
+        x	%Global X position	|	(single)
+        y	%Global Y position	|	(single)
+        z	%Global Z position	|	(single)
+        roll	%Roll angle in rad	|	(single)
+        pitch	%Pitch angle in rad	|	(single)
+        yaw	%Yaw angle in rad	|	(single)
+    end
+
     methods
-        
+
         %Constructor: msg_vicon_position_estimate
-        %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_vicon_position_estimate(packet,usec,x,y,z,roll,pitch,yaw)
+        %packet should be a fully constructed MAVLINK packet
+        function obj = msg_vicon_position_estimate(packet,usec,x,y,z,roll,pitch,yaw)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -37,99 +46,86 @@ classdef msg_vicon_position_estimate < mavlink_message
                 else
                     mavlink.throwTypeError('packet','mavlink_packet');
                 end
-                
-            elseif nargin == 8
-                
-				obj.usec = usec;
-				obj.x = x;
-				obj.y = y;
-				obj.z = z;
-				obj.roll = roll;
-				obj.pitch = pitch;
-				obj.yaw = yaw;
-        
+            
+            elseif nargin-1 == 7
+                obj.usec = usec;
+                obj.x = x;
+                obj.y = y;
+                obj.z = z;
+                obj.roll = roll;
+                obj.pitch = pitch;
+                obj.yaw = yaw;
             elseif nargin ~= 0
-                mavlink.throwCustomError('The number of constructor arguments is not valid');
+                mavlink.throwCustomError('The number of constructer arguments is not valid');
             end
-        
+
         end
-                        
+
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
-        
+
             errorField = obj.verify();
             if errorField == 0
-        
+
                 packet = mavlink_packet(msg_vicon_position_estimate.LEN);
                 packet.sysid = mavlink.SYSID;
                 packet.compid = mavlink.COMPID;
                 packet.msgid = msg_vicon_position_estimate.ID;
                 
-				packet.payload.putUINT64(obj.usec);
+                packet.payload.putUINT64(obj.usec);
+                packet.payload.putSINGLE(obj.x);
+                packet.payload.putSINGLE(obj.y);
+                packet.payload.putSINGLE(obj.z);
+                packet.payload.putSINGLE(obj.roll);
+                packet.payload.putSINGLE(obj.pitch);
+                packet.payload.putSINGLE(obj.yaw);
 
-				packet.payload.putSINGLE(obj.x);
-
-				packet.payload.putSINGLE(obj.y);
-
-				packet.payload.putSINGLE(obj.z);
-
-				packet.payload.putSINGLE(obj.roll);
-
-				packet.payload.putSINGLE(obj.pitch);
-
-				packet.payload.putSINGLE(obj.yaw);
-        
             else
                 packet = [];
                 mavlink.throwPackingError(errorField);
             end
-            
+
         end
-                        
+
         %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
-        
+
             payload.resetIndex();
+            
+            obj.usec = payload.getUINT64();
+            obj.x = payload.getSINGLE();
+            obj.y = payload.getSINGLE();
+            obj.z = payload.getSINGLE();
+            obj.roll = payload.getSINGLE();
+            obj.pitch = payload.getSINGLE();
+            obj.yaw = payload.getSINGLE();
+
+        end
         
-			obj.usec = payload.getUINT64();
-
-			obj.x = payload.getSINGLE();
-
-			obj.y = payload.getSINGLE();
-
-			obj.z = payload.getSINGLE();
-
-			obj.roll = payload.getSINGLE();
-
-			obj.pitch = payload.getSINGLE();
-
-			obj.yaw = payload.getSINGLE();
-
-		end
-        
-        %Function: Returns either 0 or the name of the first encountered empty field.
+        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
-                            
-            if size(obj.usec,2) ~= 1
-                result = 'usec';                                        
+
+            if 1==0
+            elseif size(obj.usec,2) ~= 1
+                result = 'usec';
             elseif size(obj.x,2) ~= 1
-                result = 'x';                                        
+                result = 'x';
             elseif size(obj.y,2) ~= 1
-                result = 'y';                                        
+                result = 'y';
             elseif size(obj.z,2) ~= 1
-                result = 'z';                                        
+                result = 'z';
             elseif size(obj.roll,2) ~= 1
-                result = 'roll';                                        
+                result = 'roll';
             elseif size(obj.pitch,2) ~= 1
-                result = 'pitch';                                        
+                result = 'pitch';
             elseif size(obj.yaw,2) ~= 1
-                result = 'yaw';                            
+                result = 'yaw';
+
             else
                 result = 0;
             end
-            
         end
-                                
+
         function set.usec(obj,value)
             if value == uint64(value)
                 obj.usec = uint64(value);
@@ -137,30 +133,31 @@ classdef msg_vicon_position_estimate < mavlink_message
                 mavlink.throwTypeError('value','uint64');
             end
         end
-                                
+        
         function set.x(obj,value)
             obj.x = single(value);
         end
-                                
+        
         function set.y(obj,value)
             obj.y = single(value);
         end
-                                
+        
         function set.z(obj,value)
             obj.z = single(value);
         end
-                                
+        
         function set.roll(obj,value)
             obj.roll = single(value);
         end
-                                
+        
         function set.pitch(obj,value)
             obj.pitch = single(value);
         end
-                                
+        
         function set.yaw(obj,value)
             obj.yaw = single(value);
         end
-                        
-	end
+        
+    end
+
 end

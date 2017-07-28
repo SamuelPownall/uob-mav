@@ -1,23 +1,27 @@
 classdef msg_autopilot_version_request < mavlink_message
-    %MAVLINK Message Class
-    %Name: autopilot_version_request	ID: 183
-    %Description: Request the autopilot version from the system/component.
-            
-    properties(Constant)
-        ID = 183
-        LEN = 2
-    end
-    
-    properties        
-		target_system	%System ID (uint8)
-		target_component	%Component ID (uint8)
+	%MSG_AUTOPILOT_VERSION_REQUEST(packet,target_system,target_component): MAVLINK Message ID = 183
+    %Description:
+    %    Request the autopilot version from the system/component.
+    %    If constructing from fields, packet argument should be set to []
+	%Fields:
+    %    target_system(uint8): System ID
+    %    target_component(uint8): Component ID
+	
+	properties(Constant)
+		ID = 183
+		LEN = 2
 	end
-    
+	
+	properties
+        target_system	%System ID	|	(uint8)
+        target_component	%Component ID	|	(uint8)
+    end
+
     methods
-        
+
         %Constructor: msg_autopilot_version_request
-        %packet should be a fully constructed MAVLINK packet                
-		function obj = msg_autopilot_version_request(packet,target_system,target_component)
+        %packet should be a fully constructed MAVLINK packet
+        function obj = msg_autopilot_version_request(packet,target_system,target_component)
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -32,64 +36,61 @@ classdef msg_autopilot_version_request < mavlink_message
                 else
                     mavlink.throwTypeError('packet','mavlink_packet');
                 end
-                
-            elseif nargin == 3
-                
-				obj.target_system = target_system;
-				obj.target_component = target_component;
-        
+            
+            elseif nargin-1 == 2
+                obj.target_system = target_system;
+                obj.target_component = target_component;
             elseif nargin ~= 0
-                mavlink.throwCustomError('The number of constructor arguments is not valid');
+                mavlink.throwCustomError('The number of constructer arguments is not valid');
             end
-        
+
         end
-                        
+
         %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
-        
+
             errorField = obj.verify();
             if errorField == 0
-        
+
                 packet = mavlink_packet(msg_autopilot_version_request.LEN);
                 packet.sysid = mavlink.SYSID;
                 packet.compid = mavlink.COMPID;
                 packet.msgid = msg_autopilot_version_request.ID;
                 
-				packet.payload.putUINT8(obj.target_system);
+                packet.payload.putUINT8(obj.target_system);
+                packet.payload.putUINT8(obj.target_component);
 
-				packet.payload.putUINT8(obj.target_component);
-        
             else
                 packet = [];
                 mavlink.throwPackingError(errorField);
             end
-            
+
         end
-                        
+
         %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
-        
+
             payload.resetIndex();
-        
-			obj.target_system = payload.getUINT8();
+            
+            obj.target_system = payload.getUINT8();
+            obj.target_component = payload.getUINT8();
 
-			obj.target_component = payload.getUINT8();
-
-		end
+        end
         
-        %Function: Returns either 0 or the name of the first encountered empty field.
+        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
-                            
-            if size(obj.target_system,2) ~= 1
-                result = 'target_system';                                        
+
+            if 1==0
+            elseif size(obj.target_system,2) ~= 1
+                result = 'target_system';
             elseif size(obj.target_component,2) ~= 1
-                result = 'target_component';                            
+                result = 'target_component';
+
             else
                 result = 0;
             end
-            
         end
-                                
+
         function set.target_system(obj,value)
             if value == uint8(value)
                 obj.target_system = uint8(value);
@@ -97,7 +98,7 @@ classdef msg_autopilot_version_request < mavlink_message
                 mavlink.throwTypeError('value','uint8');
             end
         end
-                                    
+        
         function set.target_component(obj,value)
             if value == uint8(value)
                 obj.target_component = uint8(value);
@@ -105,6 +106,7 @@ classdef msg_autopilot_version_request < mavlink_message
                 mavlink.throwTypeError('value','uint8');
             end
         end
-                        
-	end
+        
+    end
+
 end
