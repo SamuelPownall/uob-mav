@@ -1,9 +1,10 @@
-classdef msg_att_pos_mocap < mavlink_handle
-	%MSG_ATT_POS_MOCAP(packet,time_usec,q,x,y,z): MAVLINK Message ID = 138
+classdef msg_att_pos_mocap < mavlink_message
+	%MSG_ATT_POS_MOCAP: MAVLINK Message ID = 138
     %Description:
     %    Motion capture attitude and position
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    q(single[4]): Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
     %    x(single): X position in meters (NED)
@@ -25,9 +26,8 @@ classdef msg_att_pos_mocap < mavlink_handle
 
     methods
 
-        %Constructor: msg_att_pos_mocap
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_att_pos_mocap(packet,time_usec,q,x,y,z)
+        %Create a new att_pos_mocap message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -55,8 +55,11 @@ classdef msg_att_pos_mocap < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -81,8 +84,13 @@ classdef msg_att_pos_mocap < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -96,8 +104,11 @@ classdef msg_att_pos_mocap < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.time_usec,2) ~= 1

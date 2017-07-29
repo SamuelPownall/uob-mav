@@ -1,5 +1,5 @@
-classdef msg_gimbal_erase_firmware_and_config < mavlink_handle
-	%MSG_GIMBAL_ERASE_FIRMWARE_AND_CONFIG(packet,knock,target_system,target_component): MAVLINK Message ID = 208
+classdef msg_gimbal_erase_firmware_and_config < mavlink_message
+	%MSG_GIMBAL_ERASE_FIRMWARE_AND_CONFIG: MAVLINK Message ID = 208
     %Description:
     %    
             Commands the gimbal to erase its firmware image and flash configuration, leaving only the bootloader.  The gimbal will then reboot into the bootloader,
@@ -8,8 +8,9 @@ classdef msg_gimbal_erase_firmware_and_config < mavlink_handle
             gimbal inoperable until a new firmware image is loaded onto it.  For this reason, a particular "knock" value must be sent for the command to take effect.
             Use this command at your own risk
         
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    knock(uint32): Knock value to confirm this is a valid request
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
@@ -27,9 +28,8 @@ classdef msg_gimbal_erase_firmware_and_config < mavlink_handle
 
     methods
 
-        %Constructor: msg_gimbal_erase_firmware_and_config
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_gimbal_erase_firmware_and_config(packet,knock,target_system,target_component)
+        %Create a new gimbal_erase_firmware_and_config message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -55,8 +55,11 @@ classdef msg_gimbal_erase_firmware_and_config < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -77,8 +80,13 @@ classdef msg_gimbal_erase_firmware_and_config < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -88,8 +96,11 @@ classdef msg_gimbal_erase_firmware_and_config < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.knock,2) ~= 1

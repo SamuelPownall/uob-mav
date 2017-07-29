@@ -1,9 +1,10 @@
-classdef msg_actuator_control_target < mavlink_handle
-	%MSG_ACTUATOR_CONTROL_TARGET(packet,time_usec,controls,group_mlx): MAVLINK Message ID = 140
+classdef msg_actuator_control_target < mavlink_message
+	%MSG_ACTUATOR_CONTROL_TARGET: MAVLINK Message ID = 140
     %Description:
     %    Set the vehicle attitude and body angular rates.
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    controls(single[8]): Actuator controls. Normed to -1..+1 where 0 is neutral position. Throttle for single rotation direction motors is 0..1, negative range for reverse direction. Standard mapping for attitude controls (group 0): (index 0-7): roll, pitch, yaw, throttle, flaps, spoilers, airbrakes, landing gear. Load a pass-through mixer to repurpose them as generic outputs.
     %    group_mlx(uint8): Actuator group. The "_mlx" indicates this is a multi-instance message and a MAVLink parser should use this field to difference between instances.
@@ -21,9 +22,8 @@ classdef msg_actuator_control_target < mavlink_handle
 
     methods
 
-        %Constructor: msg_actuator_control_target
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_actuator_control_target(packet,time_usec,controls,group_mlx)
+        %Create a new actuator_control_target message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -49,8 +49,11 @@ classdef msg_actuator_control_target < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -73,8 +76,13 @@ classdef msg_actuator_control_target < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -86,8 +94,11 @@ classdef msg_actuator_control_target < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.time_usec,2) ~= 1

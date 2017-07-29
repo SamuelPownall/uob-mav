@@ -1,9 +1,10 @@
-classdef msg_setup_signing < mavlink_handle
-	%MSG_SETUP_SIGNING(packet,initial_timestamp,target_system,target_component,secret_key): MAVLINK Message ID = 256
+classdef msg_setup_signing < mavlink_message
+	%MSG_SETUP_SIGNING: MAVLINK Message ID = 256
     %Description:
     %    Setup a MAVLink2 signing key. If called with secret_key of all zero and zero initial_timestamp will disable signing
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    initial_timestamp(uint64): initial timestamp
     %    target_system(uint8): system id of the target
     %    target_component(uint8): component ID of the target
@@ -23,9 +24,8 @@ classdef msg_setup_signing < mavlink_handle
 
     methods
 
-        %Constructor: msg_setup_signing
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_setup_signing(packet,initial_timestamp,target_system,target_component,secret_key)
+        %Create a new setup_signing message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -52,8 +52,11 @@ classdef msg_setup_signing < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -77,8 +80,13 @@ classdef msg_setup_signing < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -91,8 +99,11 @@ classdef msg_setup_signing < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.initial_timestamp,2) ~= 1

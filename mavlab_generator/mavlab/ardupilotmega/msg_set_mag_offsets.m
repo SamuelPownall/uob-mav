@@ -1,9 +1,10 @@
-classdef msg_set_mag_offsets < mavlink_handle
-	%MSG_SET_MAG_OFFSETS(packet,mag_ofs_x,mag_ofs_y,mag_ofs_z,target_system,target_component): MAVLINK Message ID = 151
+classdef msg_set_mag_offsets < mavlink_message
+	%MSG_SET_MAG_OFFSETS: MAVLINK Message ID = 151
     %Description:
     %    Deprecated. Use MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS instead. Set the magnetometer offsets
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    mag_ofs_x(int16): magnetometer X offset
     %    mag_ofs_y(int16): magnetometer Y offset
     %    mag_ofs_z(int16): magnetometer Z offset
@@ -25,9 +26,8 @@ classdef msg_set_mag_offsets < mavlink_handle
 
     methods
 
-        %Constructor: msg_set_mag_offsets
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_set_mag_offsets(packet,mag_ofs_x,mag_ofs_y,mag_ofs_z,target_system,target_component)
+        %Create a new set_mag_offsets message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -55,8 +55,11 @@ classdef msg_set_mag_offsets < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -79,8 +82,13 @@ classdef msg_set_mag_offsets < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -92,8 +100,11 @@ classdef msg_set_mag_offsets < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.mag_ofs_x,2) ~= 1

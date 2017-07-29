@@ -1,10 +1,11 @@
-classdef msg_mission_item_int < mavlink_handle
-	%MSG_MISSION_ITEM_INT(packet,param1,param2,param3,param4,x,y,z,seq,command,target_system,target_component,frame,current,autocontinue): MAVLINK Message ID = 73
+classdef msg_mission_item_int < mavlink_message
+	%MSG_MISSION_ITEM_INT: MAVLINK Message ID = 73
     %Description:
     %    Message encoding a mission item. This message is emitted to announce
                 the presence of a mission item and to set a mission item on the system. The mission item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude. Local frame is Z-down, right handed (NED), global frame is Z-up, right handed (ENU). See alsohttp://qgroundcontrol.org/mavlink/waypoint_protocol.
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    param1(single): PARAM1, see MAV_CMD enum
     %    param2(single): PARAM2, see MAV_CMD enum
     %    param3(single): PARAM3, see MAV_CMD enum
@@ -44,9 +45,8 @@ classdef msg_mission_item_int < mavlink_handle
 
     methods
 
-        %Constructor: msg_mission_item_int
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_mission_item_int(packet,param1,param2,param3,param4,x,y,z,seq,command,target_system,target_component,frame,current,autocontinue)
+        %Create a new mission_item_int message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -83,8 +83,11 @@ classdef msg_mission_item_int < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -116,8 +119,13 @@ classdef msg_mission_item_int < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -138,8 +146,11 @@ classdef msg_mission_item_int < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.param1,2) ~= 1

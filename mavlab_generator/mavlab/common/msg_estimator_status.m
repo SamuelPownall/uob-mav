@@ -1,9 +1,10 @@
-classdef msg_estimator_status < mavlink_handle
-	%MSG_ESTIMATOR_STATUS(packet,time_usec,vel_ratio,pos_horiz_ratio,pos_vert_ratio,mag_ratio,hagl_ratio,tas_ratio,pos_horiz_accuracy,pos_vert_accuracy,flags): MAVLINK Message ID = 230
+classdef msg_estimator_status < mavlink_message
+	%MSG_ESTIMATOR_STATUS: MAVLINK Message ID = 230
     %Description:
     %    Estimator status message including flags, innovation test ratios and estimated accuracies. The flags message is an integer bitmask containing information on which EKF outputs are valid. See the ESTIMATOR_STATUS_FLAGS enum definition for further information. The innovaton test ratios show the magnitude of the sensor innovation divided by the innovation check threshold. Under normal operation the innovaton test ratios should be below 0.5 with occasional values up to 1.0. Values greater than 1.0 should be rare under normal operation and indicate that a measurement has been rejected by the filter. The user should be notified if an innovation test ratio greater than 1.0 is recorded. Notifications for values in the range between 0.5 and 1.0 should be optional and controllable by the user.
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    vel_ratio(single): Velocity innovation test ratio
     %    pos_horiz_ratio(single): Horizontal position innovation test ratio
@@ -35,9 +36,8 @@ classdef msg_estimator_status < mavlink_handle
 
     methods
 
-        %Constructor: msg_estimator_status
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_estimator_status(packet,time_usec,vel_ratio,pos_horiz_ratio,pos_vert_ratio,mag_ratio,hagl_ratio,tas_ratio,pos_horiz_accuracy,pos_vert_accuracy,flags)
+        %Create a new estimator_status message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -70,8 +70,11 @@ classdef msg_estimator_status < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -99,8 +102,13 @@ classdef msg_estimator_status < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -117,8 +125,11 @@ classdef msg_estimator_status < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.time_usec,2) ~= 1

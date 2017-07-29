@@ -1,9 +1,10 @@
-classdef msg_terrain_check < mavlink_handle
-	%MSG_TERRAIN_CHECK(packet,lat,lon): MAVLINK Message ID = 135
+classdef msg_terrain_check < mavlink_message
+	%MSG_TERRAIN_CHECK: MAVLINK Message ID = 135
     %Description:
     %    Request that the vehicle report terrain height at the given location. Used by GCS to check if vehicle has all terrain data needed for a mission.
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    lat(int32): Latitude (degrees *10^7)
     %    lon(int32): Longitude (degrees *10^7)
 	
@@ -19,9 +20,8 @@ classdef msg_terrain_check < mavlink_handle
 
     methods
 
-        %Constructor: msg_terrain_check
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_terrain_check(packet,lat,lon)
+        %Create a new terrain_check message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -46,8 +46,11 @@ classdef msg_terrain_check < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -67,8 +70,13 @@ classdef msg_terrain_check < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -77,8 +85,11 @@ classdef msg_terrain_check < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.lat,2) ~= 1

@@ -1,9 +1,10 @@
-classdef msg_camera_feedback < mavlink_handle
-	%MSG_CAMERA_FEEDBACK(packet,time_usec,lat,lng,alt_msl,alt_rel,roll,pitch,yaw,foc_len,img_idx,target_system,cam_idx,flags): MAVLINK Message ID = 180
+classdef msg_camera_feedback < mavlink_message
+	%MSG_CAMERA_FEEDBACK: MAVLINK Message ID = 180
     %Description:
     %    Camera Capture Feedback
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    time_usec(uint64): Image timestamp (microseconds since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB)
     %    lat(int32): Latitude in (deg * 1E7)
     %    lng(int32): Longitude in (deg * 1E7)
@@ -41,9 +42,8 @@ classdef msg_camera_feedback < mavlink_handle
 
     methods
 
-        %Constructor: msg_camera_feedback
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_camera_feedback(packet,time_usec,lat,lng,alt_msl,alt_rel,roll,pitch,yaw,foc_len,img_idx,target_system,cam_idx,flags)
+        %Create a new camera_feedback message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -79,8 +79,11 @@ classdef msg_camera_feedback < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -111,8 +114,13 @@ classdef msg_camera_feedback < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -132,8 +140,11 @@ classdef msg_camera_feedback < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.time_usec,2) ~= 1

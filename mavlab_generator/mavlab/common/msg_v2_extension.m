@@ -1,9 +1,10 @@
-classdef msg_v2_extension < mavlink_handle
-	%MSG_V2_EXTENSION(packet,message_type,target_network,target_system,target_component,payload): MAVLINK Message ID = 248
+classdef msg_v2_extension < mavlink_message
+	%MSG_V2_EXTENSION: MAVLINK Message ID = 248
     %Description:
     %    Message implementing parts of the V2 payload specs in V1 frames for transitional support.
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    message_type(uint16): A code that identifies the software component that understands this message (analogous to usb device classes or mime type strings).  If this code is less than 32768, it is considered a 'registered' protocol extension and the corresponding entry should be added to https://github.com/mavlink/mavlink/extension-message-ids.xml.  Software creators can register blocks of message IDs as needed (useful for GCS specific metadata, etc...). Message_types greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase.
     %    target_network(uint8): Network ID (0 for broadcast)
     %    target_system(uint8): System ID (0 for broadcast)
@@ -25,9 +26,8 @@ classdef msg_v2_extension < mavlink_handle
 
     methods
 
-        %Constructor: msg_v2_extension
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_v2_extension(packet,message_type,target_network,target_system,target_component,payload)
+        %Create a new v2_extension message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -55,8 +55,11 @@ classdef msg_v2_extension < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -81,8 +84,13 @@ classdef msg_v2_extension < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -96,8 +104,11 @@ classdef msg_v2_extension < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.message_type,2) ~= 1

@@ -7,7 +7,7 @@ classdef mavlab
     methods(Static, Access=public)
         
         function generate(xmlPath, outputPath)
-            %GENERATE(xmlPath,outputPath): Generates a MATLAB implementation of the MAVLINK 1.0 library
+            %GENERATE: Generates a MATLAB implementation of the MAVLINK 1.0 library
             %Description:
             %    Generates a MATLAB implemenation of the MAVLINK 1.0 library from a set of XML dialect files. The MAVLAB
             %    library allows communication between MATLAB and MAVLINK enabled autopilots.
@@ -87,7 +87,7 @@ classdef mavlab
     methods(Static,Access=private)
         
         function parsedMsgList = generateMessageClasses(msgPath, msgList)
-            %GENERATEMESSAGECLASSES(messagePath,msgList): Generates a MAVLINK message class per message in msgList
+            %GENERATEMESSAGECLASSES: Generates a MAVLINK message class per message in msgList
             %Description:
             %    Generates a class file per message in msgList in the folder specified by messagePath.
             %Arguments:
@@ -112,7 +112,7 @@ classdef mavlab
         end
         
         function parsedMsg = generateClassFromMsg(msgPath, msg, template)
-            %GENERATECLASSFROMMSG(msgPath, msg, template): Generates a MAVLINK message class
+            %GENERATECLASSFROMMSG: Generates a MAVLINK message class
             %Description:
             %    Generates a class file by injecting the data stored in msg into a template.
             %Arguments:
@@ -219,7 +219,7 @@ classdef mavlab
         end
         
         function generateEnumClass(msgPath, xmlName, enumList)
-            %GENERATEENUMCLASS(msgPath, xmlName, enumList): Generates a MAVLINK enum class
+            %GENERATEENUMCLASS: Generates a MAVLINK enum class
             %Description:
             %    Generates a class file by injecting the data stored in enumList into a template.
             %Arguments:
@@ -273,7 +273,7 @@ classdef mavlab
         end
         
         function generatePacketClass(mainPath, parsedMsgList)
-            %GENERATEPACKETCLASS(mainPath,parsedMsgList): Generates the MAVLINK packet class
+            %GENERATEPACKETCLASS: Generates the MAVLINK packet class
             %Description: 
             %    Uses a list of parsed messages and a template to generate the complete packet class
             %    for this MAVLINK implementation.
@@ -296,7 +296,7 @@ classdef mavlab
         end
         
         function generateCRCClass(mainPath, parsedMsgList)
-            %GENERATECRCCLASS(mainPath,parsedMsgList): Generates the MAVLINK CRC class
+            %GENERATECRCCLASS: Generates the MAVLINK CRC class
             %Description: 
             %    Uses a list of parsed messages and a template to generate the complete CRC class for
             %    this MAVLINK implementation.
@@ -336,7 +336,7 @@ classdef mavlab
         end
         
         function copyFixedClasses(mainPath)
-            %COPYFIXEDCLASSES(mainPath): Copy master files into the MAVLAB implementation
+            %COPYFIXEDCLASSES: Copy master files into the MAVLAB implementation
             %Description: 
             %    Copies one of each master file into the MAVLAB implementation. These files do not need
             %    to be generate and are the same for any set of XML files.
@@ -353,7 +353,7 @@ classdef mavlab
         end
         
         function orderedFields = fieldSort(parsedFields, typeSize)
-            %FIELDSORT(parsedFields, typeSize): Sorts a list of fields by type
+            %FIELDSORT: Sorts a list of fields by type
             %Description:
             %    Uses the type of each field to sort in descending order of data size.
             %Arguments:
@@ -374,7 +374,7 @@ classdef mavlab
         end
         
         function crcOut = accumulate(crcIn, buf)
-            %ACCUMULATE(crcIn,buf): Accumulate a buffer of bytes into a checksum
+            %ACCUMULATE: Accumulate a buffer of bytes into a checksum
             %Description:
             %    Accumulates each byte in buf into crcIn using the X.25 checksum standard.
             %Arguments:

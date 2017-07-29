@@ -1,9 +1,10 @@
-classdef msg_autopilot_version < mavlink_handle
-	%MSG_AUTOPILOT_VERSION(packet,capabilities,uid,flight_sw_version,middleware_sw_version,os_sw_version,board_version,vendor_id,product_id,flight_custom_version,middleware_custom_version,os_custom_version): MAVLINK Message ID = 148
+classdef msg_autopilot_version < mavlink_message
+	%MSG_AUTOPILOT_VERSION: MAVLINK Message ID = 148
     %Description:
     %    Version and capability of autopilot software
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    capabilities(uint64): bitmask of capabilities (see MAV_PROTOCOL_CAPABILITY enum)
     %    uid(uint64): UID if provided by hardware
     %    flight_sw_version(uint32): Firmware version number
@@ -37,9 +38,8 @@ classdef msg_autopilot_version < mavlink_handle
 
     methods
 
-        %Constructor: msg_autopilot_version
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_autopilot_version(packet,capabilities,uid,flight_sw_version,middleware_sw_version,os_sw_version,board_version,vendor_id,product_id,flight_custom_version,middleware_custom_version,os_custom_version)
+        %Create a new autopilot_version message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -73,8 +73,11 @@ classdef msg_autopilot_version < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -109,8 +112,13 @@ classdef msg_autopilot_version < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -134,8 +142,11 @@ classdef msg_autopilot_version < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.capabilities,2) ~= 1

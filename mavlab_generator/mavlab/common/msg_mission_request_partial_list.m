@@ -1,9 +1,10 @@
-classdef msg_mission_request_partial_list < mavlink_handle
-	%MSG_MISSION_REQUEST_PARTIAL_LIST(packet,start_index,end_index,target_system,target_component): MAVLINK Message ID = 37
+classdef msg_mission_request_partial_list < mavlink_message
+	%MSG_MISSION_REQUEST_PARTIAL_LIST: MAVLINK Message ID = 37
     %Description:
     %    Request a partial list of mission items from the system/component. http://qgroundcontrol.org/mavlink/waypoint_protocol. If start and end index are the same, just send one waypoint.
-    %    If constructing from fields, packet argument should be set to []
-	%Fields:
+    %    If constructing from fields, packet argument should be set to [].
+	%Arguments:
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    start_index(int16): Start index, 0 by default
     %    end_index(int16): End index, -1 by default (-1: send list to end). Else a valid index of the list
     %    target_system(uint8): System ID
@@ -23,9 +24,8 @@ classdef msg_mission_request_partial_list < mavlink_handle
 
     methods
 
-        %Constructor: msg_mission_request_partial_list
-        %packet should be a fully constructed MAVLINK packet
         function obj = msg_mission_request_partial_list(packet,start_index,end_index,target_system,target_component)
+        %Create a new mission_request_partial_list message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -52,8 +52,11 @@ classdef msg_mission_request_partial_list < mavlink_handle
 
         end
 
-        %Function: Packs this MAVLINK message into a packet for transmission
         function packet = pack(obj)
+        %PACK: Packs this MAVLINK message into a mavlink_packet
+        %Description:
+        %    Packs the fields of a message into a mavlink_packet which can be encoded
+        %    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
@@ -75,8 +78,13 @@ classdef msg_mission_request_partial_list < mavlink_handle
 
         end
 
-        %Function: Unpacks a MAVLINK payload and stores the data in this message
         function unpack(obj, payload)
+        %UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %Description:
+        %    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %    of this message.
+        %Arguments:
+        %    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
 
             payload.resetIndex();
             
@@ -87,8 +95,11 @@ classdef msg_mission_request_partial_list < mavlink_handle
 
         end
         
-        %Function: Returns either 0 or the name of the first encountered empty field
         function result = verify(obj)
+        %VERIFY: Determine whether all fields of this message are full
+        %Description:
+        %    Finds the first empty field in this message and returns its name. If there are no
+        %    empty fields return 0.
 
             if 1==0
             elseif size(obj.start_index,2) ~= 1
