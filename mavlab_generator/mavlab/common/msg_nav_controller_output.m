@@ -1,4 +1,4 @@
-classdef msg_nav_controller_output < mavlink_message
+classdef msg_nav_controller_output < mavlink_handle
 	%MSG_NAV_CONTROLLER_OUTPUT(packet,nav_roll,nav_pitch,alt_error,aspd_error,xtrack_error,nav_bearing,target_bearing,wp_dist): MAVLINK Message ID = 62
     %Description:
     %    The state of the fixed wing navigation and position controller.

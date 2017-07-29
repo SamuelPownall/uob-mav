@@ -1,4 +1,4 @@
-classdef msg_wind < mavlink_message
+classdef msg_wind < mavlink_handle
 	%MSG_WIND(packet,direction,speed,speed_z): MAVLINK Message ID = 168
     %Description:
     %    Wind estimation

@@ -1,4 +1,4 @@
-classdef msg_wind_cov < mavlink_message
+classdef msg_wind_cov < mavlink_handle
 	%MSG_WIND_COV(packet,time_usec,wind_x,wind_y,wind_z,var_horiz,var_vert,wind_alt,horiz_accuracy,vert_accuracy): MAVLINK Message ID = 231
     %Description:
     %    No description available

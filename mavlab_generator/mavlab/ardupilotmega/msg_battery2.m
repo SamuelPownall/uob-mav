@@ -1,4 +1,4 @@
-classdef msg_battery2 < mavlink_message
+classdef msg_battery2 < mavlink_handle
 	%MSG_BATTERY2(packet,voltage,current_battery): MAVLINK Message ID = 181
     %Description:
     %    2nd Battery status

@@ -1,4 +1,4 @@
-classdef msg_position_target_local_ned < mavlink_message
+classdef msg_position_target_local_ned < mavlink_handle
 	%MSG_POSITION_TARGET_LOCAL_NED(packet,time_boot_ms,x,y,z,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,coordinate_frame): MAVLINK Message ID = 85
     %Description:
     %    Reports the current commanded vehicle position, velocity, and acceleration as specified by the autopilot. This should match the commands sent in SET_POSITION_TARGET_LOCAL_NED if the vehicle is being controlled this way.

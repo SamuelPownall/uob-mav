@@ -1,4 +1,4 @@
-classdef msg_set_mag_offsets < mavlink_message
+classdef msg_set_mag_offsets < mavlink_handle
 	%MSG_SET_MAG_OFFSETS(packet,mag_ofs_x,mag_ofs_y,mag_ofs_z,target_system,target_component): MAVLINK Message ID = 151
     %Description:
     %    Deprecated. Use MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS instead. Set the magnetometer offsets

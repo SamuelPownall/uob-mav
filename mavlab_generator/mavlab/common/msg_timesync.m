@@ -1,4 +1,4 @@
-classdef msg_timesync < mavlink_message
+classdef msg_timesync < mavlink_handle
 	%MSG_TIMESYNC(packet,tc1,ts1): MAVLINK Message ID = 111
     %Description:
     %    Time synchronization message.

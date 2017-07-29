@@ -1,4 +1,4 @@
-classdef msg_mag_cal_progress < mavlink_message
+classdef msg_mag_cal_progress < mavlink_handle
 	%MSG_MAG_CAL_PROGRESS(packet,direction_x,direction_y,direction_z,compass_id,cal_mask,cal_status,attempt,completion_pct,completion_mask): MAVLINK Message ID = 191
     %Description:
     %    Reports progress of compass calibration.

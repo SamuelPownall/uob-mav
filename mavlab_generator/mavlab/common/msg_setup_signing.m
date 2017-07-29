@@ -1,4 +1,4 @@
-classdef msg_setup_signing < mavlink_message
+classdef msg_setup_signing < mavlink_handle
 	%MSG_SETUP_SIGNING(packet,initial_timestamp,target_system,target_component,secret_key): MAVLINK Message ID = 256
     %Description:
     %    Setup a MAVLink2 signing key. If called with secret_key of all zero and zero initial_timestamp will disable signing

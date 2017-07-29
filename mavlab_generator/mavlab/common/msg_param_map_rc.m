@@ -1,4 +1,4 @@
-classdef msg_param_map_rc < mavlink_message
+classdef msg_param_map_rc < mavlink_handle
 	%MSG_PARAM_MAP_RC(packet,param_value0,scale,param_value_min,param_value_max,param_index,target_system,target_component,param_id,parameter_rc_channel_index): MAVLINK Message ID = 50
     %Description:
     %    Bind a RC channel to a parameter. The parameter should change accoding to the RC channel value.

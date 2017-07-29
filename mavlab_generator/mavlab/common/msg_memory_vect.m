@@ -1,4 +1,4 @@
-classdef msg_memory_vect < mavlink_message
+classdef msg_memory_vect < mavlink_handle
 	%MSG_MEMORY_VECT(packet,address,ver,type,value): MAVLINK Message ID = 249
     %Description:
     %    Send raw controller memory. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.

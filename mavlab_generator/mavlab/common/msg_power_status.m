@@ -1,4 +1,4 @@
-classdef msg_power_status < mavlink_message
+classdef msg_power_status < mavlink_handle
 	%MSG_POWER_STATUS(packet,Vcc,Vservo,flags): MAVLINK Message ID = 125
     %Description:
     %    Power supply status

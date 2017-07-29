@@ -1,4 +1,4 @@
-classdef msg_attitude_target < mavlink_message
+classdef msg_attitude_target < mavlink_handle
 	%MSG_ATTITUDE_TARGET(packet,time_boot_ms,q,body_roll_rate,body_pitch_rate,body_yaw_rate,thrust,type_mask): MAVLINK Message ID = 83
     %Description:
     %    Reports the current commanded attitude of the vehicle as specified by the autopilot. This should match the commands sent in a SET_ATTITUDE_TARGET message if the vehicle is being controlled this way.

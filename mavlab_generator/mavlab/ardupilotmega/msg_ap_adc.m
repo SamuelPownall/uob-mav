@@ -1,4 +1,4 @@
-classdef msg_ap_adc < mavlink_message
+classdef msg_ap_adc < mavlink_handle
 	%MSG_AP_ADC(packet,adc1,adc2,adc3,adc4,adc5,adc6): MAVLINK Message ID = 153
     %Description:
     %    raw ADC output

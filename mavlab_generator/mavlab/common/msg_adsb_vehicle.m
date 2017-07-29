@@ -1,4 +1,4 @@
-classdef msg_adsb_vehicle < mavlink_message
+classdef msg_adsb_vehicle < mavlink_handle
 	%MSG_ADSB_VEHICLE(packet,ICAO_address,lat,lon,altitude,heading,hor_velocity,ver_velocity,flags,squawk,altitude_type,callsign,emitter_type,tslc): MAVLINK Message ID = 246
     %Description:
     %    The location and information of an ADSB vehicle

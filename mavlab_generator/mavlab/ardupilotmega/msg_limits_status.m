@@ -1,4 +1,4 @@
-classdef msg_limits_status < mavlink_message
+classdef msg_limits_status < mavlink_handle
 	%MSG_LIMITS_STATUS(packet,last_trigger,last_action,last_recovery,last_clear,breach_count,limits_state,mods_enabled,mods_required,mods_triggered): MAVLINK Message ID = 167
     %Description:
     %    Status of AP_Limits. Sent in extended

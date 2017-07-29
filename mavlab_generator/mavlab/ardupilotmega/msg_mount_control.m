@@ -1,4 +1,4 @@
-classdef msg_mount_control < mavlink_message
+classdef msg_mount_control < mavlink_handle
 	%MSG_MOUNT_CONTROL(packet,input_a,input_b,input_c,target_system,target_component,save_position): MAVLINK Message ID = 157
     %Description:
     %    Message to control a camera mount, directional antenna, etc.

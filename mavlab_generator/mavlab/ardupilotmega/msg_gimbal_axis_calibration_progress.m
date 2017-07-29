@@ -1,4 +1,4 @@
-classdef msg_gimbal_axis_calibration_progress < mavlink_message
+classdef msg_gimbal_axis_calibration_progress < mavlink_handle
 	%MSG_GIMBAL_AXIS_CALIBRATION_PROGRESS(packet,calibration_axis,calibration_progress,calibration_status): MAVLINK Message ID = 203
     %Description:
     %    

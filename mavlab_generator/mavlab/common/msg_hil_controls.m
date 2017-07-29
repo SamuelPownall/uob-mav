@@ -1,4 +1,4 @@
-classdef msg_hil_controls < mavlink_message
+classdef msg_hil_controls < mavlink_handle
 	%MSG_HIL_CONTROLS(packet,time_usec,roll_ailerons,pitch_elevator,yaw_rudder,throttle,aux1,aux2,aux3,aux4,mode,nav_mode): MAVLINK Message ID = 91
     %Description:
     %    Sent from autopilot to simulation. Hardware in the loop control outputs

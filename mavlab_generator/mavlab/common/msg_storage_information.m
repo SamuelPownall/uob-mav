@@ -1,4 +1,4 @@
-classdef msg_storage_information < mavlink_message
+classdef msg_storage_information < mavlink_handle
 	%MSG_STORAGE_INFORMATION(packet,time_boot_ms,total_capacity,used_capacity,available_capacity,read_speed,write_speed,storage_id,status): MAVLINK Message ID = 261
     %Description:
     %    WIP: Information about a storage medium

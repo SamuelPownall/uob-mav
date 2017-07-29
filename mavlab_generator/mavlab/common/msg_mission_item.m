@@ -1,4 +1,4 @@
-classdef msg_mission_item < mavlink_message
+classdef msg_mission_item < mavlink_handle
 	%MSG_MISSION_ITEM(packet,param1,param2,param3,param4,x,y,z,seq,command,target_system,target_component,frame,current,autocontinue): MAVLINK Message ID = 39
     %Description:
     %    Message encoding a mission item. This message is emitted to announce

@@ -1,4 +1,4 @@
-classdef msg_led_control < mavlink_message
+classdef msg_led_control < mavlink_handle
 	%MSG_LED_CONTROL(packet,target_system,target_component,instance,pattern,custom_len,custom_bytes): MAVLINK Message ID = 186
     %Description:
     %    Control vehicle LEDs

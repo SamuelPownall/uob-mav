@@ -1,4 +1,4 @@
-classdef msg_attitude < mavlink_message
+classdef msg_attitude < mavlink_handle
 	%MSG_ATTITUDE(packet,time_boot_ms,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed): MAVLINK Message ID = 30
     %Description:
     %    The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).

@@ -1,4 +1,4 @@
-classdef msg_change_operator_control < mavlink_message
+classdef msg_change_operator_control < mavlink_handle
 	%MSG_CHANGE_OPERATOR_CONTROL(packet,target_system,control_request,version,passkey): MAVLINK Message ID = 5
     %Description:
     %    Request to control this MAV

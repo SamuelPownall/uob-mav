@@ -1,4 +1,4 @@
-classdef msg_auth_key < mavlink_message
+classdef msg_auth_key < mavlink_handle
 	%MSG_AUTH_KEY(packet,key): MAVLINK Message ID = 7
     %Description:
     %    Emit an encrypted signature / key identifying this system. PLEASE NOTE: This protocol has been kept simple, so transmitting the key requires an encrypted channel for true safety.

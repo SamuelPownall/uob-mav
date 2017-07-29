@@ -1,4 +1,4 @@
-classdef msg_button_change < mavlink_message
+classdef msg_button_change < mavlink_handle
 	%MSG_BUTTON_CHANGE(packet,time_boot_ms,last_change_ms,state): MAVLINK Message ID = 257
     %Description:
     %    Report button state change

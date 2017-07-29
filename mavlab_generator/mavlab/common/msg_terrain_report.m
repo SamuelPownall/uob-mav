@@ -1,4 +1,4 @@
-classdef msg_terrain_report < mavlink_message
+classdef msg_terrain_report < mavlink_handle
 	%MSG_TERRAIN_REPORT(packet,lat,lon,terrain_height,current_height,spacing,pending,loaded): MAVLINK Message ID = 136
     %Description:
     %    Response from a TERRAIN_CHECK request

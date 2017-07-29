@@ -1,4 +1,4 @@
-classdef msg_log_request_end < mavlink_message
+classdef msg_log_request_end < mavlink_handle
 	%MSG_LOG_REQUEST_END(packet,target_system,target_component): MAVLINK Message ID = 122
     %Description:
     %    Stop log transfer and resume normal logging

@@ -1,4 +1,4 @@
-classdef msg_landing_target < mavlink_message
+classdef msg_landing_target < mavlink_handle
 	%MSG_LANDING_TARGET(packet,time_usec,angle_x,angle_y,distance,size_x,size_y,target_num,frame): MAVLINK Message ID = 149
     %Description:
     %    The location of a landing area captured from a downward facing camera

@@ -1,4 +1,4 @@
-classdef msg_mission_set_current < mavlink_message
+classdef msg_mission_set_current < mavlink_handle
 	%MSG_MISSION_SET_CURRENT(packet,seq,target_system,target_component): MAVLINK Message ID = 41
     %Description:
     %    Set the mission item with sequence number seq as current item. This means that the MAV will continue to this mission item on the shortest path (not following the mission items in-between).

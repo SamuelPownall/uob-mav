@@ -1,4 +1,4 @@
-classdef msg_ping < mavlink_message
+classdef msg_ping < mavlink_handle
 	%MSG_PING(packet,time_usec,seq,target_system,target_component): MAVLINK Message ID = 4
     %Description:
     %    A ping message either requesting or responding to a ping. This allows to measure the system latencies, including serial port, radio modem and UDP connections.

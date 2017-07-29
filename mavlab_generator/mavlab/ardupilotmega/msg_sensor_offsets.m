@@ -1,4 +1,4 @@
-classdef msg_sensor_offsets < mavlink_message
+classdef msg_sensor_offsets < mavlink_handle
 	%MSG_SENSOR_OFFSETS(packet,mag_declination,raw_press,raw_temp,gyro_cal_x,gyro_cal_y,gyro_cal_z,accel_cal_x,accel_cal_y,accel_cal_z,mag_ofs_x,mag_ofs_y,mag_ofs_z): MAVLINK Message ID = 150
     %Description:
     %    Offsets and calibrations values for hardware

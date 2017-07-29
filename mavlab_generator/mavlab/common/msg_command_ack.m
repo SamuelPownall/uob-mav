@@ -1,4 +1,4 @@
-classdef msg_command_ack < mavlink_message
+classdef msg_command_ack < mavlink_handle
 	%MSG_COMMAND_ACK(packet,command,result): MAVLINK Message ID = 77
     %Description:
     %    Report status of a command. Includes feedback wether the command was executed.

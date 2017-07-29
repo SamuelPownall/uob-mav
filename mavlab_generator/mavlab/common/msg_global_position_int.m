@@ -1,4 +1,4 @@
-classdef msg_global_position_int < mavlink_message
+classdef msg_global_position_int < mavlink_handle
 	%MSG_GLOBAL_POSITION_INT(packet,time_boot_ms,lat,lon,alt,relative_alt,vx,vy,vz,hdg): MAVLINK Message ID = 33
     %Description:
     %    The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It

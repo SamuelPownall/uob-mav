@@ -1,4 +1,4 @@
-classdef msg_mount_orientation < mavlink_message
+classdef msg_mount_orientation < mavlink_handle
 	%MSG_MOUNT_ORIENTATION(packet,time_boot_ms,roll,pitch,yaw): MAVLINK Message ID = 265
     %Description:
     %    WIP: Orientation of a mount

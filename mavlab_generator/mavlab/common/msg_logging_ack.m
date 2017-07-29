@@ -1,4 +1,4 @@
-classdef msg_logging_ack < mavlink_message
+classdef msg_logging_ack < mavlink_handle
 	%MSG_LOGGING_ACK(packet,sequence,target_system,target_component): MAVLINK Message ID = 268
     %Description:
     %    An ack for a LOGGING_DATA_ACKED message

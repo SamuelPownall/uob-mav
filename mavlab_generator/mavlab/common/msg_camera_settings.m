@@ -1,4 +1,4 @@
-classdef msg_camera_settings < mavlink_message
+classdef msg_camera_settings < mavlink_handle
 	%MSG_CAMERA_SETTINGS(packet,time_boot_ms,aperture,shutter_speed,iso_sensitivity,white_balance,camera_id,aperture_locked,shutter_speed_locked,iso_sensitivity_locked,white_balance_locked,mode_id,color_mode_id,image_format_id): MAVLINK Message ID = 260
     %Description:
     %    WIP: Settings of a camera, can be requested using MAV_CMD_REQUEST_CAMERA_SETTINGS and written using MAV_CMD_SET_CAMERA_SETTINGS

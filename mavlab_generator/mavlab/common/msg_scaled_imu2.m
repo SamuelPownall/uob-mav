@@ -1,4 +1,4 @@
-classdef msg_scaled_imu2 < mavlink_message
+classdef msg_scaled_imu2 < mavlink_handle
 	%MSG_SCALED_IMU2(packet,time_boot_ms,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag): MAVLINK Message ID = 116
     %Description:
     %    The RAW IMU readings for secondary 9DOF sensor setup. This message should contain the scaled values to the described units

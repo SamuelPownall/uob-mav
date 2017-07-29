@@ -34,13 +34,14 @@ classdef mavlink_parser < mavlink_handle
             obj.state = obj.STATE_UNINIT;
         end
         
+        %Function: Parse the next char and add to packet
+        %char must be of type uint8
         function packet = parseChar(obj,char)
             %PARSECHAR(char): Parse a stream of chars and return a packet if found
             %Description:
             %    Parses chars one at a time and returns any packets that are found. If a packet
-            %    is not found this function returns [].
-            %Arguments:
-            %    char(char): The next char in the stream to be parsed
+            %    is not found this function returns []
+            %Arg
             
             %Check that the input if of type uint8
             if isa(char,'uint8')

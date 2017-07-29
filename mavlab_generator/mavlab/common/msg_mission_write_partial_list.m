@@ -1,4 +1,4 @@
-classdef msg_mission_write_partial_list < mavlink_message
+classdef msg_mission_write_partial_list < mavlink_handle
 	%MSG_MISSION_WRITE_PARTIAL_LIST(packet,start_index,end_index,target_system,target_component): MAVLINK Message ID = 38
     %Description:
     %    This message is sent to the MAV to write a partial list. If start index == end index, only one item will be transmitted / updated. If the start index is NOT 0 and above the current list size, this request should be REJECTED!

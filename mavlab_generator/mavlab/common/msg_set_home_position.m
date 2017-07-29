@@ -1,4 +1,4 @@
-classdef msg_set_home_position < mavlink_message
+classdef msg_set_home_position < mavlink_handle
 	%MSG_SET_HOME_POSITION(packet,latitude,longitude,altitude,x,y,z,q,approach_x,approach_y,approach_z,target_system): MAVLINK Message ID = 243
     %Description:
     %    The position the system will return to and land on. The position is set automatically by the system during the takeoff in case it was not explicitely set by the operator before or after. The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface. Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach. The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector.

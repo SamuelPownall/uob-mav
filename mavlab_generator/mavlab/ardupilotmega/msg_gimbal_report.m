@@ -1,4 +1,4 @@
-classdef msg_gimbal_report < mavlink_message
+classdef msg_gimbal_report < mavlink_handle
 	%MSG_GIMBAL_REPORT(packet,delta_time,delta_angle_x,delta_angle_y,delta_angle_z,delta_velocity_x,delta_velocity_y,delta_velocity_z,joint_roll,joint_el,joint_az,target_system,target_component): MAVLINK Message ID = 200
     %Description:
     %    3 axis gimbal mesuraments

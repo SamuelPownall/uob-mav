@@ -1,4 +1,4 @@
-classdef msg_gps_global_origin < mavlink_message
+classdef msg_gps_global_origin < mavlink_handle
 	%MSG_GPS_GLOBAL_ORIGIN(packet,latitude,longitude,altitude): MAVLINK Message ID = 49
     %Description:
     %    Once the MAV sets a new GPS-Local correspondence, this message announces the origin (0,0,0) position

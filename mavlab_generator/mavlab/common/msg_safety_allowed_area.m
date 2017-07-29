@@ -1,4 +1,4 @@
-classdef msg_safety_allowed_area < mavlink_message
+classdef msg_safety_allowed_area < mavlink_handle
 	%MSG_SAFETY_ALLOWED_AREA(packet,p1x,p1y,p1z,p2x,p2y,p2z,frame): MAVLINK Message ID = 55
     %Description:
     %    Read out the safety zone the MAV currently assumes.

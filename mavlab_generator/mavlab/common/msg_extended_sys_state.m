@@ -1,4 +1,4 @@
-classdef msg_extended_sys_state < mavlink_message
+classdef msg_extended_sys_state < mavlink_handle
 	%MSG_EXTENDED_SYS_STATE(packet,vtol_state,landed_state): MAVLINK Message ID = 245
     %Description:
     %    Provides state for additional features

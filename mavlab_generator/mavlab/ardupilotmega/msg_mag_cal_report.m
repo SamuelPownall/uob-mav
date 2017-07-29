@@ -1,4 +1,4 @@
-classdef msg_mag_cal_report < mavlink_message
+classdef msg_mag_cal_report < mavlink_handle
 	%MSG_MAG_CAL_REPORT(packet,fitness,ofs_x,ofs_y,ofs_z,diag_x,diag_y,diag_z,offdiag_x,offdiag_y,offdiag_z,compass_id,cal_mask,cal_status,autosaved): MAVLINK Message ID = 192
     %Description:
     %    Reports results of completed compass calibration. Sent until MAG_CAL_ACK received.

@@ -1,4 +1,4 @@
-classdef msg_raw_imu < mavlink_message
+classdef msg_raw_imu < mavlink_handle
 	%MSG_RAW_IMU(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag): MAVLINK Message ID = 27
     %Description:
     %    The RAW IMU readings for the usual 9DOF sensor setup. This message should always contain the true raw values without any scaling to allow data capture and system debugging.

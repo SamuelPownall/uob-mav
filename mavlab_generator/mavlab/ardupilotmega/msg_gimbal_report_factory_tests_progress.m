@@ -1,4 +1,4 @@
-classdef msg_gimbal_report_factory_tests_progress < mavlink_message
+classdef msg_gimbal_report_factory_tests_progress < mavlink_handle
 	%MSG_GIMBAL_REPORT_FACTORY_TESTS_PROGRESS(packet,test,test_section,test_section_progress,test_status): MAVLINK Message ID = 210
     %Description:
     %    

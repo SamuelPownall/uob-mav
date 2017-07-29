@@ -1,4 +1,4 @@
-classdef msg_local_position_ned_system_global_offset < mavlink_message
+classdef msg_local_position_ned_system_global_offset < mavlink_handle
 	%MSG_LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET(packet,time_boot_ms,x,y,z,roll,pitch,yaw): MAVLINK Message ID = 89
     %Description:
     %    The offset in X, Y, Z and yaw between the LOCAL_POSITION_NED messages of MAV X and the global coordinate frame in NED coordinates. Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)

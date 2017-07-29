@@ -1,4 +1,4 @@
-classdef msg_mission_count < mavlink_message
+classdef msg_mission_count < mavlink_handle
 	%MSG_MISSION_COUNT(packet,count,target_system,target_component): MAVLINK Message ID = 44
     %Description:
     %    This message is emitted as response to MISSION_REQUEST_LIST by the MAV and to initiate a write transaction. The GCS can then request the individual mission item based on the knowledge of the total number of MISSIONs.

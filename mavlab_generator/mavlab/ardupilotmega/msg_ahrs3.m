@@ -1,4 +1,4 @@
-classdef msg_ahrs3 < mavlink_message
+classdef msg_ahrs3 < mavlink_handle
 	%MSG_AHRS3(packet,roll,pitch,yaw,altitude,lat,lng,v1,v2,v3,v4): MAVLINK Message ID = 182
     %Description:
     %    Status of third AHRS filter if available. This is for ANU research group (Ali and Sean)

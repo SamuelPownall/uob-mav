@@ -1,4 +1,4 @@
-classdef msg_altitude < mavlink_message
+classdef msg_altitude < mavlink_handle
 	%MSG_ALTITUDE(packet,time_usec,altitude_monotonic,altitude_amsl,altitude_local,altitude_relative,altitude_terrain,bottom_clearance): MAVLINK Message ID = 141
     %Description:
     %    The current system altitude.

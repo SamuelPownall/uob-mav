@@ -1,4 +1,4 @@
-classdef msg_debug < mavlink_message
+classdef msg_debug < mavlink_handle
 	%MSG_DEBUG(packet,time_boot_ms,value,ind): MAVLINK Message ID = 254
     %Description:
     %    Send a debug value. The index is used to discriminate between values. These values show up in the plot of QGroundControl as DEBUG N.

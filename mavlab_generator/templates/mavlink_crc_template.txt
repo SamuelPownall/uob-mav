@@ -1,4 +1,4 @@
-classdef mavlink_crc < handle
+classdef mavlink_crc < mavlink_handle
     %%MAVLINK CRC Class
     %%Handles the crc x.25 checksum system used by MAVLINK
     

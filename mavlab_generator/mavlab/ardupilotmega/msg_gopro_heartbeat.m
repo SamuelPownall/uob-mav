@@ -1,4 +1,4 @@
-classdef msg_gopro_heartbeat < mavlink_message
+classdef msg_gopro_heartbeat < mavlink_handle
 	%MSG_GOPRO_HEARTBEAT(packet,status): MAVLINK Message ID = 215
     %Description:
     %    Heartbeat from a HeroBus attached GoPro

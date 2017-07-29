@@ -1,4 +1,4 @@
-classdef msg_att_pos_mocap < mavlink_message
+classdef msg_att_pos_mocap < mavlink_handle
 	%MSG_ATT_POS_MOCAP(packet,time_usec,q,x,y,z): MAVLINK Message ID = 138
     %Description:
     %    Motion capture attitude and position

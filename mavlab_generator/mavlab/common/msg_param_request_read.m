@@ -1,4 +1,4 @@
-classdef msg_param_request_read < mavlink_message
+classdef msg_param_request_read < mavlink_handle
 	%MSG_PARAM_REQUEST_READ(packet,param_index,target_system,target_component,param_id): MAVLINK Message ID = 20
     %Description:
     %    Request to read the onboard parameter with the param_id string id. Onboard parameters are stored as key[const char*] -> value[float]. This allows to send a parameter to any other component (such as the GCS) without the need of previous knowledge of possible parameter names. Thus the same GCS can store different parameters for different autopilots. See also http://qgroundcontrol.org/parameter_interface for a full documentation of QGroundControl and IMU code.

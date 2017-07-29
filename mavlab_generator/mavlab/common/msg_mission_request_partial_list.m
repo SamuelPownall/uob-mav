@@ -1,4 +1,4 @@
-classdef msg_mission_request_partial_list < mavlink_message
+classdef msg_mission_request_partial_list < mavlink_handle
 	%MSG_MISSION_REQUEST_PARTIAL_LIST(packet,start_index,end_index,target_system,target_component): MAVLINK Message ID = 37
     %Description:
     %    Request a partial list of mission items from the system/component. http://qgroundcontrol.org/mavlink/waypoint_protocol. If start and end index are the same, just send one waypoint.

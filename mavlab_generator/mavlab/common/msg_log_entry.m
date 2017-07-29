@@ -1,4 +1,4 @@
-classdef msg_log_entry < mavlink_message
+classdef msg_log_entry < mavlink_handle
 	%MSG_LOG_ENTRY(packet,time_utc,size,id,num_logs,last_log_num): MAVLINK Message ID = 118
     %Description:
     %    Reply to LOG_REQUEST_LIST

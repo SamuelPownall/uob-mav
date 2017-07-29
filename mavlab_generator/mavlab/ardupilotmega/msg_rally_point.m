@@ -1,4 +1,4 @@
-classdef msg_rally_point < mavlink_message
+classdef msg_rally_point < mavlink_handle
 	%MSG_RALLY_POINT(packet,lat,lng,alt,break_alt,land_dir,target_system,target_component,idx,count,flags): MAVLINK Message ID = 175
     %Description:
     %    A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS

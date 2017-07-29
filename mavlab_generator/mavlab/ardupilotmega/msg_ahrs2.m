@@ -1,4 +1,4 @@
-classdef msg_ahrs2 < mavlink_message
+classdef msg_ahrs2 < mavlink_handle
 	%MSG_AHRS2(packet,roll,pitch,yaw,altitude,lat,lng): MAVLINK Message ID = 178
     %Description:
     %    Status of secondary AHRS filter if available

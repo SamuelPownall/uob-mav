@@ -1,4 +1,4 @@
-classdef msg_v2_extension < mavlink_message
+classdef msg_v2_extension < mavlink_handle
 	%MSG_V2_EXTENSION(packet,message_type,target_network,target_system,target_component,payload): MAVLINK Message ID = 248
     %Description:
     %    Message implementing parts of the V2 payload specs in V1 frames for transitional support.

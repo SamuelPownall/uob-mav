@@ -1,4 +1,4 @@
-classdef msg_gps_raw_int < mavlink_message
+classdef msg_gps_raw_int < mavlink_handle
 	%MSG_GPS_RAW_INT(packet,time_usec,lat,lon,alt,eph,epv,vel,cog,fix_type,satellites_visible): MAVLINK Message ID = 24
     %Description:
     %    The global position, as returned by the Global Positioning System (GPS). This is

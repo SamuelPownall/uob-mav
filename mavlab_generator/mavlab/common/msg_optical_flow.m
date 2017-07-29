@@ -1,4 +1,4 @@
-classdef msg_optical_flow < mavlink_message
+classdef msg_optical_flow < mavlink_handle
 	%MSG_OPTICAL_FLOW(packet,time_usec,flow_comp_m_x,flow_comp_m_y,ground_distance,flow_x,flow_y,sensor_id,quality): MAVLINK Message ID = 100
     %Description:
     %    Optical flow from a flow sensor (e.g. optical mouse sensor)

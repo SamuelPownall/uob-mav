@@ -1,4 +1,4 @@
-classdef msg_vision_speed_estimate < mavlink_message
+classdef msg_vision_speed_estimate < mavlink_handle
 	%MSG_VISION_SPEED_ESTIMATE(packet,usec,x,y,z): MAVLINK Message ID = 103
     %Description:
     %    No description available

@@ -1,4 +1,4 @@
-classdef mavlink_packet < handle
+classdef mavlink_packet < mavlink_handle
     %%MAVLINK_PACKET Class
     %%Used to encode and decode MAVLINK packets
     

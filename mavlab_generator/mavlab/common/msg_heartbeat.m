@@ -1,4 +1,4 @@
-classdef msg_heartbeat < mavlink_message
+classdef msg_heartbeat < mavlink_handle
 	%MSG_HEARTBEAT(packet,custom_mode,type,autopilot,base_mode,system_status,mavlink_version): MAVLINK Message ID = 0
     %Description:
     %    The heartbeat message shows that a system is present and responding. The type of the MAV and Autopilot hardware allow the receiving system to treat further messages from this system appropriate (e.g. by laying out the user interface based on the autopilot).

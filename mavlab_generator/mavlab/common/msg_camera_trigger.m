@@ -1,4 +1,4 @@
-classdef msg_camera_trigger < mavlink_message
+classdef msg_camera_trigger < mavlink_handle
 	%MSG_CAMERA_TRIGGER(packet,time_usec,seq): MAVLINK Message ID = 112
     %Description:
     %    Camera-IMU triggering and synchronisation message.

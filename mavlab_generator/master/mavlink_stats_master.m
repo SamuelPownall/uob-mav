@@ -1,4 +1,4 @@
-classdef mavlink_stats < handle
+classdef mavlink_stats < mavlink_handle
     %MAVLINK_STATS Class
     %Contains information such as error counts and packet drops
     
@@ -11,7 +11,7 @@ classdef mavlink_stats < handle
     
     methods
         
-        %Increment failed CRC ounter
+        %Increment failed CRC counter
         function incrementFailedCRC(obj, incr)
             if nargin == 2
                 obj.faiedCRC = obj.failedCRC + incr; 

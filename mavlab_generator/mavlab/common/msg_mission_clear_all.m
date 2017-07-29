@@ -1,4 +1,4 @@
-classdef msg_mission_clear_all < mavlink_message
+classdef msg_mission_clear_all < mavlink_handle
 	%MSG_MISSION_CLEAR_ALL(packet,target_system,target_component): MAVLINK Message ID = 45
     %Description:
     %    Delete all mission items at once.

@@ -1,4 +1,4 @@
-classdef msg_param_value < mavlink_message
+classdef msg_param_value < mavlink_handle
 	%MSG_PARAM_VALUE(packet,param_value,param_count,param_index,param_id,param_type): MAVLINK Message ID = 22
     %Description:
     %    Emit the value of a onboard parameter. The inclusion of param_count and param_index in the message allows the recipient to keep track of received parameters and allows him to re-request missing parameters after a loss or timeout.

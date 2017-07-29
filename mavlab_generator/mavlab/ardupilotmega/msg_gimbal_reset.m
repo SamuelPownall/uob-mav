@@ -1,4 +1,4 @@
-classdef msg_gimbal_reset < mavlink_message
+classdef msg_gimbal_reset < mavlink_handle
 	%MSG_GIMBAL_RESET(packet,target_system,target_component): MAVLINK Message ID = 202
     %Description:
     %    

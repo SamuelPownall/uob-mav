@@ -1,4 +1,4 @@
-classdef msg_named_value_float < mavlink_message
+classdef msg_named_value_float < mavlink_handle
 	%MSG_NAMED_VALUE_FLOAT(packet,time_boot_ms,value,name): MAVLINK Message ID = 251
     %Description:
     %    Send a key-value pair as float. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.

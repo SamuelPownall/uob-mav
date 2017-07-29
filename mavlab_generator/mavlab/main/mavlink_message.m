@@ -1,6 +1,7 @@
-classdef mavlink_message < handle
-    %MAVLINK_MSG Class
-    %Common interface for all MAVLINK messages
+classdef mavlink_message < mavlink_handle
+    %MAVLINK_MESSAGE: Superclass for all generated MAVLINK message classes
+    %Description:
+    %    Contains properties and methods which are present in all MAVLINK message classes.
     
     properties
         sysid;  %ID of the sending system

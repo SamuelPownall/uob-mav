@@ -1,4 +1,4 @@
-classdef msg_set_gps_global_origin < mavlink_message
+classdef msg_set_gps_global_origin < mavlink_handle
 	%MSG_SET_GPS_GLOBAL_ORIGIN(packet,latitude,longitude,altitude,target_system): MAVLINK Message ID = 48
     %Description:
     %    As local waypoints exist, the global MISSION reference allows to transform between the local coordinate frame and the global (GPS) coordinate frame. This can be necessary when e.g. in- and outdoor settings are connected and the MAV should move from in- to outdoor.

@@ -1,4 +1,4 @@
-classdef msg_gps_input < mavlink_message
+classdef msg_gps_input < mavlink_handle
 	%MSG_GPS_INPUT(packet,time_usec,time_week_ms,lat,lon,alt,hdop,vdop,vn,ve,vd,speed_accuracy,horiz_accuracy,vert_accuracy,ignore_flags,time_week,gps_id,fix_type,satellites_visible): MAVLINK Message ID = 232
     %Description:
     %    GPS sensor input message.  This is a raw sensor value sent by the GPS. This is NOT the global position estimate of the sytem.

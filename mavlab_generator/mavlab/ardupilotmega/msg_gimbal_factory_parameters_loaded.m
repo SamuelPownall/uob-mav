@@ -1,4 +1,4 @@
-classdef msg_gimbal_factory_parameters_loaded < mavlink_message
+classdef msg_gimbal_factory_parameters_loaded < mavlink_handle
 	%MSG_GIMBAL_FACTORY_PARAMETERS_LOADED(packet,dummy): MAVLINK Message ID = 207
     %Description:
     %    

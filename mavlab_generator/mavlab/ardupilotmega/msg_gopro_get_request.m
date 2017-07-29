@@ -1,4 +1,4 @@
-classdef msg_gopro_get_request < mavlink_message
+classdef msg_gopro_get_request < mavlink_handle
 	%MSG_GOPRO_GET_REQUEST(packet,target_system,target_component,cmd_id): MAVLINK Message ID = 216
     %Description:
     %    Request a GOPRO_COMMAND response from the GoPro

@@ -1,4 +1,4 @@
-classdef msg_change_operator_control_ack < mavlink_message
+classdef msg_change_operator_control_ack < mavlink_handle
 	%MSG_CHANGE_OPERATOR_CONTROL_ACK(packet,gcs_system_id,control_request,ack): MAVLINK Message ID = 6
     %Description:
     %    Accept / deny control of this MAV

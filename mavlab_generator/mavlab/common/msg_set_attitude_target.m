@@ -1,4 +1,4 @@
-classdef msg_set_attitude_target < mavlink_message
+classdef msg_set_attitude_target < mavlink_handle
 	%MSG_SET_ATTITUDE_TARGET(packet,time_boot_ms,q,body_roll_rate,body_pitch_rate,body_yaw_rate,thrust,target_system,target_component,type_mask): MAVLINK Message ID = 82
     %Description:
     %    Sets a desired vehicle attitude. Used by an external controller to command the vehicle (manual controller or other system).

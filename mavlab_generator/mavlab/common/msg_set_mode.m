@@ -1,4 +1,4 @@
-classdef msg_set_mode < mavlink_message
+classdef msg_set_mode < mavlink_handle
 	%MSG_SET_MODE(packet,custom_mode,target_system,base_mode): MAVLINK Message ID = 11
     %Description:
     %    THIS INTERFACE IS DEPRECATED. USE COMMAND_LONG with MAV_CMD_DO_SET_MODE INSTEAD. Set the system mode, as defined by enum MAV_MODE. There is no target component id as the mode is by definition for the overall aircraft, not only for one component.

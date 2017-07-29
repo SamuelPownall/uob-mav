@@ -1,4 +1,4 @@
-classdef msg_data_stream < mavlink_message
+classdef msg_data_stream < mavlink_handle
 	%MSG_DATA_STREAM(packet,message_rate,stream_id,on_off): MAVLINK Message ID = 67
     %Description:
     %    THIS INTERFACE IS DEPRECATED. USE MESSAGE_INTERVAL INSTEAD.

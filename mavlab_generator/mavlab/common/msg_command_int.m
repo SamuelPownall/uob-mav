@@ -1,4 +1,4 @@
-classdef msg_command_int < mavlink_message
+classdef msg_command_int < mavlink_handle
 	%MSG_COMMAND_INT(packet,param1,param2,param3,param4,x,y,z,command,target_system,target_component,frame,current,autocontinue): MAVLINK Message ID = 75
     %Description:
     %    Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value.

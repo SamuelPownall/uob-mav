@@ -1,4 +1,4 @@
-classdef msg_airspeed_autocal < mavlink_message
+classdef msg_airspeed_autocal < mavlink_handle
 	%MSG_AIRSPEED_AUTOCAL(packet,vx,vy,vz,diff_pressure,EAS2TAS,ratio,state_x,state_y,state_z,Pax,Pby,Pcz): MAVLINK Message ID = 174
     %Description:
     %    Airspeed auto-calibration

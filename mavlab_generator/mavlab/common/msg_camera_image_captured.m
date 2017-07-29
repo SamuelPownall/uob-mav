@@ -1,4 +1,4 @@
-classdef msg_camera_image_captured < mavlink_message
+classdef msg_camera_image_captured < mavlink_handle
 	%MSG_CAMERA_IMAGE_CAPTURED(packet,time_utc,time_boot_ms,lat,lon,alt,relative_alt,q,camera_id,file_path): MAVLINK Message ID = 263
     %Description:
     %    WIP: Information about a captured image

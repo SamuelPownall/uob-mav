@@ -1,4 +1,4 @@
-classdef msg_gps2_raw < mavlink_message
+classdef msg_gps2_raw < mavlink_handle
 	%MSG_GPS2_RAW(packet,time_usec,lat,lon,alt,dgps_age,eph,epv,vel,cog,fix_type,satellites_visible,dgps_numch): MAVLINK Message ID = 124
     %Description:
     %    Second GPS data. Coordinate frame is right-handed, Z-axis up (GPS frame).

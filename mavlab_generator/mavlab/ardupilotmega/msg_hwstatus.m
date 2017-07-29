@@ -1,4 +1,4 @@
-classdef msg_hwstatus < mavlink_message
+classdef msg_hwstatus < mavlink_handle
 	%MSG_HWSTATUS(packet,Vcc,I2Cerr): MAVLINK Message ID = 165
     %Description:
     %    Status of key hardware

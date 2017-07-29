@@ -1,4 +1,4 @@
-classdef msg_gimbal_home_offset_calibration_result < mavlink_message
+classdef msg_gimbal_home_offset_calibration_result < mavlink_handle
 	%MSG_GIMBAL_HOME_OFFSET_CALIBRATION_RESULT(packet,calibration_result): MAVLINK Message ID = 205
     %Description:
     %    

@@ -1,4 +1,4 @@
-classdef msg_mission_current < mavlink_message
+classdef msg_mission_current < mavlink_handle
 	%MSG_MISSION_CURRENT(packet,seq): MAVLINK Message ID = 42
     %Description:
     %    Message that announces the sequence number of the current active mission item. The MAV will fly towards this mission item.

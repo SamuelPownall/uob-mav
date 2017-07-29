@@ -1,4 +1,4 @@
-classdef msg_gps_rtcm_data < mavlink_message
+classdef msg_gps_rtcm_data < mavlink_handle
 	%MSG_GPS_RTCM_DATA(packet,flags,len,data): MAVLINK Message ID = 233
     %Description:
     %    WORK IN PROGRESS! RTCM message for injecting into the onboard GPS (used for DGPS)

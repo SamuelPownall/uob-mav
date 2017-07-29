@@ -1,4 +1,4 @@
-classdef msg_log_erase < mavlink_message
+classdef msg_log_erase < mavlink_handle
 	%MSG_LOG_ERASE(packet,target_system,target_component): MAVLINK Message ID = 121
     %Description:
     %    Erase all logs

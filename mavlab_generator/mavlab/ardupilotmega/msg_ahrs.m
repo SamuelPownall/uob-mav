@@ -1,4 +1,4 @@
-classdef msg_ahrs < mavlink_message
+classdef msg_ahrs < mavlink_handle
 	%MSG_AHRS(packet,omegaIx,omegaIy,omegaIz,accel_weight,renorm_val,error_rp,error_yaw): MAVLINK Message ID = 163
     %Description:
     %    Status of DCM attitude estimator

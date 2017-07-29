@@ -1,5 +1,5 @@
 classdef ardupilotmega < uint16
-    %ARDUPILOTMEGA: Enumeration class for the ardupilotmega dialect
+    %ARDUPILOTMEGA: Enumeration class for the 'ardupilotmega' dialect
     
     enumeration 
         MAV_CMD_DO_MOTOR_TEST (209) %Mission command to perform motor test

@@ -1,4 +1,4 @@
-classdef msg_system_time < mavlink_message
+classdef msg_system_time < mavlink_handle
 	%MSG_SYSTEM_TIME(packet,time_unix_usec,time_boot_ms): MAVLINK Message ID = 2
     %Description:
     %    The system time is the time of the master clock, typically the computer clock of the main onboard computer.

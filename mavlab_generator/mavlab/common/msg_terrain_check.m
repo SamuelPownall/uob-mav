@@ -1,4 +1,4 @@
-classdef msg_terrain_check < mavlink_message
+classdef msg_terrain_check < mavlink_handle
 	%MSG_TERRAIN_CHECK(packet,lat,lon): MAVLINK Message ID = 135
     %Description:
     %    Request that the vehicle report terrain height at the given location. Used by GCS to check if vehicle has all terrain data needed for a mission.

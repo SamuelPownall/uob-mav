@@ -1,4 +1,4 @@
-classdef msg_gimbal_report_axis_calibration_status < mavlink_message
+classdef msg_gimbal_report_axis_calibration_status < mavlink_handle
 	%MSG_GIMBAL_REPORT_AXIS_CALIBRATION_STATUS(packet,yaw_requires_calibration,pitch_requires_calibration,roll_requires_calibration): MAVLINK Message ID = 212
     %Description:
     %    

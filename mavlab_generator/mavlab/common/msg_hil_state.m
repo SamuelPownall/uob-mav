@@ -1,4 +1,4 @@
-classdef msg_hil_state < mavlink_message
+classdef msg_hil_state < mavlink_handle
 	%MSG_HIL_STATE(packet,time_usec,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed,lat,lon,alt,vx,vy,vz,xacc,yacc,zacc): MAVLINK Message ID = 90
     %Description:
     %    DEPRECATED PACKET! Suffers from missing airspeed fields and singularities due to Euler angles. Please use HIL_STATE_QUATERNION instead. Sent from simulation to autopilot. This packet is useful for high throughput applications such as hardware in the loop simulations.

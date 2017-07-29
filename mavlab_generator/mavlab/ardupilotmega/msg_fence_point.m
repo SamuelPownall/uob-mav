@@ -1,4 +1,4 @@
-classdef msg_fence_point < mavlink_message
+classdef msg_fence_point < mavlink_handle
 	%MSG_FENCE_POINT(packet,lat,lng,target_system,target_component,idx,count): MAVLINK Message ID = 160
     %Description:
     %    A fence point. Used to set a point when from

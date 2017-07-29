@@ -1,4 +1,4 @@
-classdef msg_global_position_int_cov < mavlink_message
+classdef msg_global_position_int_cov < mavlink_handle
 	%MSG_GLOBAL_POSITION_INT_COV(packet,time_usec,lat,lon,alt,relative_alt,vx,vy,vz,covariance,estimator_type): MAVLINK Message ID = 63
     %Description:
     %    The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It  is designed as scaled integer message since the resolution of float is not sufficient. NOTE: This message is intended for onboard networks / companion computers and higher-bandwidth links and optimized for accuracy and completeness. Please use the GLOBAL_POSITION_INT message for a minimal subset.

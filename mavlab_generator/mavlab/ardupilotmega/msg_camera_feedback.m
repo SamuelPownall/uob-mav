@@ -1,4 +1,4 @@
-classdef msg_camera_feedback < mavlink_message
+classdef msg_camera_feedback < mavlink_handle
 	%MSG_CAMERA_FEEDBACK(packet,time_usec,lat,lng,alt_msl,alt_rel,roll,pitch,yaw,foc_len,img_idx,target_system,cam_idx,flags): MAVLINK Message ID = 180
     %Description:
     %    Camera Capture Feedback

@@ -1,4 +1,4 @@
-classdef msg_logging_data < mavlink_message
+classdef msg_logging_data < mavlink_handle
 	%MSG_LOGGING_DATA(packet,sequence,target_system,target_component,length,first_message_offset,data): MAVLINK Message ID = 266
     %Description:
     %    A message containing logged data (see also MAV_CMD_LOGGING_START)

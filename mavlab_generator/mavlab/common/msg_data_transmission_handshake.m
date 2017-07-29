@@ -1,4 +1,4 @@
-classdef msg_data_transmission_handshake < mavlink_message
+classdef msg_data_transmission_handshake < mavlink_handle
 	%MSG_DATA_TRANSMISSION_HANDSHAKE(packet,size,width,height,packets,type,payload,jpg_quality): MAVLINK Message ID = 130
     %Description:
     %    No description available

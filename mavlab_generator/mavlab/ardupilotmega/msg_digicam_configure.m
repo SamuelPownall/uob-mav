@@ -1,4 +1,4 @@
-classdef msg_digicam_configure < mavlink_message
+classdef msg_digicam_configure < mavlink_handle
 	%MSG_DIGICAM_CONFIGURE(packet,extra_value,shutter_speed,target_system,target_component,mode,aperture,iso,exposure_type,command_id,engine_cut_off,extra_param): MAVLINK Message ID = 154
     %Description:
     %    Configure on-board Camera Control System.

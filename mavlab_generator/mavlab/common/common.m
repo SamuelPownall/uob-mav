@@ -1,5 +1,5 @@
 classdef common < uint16
-    %COMMON: Enumeration class for the common dialect
+    %COMMON: Enumeration class for the 'common' dialect
     
     enumeration 
         MAV_AUTOPILOT_GENERIC (0) %Generic autopilot, full support for everything

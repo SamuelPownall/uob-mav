@@ -1,4 +1,4 @@
-classdef msg_vibration < mavlink_message
+classdef msg_vibration < mavlink_handle
 	%MSG_VIBRATION(packet,time_usec,vibration_x,vibration_y,vibration_z,clipping_0,clipping_1,clipping_2): MAVLINK Message ID = 241
     %Description:
     %    Vibration levels and accelerometer clipping

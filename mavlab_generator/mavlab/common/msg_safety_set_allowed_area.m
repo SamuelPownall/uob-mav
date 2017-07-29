@@ -1,4 +1,4 @@
-classdef msg_safety_set_allowed_area < mavlink_message
+classdef msg_safety_set_allowed_area < mavlink_handle
 	%MSG_SAFETY_SET_ALLOWED_AREA(packet,p1x,p1y,p1z,p2x,p2y,p2z,target_system,target_component,frame): MAVLINK Message ID = 54
     %Description:
     %    Set a safety zone (volume), which is defined by two corners of a cube. This message can be used to tell the MAV which setpoints/MISSIONs to accept and which to reject. Safety areas are often enforced by national or competition regulations.

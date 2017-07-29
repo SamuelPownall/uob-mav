@@ -1,4 +1,4 @@
-classdef msg_battery_status < mavlink_message
+classdef msg_battery_status < mavlink_handle
 	%MSG_BATTERY_STATUS(packet,current_consumed,energy_consumed,temperature,voltages,current_battery,id,battery_function,type,battery_remaining): MAVLINK Message ID = 147
     %Description:
     %    Battery information

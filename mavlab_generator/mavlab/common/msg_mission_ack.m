@@ -1,4 +1,4 @@
-classdef msg_mission_ack < mavlink_message
+classdef msg_mission_ack < mavlink_handle
 	%MSG_MISSION_ACK(packet,target_system,target_component,type): MAVLINK Message ID = 47
     %Description:
     %    Ack message during MISSION handling. The type field states if this message is a positive ack (type=0) or if an error happened (type=non-zero).

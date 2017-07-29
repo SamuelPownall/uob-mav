@@ -1,4 +1,4 @@
-classdef msg_raw_pressure < mavlink_message
+classdef msg_raw_pressure < mavlink_handle
 	%MSG_RAW_PRESSURE(packet,time_usec,press_abs,press_diff1,press_diff2,temperature): MAVLINK Message ID = 28
     %Description:
     %    The RAW pressure readings for the typical setup of one absolute pressure and one differential pressure sensor. The sensor values should be the raw, UNSCALED ADC values.

@@ -1,4 +1,4 @@
-classdef msg_play_tune < mavlink_message
+classdef msg_play_tune < mavlink_handle
 	%MSG_PLAY_TUNE(packet,target_system,target_component,tune): MAVLINK Message ID = 258
     %Description:
     %    Control vehicle tone generation (buzzer)

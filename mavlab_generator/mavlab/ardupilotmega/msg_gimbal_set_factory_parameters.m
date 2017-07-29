@@ -1,4 +1,4 @@
-classdef msg_gimbal_set_factory_parameters < mavlink_message
+classdef msg_gimbal_set_factory_parameters < mavlink_handle
 	%MSG_GIMBAL_SET_FACTORY_PARAMETERS(packet,magic_1,magic_2,magic_3,serial_number_pt_1,serial_number_pt_2,serial_number_pt_3,assembly_year,target_system,target_component,assembly_month,assembly_day,assembly_hour,assembly_minute,assembly_second): MAVLINK Message ID = 206
     %Description:
     %    

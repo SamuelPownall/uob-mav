@@ -1,4 +1,4 @@
-classdef msg_gimbal_request_axis_calibration < mavlink_message
+classdef msg_gimbal_request_axis_calibration < mavlink_handle
 	%MSG_GIMBAL_REQUEST_AXIS_CALIBRATION(packet,target_system,target_component): MAVLINK Message ID = 213
     %Description:
     %    

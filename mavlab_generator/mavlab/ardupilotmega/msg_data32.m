@@ -1,4 +1,4 @@
-classdef msg_data32 < mavlink_message
+classdef msg_data32 < mavlink_handle
 	%MSG_DATA32(packet,type,len,data): MAVLINK Message ID = 170
     %Description:
     %    Data packet, size 32

@@ -1,4 +1,4 @@
-classdef msg_ekf_status_report < mavlink_message
+classdef msg_ekf_status_report < mavlink_handle
 	%MSG_EKF_STATUS_REPORT(packet,velocity_variance,pos_horiz_variance,pos_vert_variance,compass_variance,terrain_alt_variance,flags): MAVLINK Message ID = 193
     %Description:
     %    EKF Status message including flags and variances

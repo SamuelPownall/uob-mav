@@ -1,4 +1,4 @@
-classdef msg_mission_item_reached < mavlink_message
+classdef msg_mission_item_reached < mavlink_handle
 	%MSG_MISSION_ITEM_REACHED(packet,seq): MAVLINK Message ID = 46
     %Description:
     %    A certain mission item has been reached. The system will either hold this position (or circle on the orbit) or (if the autocontinue on the WP was set) continue to the next MISSION.

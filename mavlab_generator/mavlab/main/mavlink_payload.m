@@ -1,4 +1,4 @@
-classdef mavlink_payload < handle
+classdef mavlink_payload < mavlink_handle
     %MAVLINK_PAYLOAD Class
     %Used to construct a message payload
     

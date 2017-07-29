@@ -1,4 +1,4 @@
-classdef msg_file_transfer_protocol < mavlink_message
+classdef msg_file_transfer_protocol < mavlink_handle
 	%MSG_FILE_TRANSFER_PROTOCOL(packet,target_network,target_system,target_component,payload): MAVLINK Message ID = 110
     %Description:
     %    File transfer message

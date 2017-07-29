@@ -1,4 +1,4 @@
-classdef msg_terrain_request < mavlink_message
+classdef msg_terrain_request < mavlink_handle
 	%MSG_TERRAIN_REQUEST(packet,mask,lat,lon,grid_spacing): MAVLINK Message ID = 133
     %Description:
     %    Request for terrain data and terrain status

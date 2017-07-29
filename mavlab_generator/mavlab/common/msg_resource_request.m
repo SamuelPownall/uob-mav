@@ -1,4 +1,4 @@
-classdef msg_resource_request < mavlink_message
+classdef msg_resource_request < mavlink_handle
 	%MSG_RESOURCE_REQUEST(packet,request_id,uri_type,uri,transfer_type,storage): MAVLINK Message ID = 142
     %Description:
     %    The autopilot is requesting a resource (file, binary, other type of data)

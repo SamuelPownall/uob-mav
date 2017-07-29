@@ -1,4 +1,4 @@
-classdef msg_${name}$ < mavlink_message
+classdef msg_${name}$ < mavlink_handle
 	%%MSG_${nameUpper}$(packet#{orderedFields<#>,${name}$}#): MAVLINK Message ID = ${msgid}$
     %%Description:
     %%    ${desc}$

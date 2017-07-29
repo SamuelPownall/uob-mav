@@ -1,4 +1,4 @@
-classdef msg_gopro_set_request < mavlink_message
+classdef msg_gopro_set_request < mavlink_handle
 	%MSG_GOPRO_SET_REQUEST(packet,target_system,target_component,cmd_id,value): MAVLINK Message ID = 218
     %Description:
     %    Request to set a GOPRO_COMMAND with a desired

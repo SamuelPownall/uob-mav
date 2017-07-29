@@ -1,4 +1,4 @@
-classdef msg_mission_request < mavlink_message
+classdef msg_mission_request < mavlink_handle
 	%MSG_MISSION_REQUEST(packet,seq,target_system,target_component): MAVLINK Message ID = 40
     %Description:
     %    Request the information of the mission item with the sequence number seq. The response of the system to this message should be a MISSION_ITEM message. http://qgroundcontrol.org/mavlink/waypoint_protocol

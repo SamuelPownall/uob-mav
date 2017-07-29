@@ -1,4 +1,4 @@
-classdef msg_terrain_data < mavlink_message
+classdef msg_terrain_data < mavlink_handle
 	%MSG_TERRAIN_DATA(packet,lat,lon,grid_spacing,data,gridbit): MAVLINK Message ID = 134
     %Description:
     %    Terrain data sent from GCS. The lat/lon and grid_spacing must be the same as a lat/lon from a TERRAIN_REQUEST

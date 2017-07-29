@@ -1,4 +1,4 @@
-classdef msg_mount_status < mavlink_message
+classdef msg_mount_status < mavlink_handle
 	%MSG_MOUNT_STATUS(packet,pointing_a,pointing_b,pointing_c,target_system,target_component): MAVLINK Message ID = 158
     %Description:
     %    Message with some status from APM to GCS about camera or antenna mount

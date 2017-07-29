@@ -1,4 +1,4 @@
-classdef msg_follow_target < mavlink_message
+classdef msg_follow_target < mavlink_handle
 	%MSG_FOLLOW_TARGET(packet,timestamp,custom_state,lat,lon,alt,vel,acc,attitude_q,rates,position_cov,est_capabilities): MAVLINK Message ID = 144
     %Description:
     %    current motion information from a designated system

@@ -1,4 +1,4 @@
-classdef msg_gps_status < mavlink_message
+classdef msg_gps_status < mavlink_handle
 	%MSG_GPS_STATUS(packet,satellites_visible,satellite_prn,satellite_used,satellite_elevation,satellite_azimuth,satellite_snr): MAVLINK Message ID = 25
     %Description:
     %    The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites.

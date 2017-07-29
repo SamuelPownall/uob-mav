@@ -1,4 +1,4 @@
-classdef msg_named_value_int < mavlink_message
+classdef msg_named_value_int < mavlink_handle
 	%MSG_NAMED_VALUE_INT(packet,time_boot_ms,value,name): MAVLINK Message ID = 252
     %Description:
     %    Send a key-value pair as integer. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.

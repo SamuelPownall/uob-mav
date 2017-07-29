@@ -1,4 +1,4 @@
-classdef msg_global_vision_position_estimate < mavlink_message
+classdef msg_global_vision_position_estimate < mavlink_handle
 	%MSG_GLOBAL_VISION_POSITION_ESTIMATE(packet,usec,x,y,z,roll,pitch,yaw): MAVLINK Message ID = 101
     %Description:
     %    No description available

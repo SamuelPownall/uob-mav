@@ -1,4 +1,4 @@
-classdef msg_encapsulated_data < mavlink_message
+classdef msg_encapsulated_data < mavlink_handle
 	%MSG_ENCAPSULATED_DATA(packet,seqnr,data): MAVLINK Message ID = 131
     %Description:
     %    No description available

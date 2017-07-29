@@ -1,4 +1,4 @@
-classdef msg_param_set < mavlink_message
+classdef msg_param_set < mavlink_handle
 	%MSG_PARAM_SET(packet,param_value,target_system,target_component,param_id,param_type): MAVLINK Message ID = 23
     %Description:
     %    Set a parameter value TEMPORARILY to RAM. It will be reset to default on system reboot. Send the ACTION MAV_ACTION_STORAGE_WRITE to PERMANENTLY write the RAM contents to EEPROM. IMPORTANT: The receiving component should acknowledge the new parameter value by sending a param_value message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message.

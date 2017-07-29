@@ -1,4 +1,4 @@
-classdef msg_log_request_list < mavlink_message
+classdef msg_log_request_list < mavlink_handle
 	%MSG_LOG_REQUEST_LIST(packet,start,end,target_system,target_component): MAVLINK Message ID = 117
     %Description:
     %    Request a list of available logs. On some systems calling this may stop on-board logging until LOG_REQUEST_END is called.

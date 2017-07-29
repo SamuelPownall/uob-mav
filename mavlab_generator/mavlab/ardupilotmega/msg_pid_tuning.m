@@ -1,4 +1,4 @@
-classdef msg_pid_tuning < mavlink_message
+classdef msg_pid_tuning < mavlink_handle
 	%MSG_PID_TUNING(packet,desired,achieved,FF,P,I,D,axis): MAVLINK Message ID = 194
     %Description:
     %    PID tuning information

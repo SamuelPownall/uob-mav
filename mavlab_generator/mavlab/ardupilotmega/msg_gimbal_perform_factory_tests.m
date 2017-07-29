@@ -1,4 +1,4 @@
-classdef msg_gimbal_perform_factory_tests < mavlink_message
+classdef msg_gimbal_perform_factory_tests < mavlink_handle
 	%MSG_GIMBAL_PERFORM_FACTORY_TESTS(packet,target_system,target_component): MAVLINK Message ID = 209
     %Description:
     %    

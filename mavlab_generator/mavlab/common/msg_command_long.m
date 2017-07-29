@@ -1,4 +1,4 @@
-classdef msg_command_long < mavlink_message
+classdef msg_command_long < mavlink_handle
 	%MSG_COMMAND_LONG(packet,param1,param2,param3,param4,param5,param6,param7,command,target_system,target_component,confirmation): MAVLINK Message ID = 76
     %Description:
     %    Send a command with up to seven parameters to the MAV

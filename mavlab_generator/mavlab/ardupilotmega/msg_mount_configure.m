@@ -1,4 +1,4 @@
-classdef msg_mount_configure < mavlink_message
+classdef msg_mount_configure < mavlink_handle
 	%MSG_MOUNT_CONFIGURE(packet,target_system,target_component,mount_mode,stab_roll,stab_pitch,stab_yaw): MAVLINK Message ID = 156
     %Description:
     %    Message to configure a camera mount, directional antenna, etc.

@@ -1,4 +1,4 @@
-classdef msg_gimbal_set_home_offsets < mavlink_message
+classdef msg_gimbal_set_home_offsets < mavlink_handle
 	%MSG_GIMBAL_SET_HOME_OFFSETS(packet,target_system,target_component): MAVLINK Message ID = 204
     %Description:
     %    

@@ -1,4 +1,4 @@
-classdef msg_collision < mavlink_message
+classdef msg_collision < mavlink_handle
 	%MSG_COLLISION(packet,id,time_to_minimum_delta,altitude_minimum_delta,horizontal_minimum_delta,src,action,threat_level): MAVLINK Message ID = 247
     %Description:
     %    Information about a potential collision

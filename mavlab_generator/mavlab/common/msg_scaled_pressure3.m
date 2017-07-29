@@ -1,4 +1,4 @@
-classdef msg_scaled_pressure3 < mavlink_message
+classdef msg_scaled_pressure3 < mavlink_handle
 	%MSG_SCALED_PRESSURE3(packet,time_boot_ms,press_abs,press_diff,temperature): MAVLINK Message ID = 143
     %Description:
     %    Barometer readings for 3rd barometer

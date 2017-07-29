@@ -1,4 +1,4 @@
-classdef msg_autopilot_version < mavlink_message
+classdef msg_autopilot_version < mavlink_handle
 	%MSG_AUTOPILOT_VERSION(packet,capabilities,uid,flight_sw_version,middleware_sw_version,os_sw_version,board_version,vendor_id,product_id,flight_custom_version,middleware_custom_version,os_custom_version): MAVLINK Message ID = 148
     %Description:
     %    Version and capability of autopilot software

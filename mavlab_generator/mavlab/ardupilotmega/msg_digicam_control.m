@@ -1,4 +1,4 @@
-classdef msg_digicam_control < mavlink_message
+classdef msg_digicam_control < mavlink_handle
 	%MSG_DIGICAM_CONTROL(packet,extra_value,target_system,target_component,session,zoom_pos,zoom_step,focus_lock,shot,command_id,extra_param): MAVLINK Message ID = 155
     %Description:
     %    Control on-board Camera Control System to take shots.

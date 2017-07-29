@@ -1,4 +1,4 @@
-classdef msg_position_target_global_int < mavlink_message
+classdef msg_position_target_global_int < mavlink_handle
 	%MSG_POSITION_TARGET_GLOBAL_INT(packet,time_boot_ms,lat_int,lon_int,alt,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,coordinate_frame): MAVLINK Message ID = 87
     %Description:
     %    Reports the current commanded vehicle position, velocity, and acceleration as specified by the autopilot. This should match the commands sent in SET_POSITION_TARGET_GLOBAL_INT if the vehicle is being controlled this way.

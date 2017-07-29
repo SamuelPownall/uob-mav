@@ -1,4 +1,4 @@
-classdef msg_compassmot_status < mavlink_message
+classdef msg_compassmot_status < mavlink_handle
 	%MSG_COMPASSMOT_STATUS(packet,current,CompensationX,CompensationY,CompensationZ,throttle,interference): MAVLINK Message ID = 177
     %Description:
     %    Status of compassmot calibration

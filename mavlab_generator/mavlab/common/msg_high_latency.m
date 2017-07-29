@@ -1,4 +1,4 @@
-classdef msg_high_latency < mavlink_message
+classdef msg_high_latency < mavlink_handle
 	%MSG_HIGH_LATENCY(packet,custom_mode,latitude,longitude,roll,pitch,heading,heading_sp,altitude_amsl,altitude_sp,wp_distance,base_mode,landed_state,throttle,airspeed,airspeed_sp,groundspeed,climb_rate,gps_nsat,gps_fix_type,battery_remaining,temperature,temperature_air,failsafe,wp_num): MAVLINK Message ID = 234
     %Description:
     %    Message appropriate for high latency connections like Iridium

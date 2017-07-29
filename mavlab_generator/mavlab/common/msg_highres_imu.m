@@ -1,4 +1,4 @@
-classdef msg_highres_imu < mavlink_message
+classdef msg_highres_imu < mavlink_handle
 	%MSG_HIGHRES_IMU(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature,fields_updated): MAVLINK Message ID = 105
     %Description:
     %    The IMU readings in SI units in NED body frame

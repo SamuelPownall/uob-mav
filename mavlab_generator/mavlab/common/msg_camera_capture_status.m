@@ -1,4 +1,4 @@
-classdef msg_camera_capture_status < mavlink_message
+classdef msg_camera_capture_status < mavlink_handle
 	%MSG_CAMERA_CAPTURE_STATUS(packet,time_boot_ms,image_interval,video_framerate,image_resolution_h,image_resolution_v,video_resolution_h,video_resolution_v,camera_id,image_status,video_status): MAVLINK Message ID = 262
     %Description:
     %    WIP: Information about the status of a capture

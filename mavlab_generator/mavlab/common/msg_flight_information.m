@@ -1,4 +1,4 @@
-classdef msg_flight_information < mavlink_message
+classdef msg_flight_information < mavlink_handle
 	%MSG_FLIGHT_INFORMATION(packet,arming_time_utc,takeoff_time_utc,flight_uuid,time_boot_ms): MAVLINK Message ID = 264
     %Description:
     %    WIP: Information about flight since last arming

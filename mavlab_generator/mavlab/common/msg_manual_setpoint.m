@@ -1,4 +1,4 @@
-classdef msg_manual_setpoint < mavlink_message
+classdef msg_manual_setpoint < mavlink_handle
 	%MSG_MANUAL_SETPOINT(packet,time_boot_ms,roll,pitch,yaw,thrust,mode_switch,manual_override_switch): MAVLINK Message ID = 81
     %Description:
     %    Setpoint in roll, pitch, yaw and thrust from the operator

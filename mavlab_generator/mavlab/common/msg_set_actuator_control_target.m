@@ -1,4 +1,4 @@
-classdef msg_set_actuator_control_target < mavlink_message
+classdef msg_set_actuator_control_target < mavlink_handle
 	%MSG_SET_ACTUATOR_CONTROL_TARGET(packet,time_usec,controls,group_mlx,target_system,target_component): MAVLINK Message ID = 139
     %Description:
     %    Set the vehicle attitude and body angular rates.

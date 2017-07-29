@@ -1,4 +1,4 @@
-classdef msg_hil_optical_flow < mavlink_message
+classdef msg_hil_optical_flow < mavlink_handle
 	%MSG_HIL_OPTICAL_FLOW(packet,time_usec,integration_time_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,time_delta_distance_us,distance,temperature,sensor_id,quality): MAVLINK Message ID = 114
     %Description:
     %    Simulated optical flow from a flow sensor (e.g. PX4FLOW or optical mouse sensor)

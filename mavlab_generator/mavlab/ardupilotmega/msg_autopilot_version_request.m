@@ -1,4 +1,4 @@
-classdef msg_autopilot_version_request < mavlink_message
+classdef msg_autopilot_version_request < mavlink_handle
 	%MSG_AUTOPILOT_VERSION_REQUEST(packet,target_system,target_component): MAVLINK Message ID = 183
     %Description:
     %    Request the autopilot version from the system/component.

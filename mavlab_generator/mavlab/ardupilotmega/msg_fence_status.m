@@ -1,4 +1,4 @@
-classdef msg_fence_status < mavlink_message
+classdef msg_fence_status < mavlink_handle
 	%MSG_FENCE_STATUS(packet,breach_time,breach_count,breach_status,breach_type): MAVLINK Message ID = 162
     %Description:
     %    Status of geo-fencing. Sent in extended

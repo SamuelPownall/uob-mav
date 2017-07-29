@@ -1,4 +1,4 @@
-classdef msg_gps_inject_data < mavlink_message
+classdef msg_gps_inject_data < mavlink_handle
 	%MSG_GPS_INJECT_DATA(packet,target_system,target_component,len,data): MAVLINK Message ID = 123
     %Description:
     %    data for injecting into the onboard GPS (used for DGPS)

@@ -1,4 +1,4 @@
-classdef msg_scaled_pressure < mavlink_message
+classdef msg_scaled_pressure < mavlink_handle
 	%MSG_SCALED_PRESSURE(packet,time_boot_ms,press_abs,press_diff,temperature): MAVLINK Message ID = 29
     %Description:
     %    The pressure readings for the typical setup of one absolute and differential pressure sensor. The units are as specified in each field.

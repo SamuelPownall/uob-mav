@@ -1,4 +1,4 @@
-classdef msg_control_system_state < mavlink_message
+classdef msg_control_system_state < mavlink_handle
 	%MSG_CONTROL_SYSTEM_STATE(packet,time_usec,x_acc,y_acc,z_acc,x_vel,y_vel,z_vel,x_pos,y_pos,z_pos,airspeed,vel_variance,pos_variance,q,roll_rate,pitch_rate,yaw_rate): MAVLINK Message ID = 146
     %Description:
     %    The smoothed, monotonic system state used to feed the control loops of the system.

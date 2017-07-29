@@ -343,6 +343,7 @@ classdef mavlab
             %Arguments:
             %    mainPath(string): Path to the folder that the master classes will be copied to
 
+            copyfile('master/mavlink_handle_master.m',[mainPath '/mavlink_handle.m']);
             copyfile('master/mavlink_message_master.m',[mainPath '/mavlink_message.m']);
             copyfile('master/mavlink_payload_master.m',[mainPath '/mavlink_payload.m']);
             copyfile('master/mavlink_parser_master.m',[mainPath '/mavlink_parser.m']);

@@ -1,4 +1,4 @@
-classdef msg_simstate < mavlink_message
+classdef msg_simstate < mavlink_handle
 	%MSG_SIMSTATE(packet,roll,pitch,yaw,xacc,yacc,zacc,xgyro,ygyro,zgyro,lat,lng): MAVLINK Message ID = 164
     %Description:
     %    Status of simulation environment, if used

@@ -1,4 +1,4 @@
-classdef msg_optical_flow_rad < mavlink_message
+classdef msg_optical_flow_rad < mavlink_handle
 	%MSG_OPTICAL_FLOW_RAD(packet,time_usec,integration_time_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,time_delta_distance_us,distance,temperature,sensor_id,quality): MAVLINK Message ID = 106
     %Description:
     %    Optical flow from an angular rate flow sensor (e.g. PX4FLOW or mouse sensor)

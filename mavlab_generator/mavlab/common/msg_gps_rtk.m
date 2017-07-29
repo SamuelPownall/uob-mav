@@ -1,4 +1,4 @@
-classdef msg_gps_rtk < mavlink_message
+classdef msg_gps_rtk < mavlink_handle
 	%MSG_GPS_RTK(packet,time_last_baseline_ms,tow,baseline_a_mm,baseline_b_mm,baseline_c_mm,accuracy,iar_num_hypotheses,wn,rtk_receiver_id,rtk_health,rtk_rate,nsats,baseline_coords_type): MAVLINK Message ID = 127
     %Description:
     %    RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting

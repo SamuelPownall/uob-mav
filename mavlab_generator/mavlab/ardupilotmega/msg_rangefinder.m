@@ -1,4 +1,4 @@
-classdef msg_rangefinder < mavlink_message
+classdef msg_rangefinder < mavlink_handle
 	%MSG_RANGEFINDER(packet,distance,voltage): MAVLINK Message ID = 173
     %Description:
     %    Rangefinder reporting

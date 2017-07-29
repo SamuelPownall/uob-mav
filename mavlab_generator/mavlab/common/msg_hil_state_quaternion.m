@@ -1,4 +1,4 @@
-classdef msg_hil_state_quaternion < mavlink_message
+classdef msg_hil_state_quaternion < mavlink_handle
 	%MSG_HIL_STATE_QUATERNION(packet,time_usec,attitude_quaternion,rollspeed,pitchspeed,yawspeed,lat,lon,alt,vx,vy,vz,ind_airspeed,true_airspeed,xacc,yacc,zacc): MAVLINK Message ID = 115
     %Description:
     %    Sent from simulation to autopilot, avoids in contrast to HIL_STATE singularities. This packet is useful for high throughput applications such as hardware in the loop simulations.

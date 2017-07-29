@@ -1,4 +1,4 @@
-classdef msg_mission_request_list < mavlink_message
+classdef msg_mission_request_list < mavlink_handle
 	%MSG_MISSION_REQUEST_LIST(packet,target_system,target_component): MAVLINK Message ID = 43
     %Description:
     %    Request the overall list of mission items from the system/component.

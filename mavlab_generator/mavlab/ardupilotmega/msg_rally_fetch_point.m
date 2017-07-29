@@ -1,4 +1,4 @@
-classdef msg_rally_fetch_point < mavlink_message
+classdef msg_rally_fetch_point < mavlink_handle
 	%MSG_RALLY_FETCH_POINT(packet,target_system,target_component,idx): MAVLINK Message ID = 176
     %Description:
     %    Request a current rally point from MAV. MAV should respond with a RALLY_POINT message. MAV should not respond if the request is invalid.

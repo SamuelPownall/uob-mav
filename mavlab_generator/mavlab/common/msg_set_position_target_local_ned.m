@@ -1,4 +1,4 @@
-classdef msg_set_position_target_local_ned < mavlink_message
+classdef msg_set_position_target_local_ned < mavlink_handle
 	%MSG_SET_POSITION_TARGET_LOCAL_NED(packet,time_boot_ms,x,y,z,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,target_system,target_component,coordinate_frame): MAVLINK Message ID = 84
     %Description:
     %    Sets a desired vehicle position in a local north-east-down coordinate frame. Used by an external controller to command the vehicle (manual controller or other system).

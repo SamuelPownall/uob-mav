@@ -1,4 +1,4 @@
-classdef msg_manual_control < mavlink_message
+classdef msg_manual_control < mavlink_handle
 	%MSG_MANUAL_CONTROL(packet,x,y,z,r,buttons,target): MAVLINK Message ID = 69
     %Description:
     %    This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled an buttons are also transmit as boolean values of their 

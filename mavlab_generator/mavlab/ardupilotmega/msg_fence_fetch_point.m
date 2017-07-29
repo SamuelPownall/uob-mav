@@ -1,4 +1,4 @@
-classdef msg_fence_fetch_point < mavlink_message
+classdef msg_fence_fetch_point < mavlink_handle
 	%MSG_FENCE_FETCH_POINT(packet,target_system,target_component,idx): MAVLINK Message ID = 161
     %Description:
     %    Request a current fence point from MAV

@@ -1,4 +1,4 @@
-classdef msg_vfr_hud < mavlink_message
+classdef msg_vfr_hud < mavlink_handle
 	%MSG_VFR_HUD(packet,airspeed,groundspeed,alt,climb,heading,throttle): MAVLINK Message ID = 74
     %Description:
     %    Metrics typically displayed on a HUD for fixed wing aircraft

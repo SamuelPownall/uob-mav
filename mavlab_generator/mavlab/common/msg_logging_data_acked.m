@@ -1,4 +1,4 @@
-classdef msg_logging_data_acked < mavlink_message
+classdef msg_logging_data_acked < mavlink_handle
 	%MSG_LOGGING_DATA_ACKED(packet,sequence,target_system,target_component,length,first_message_offset,data): MAVLINK Message ID = 267
     %Description:
     %    A message containing logged data which requires a LOGGING_ACK to be sent back

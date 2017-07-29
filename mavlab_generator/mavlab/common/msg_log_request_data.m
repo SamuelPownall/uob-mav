@@ -1,4 +1,4 @@
-classdef msg_log_request_data < mavlink_message
+classdef msg_log_request_data < mavlink_handle
 	%MSG_LOG_REQUEST_DATA(packet,ofs,count,id,target_system,target_component): MAVLINK Message ID = 119
     %Description:
     %    Request a chunk of a log

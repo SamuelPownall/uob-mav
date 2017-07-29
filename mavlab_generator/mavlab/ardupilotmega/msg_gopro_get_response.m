@@ -1,4 +1,4 @@
-classdef msg_gopro_get_response < mavlink_message
+classdef msg_gopro_get_response < mavlink_handle
 	%MSG_GOPRO_GET_RESPONSE(packet,cmd_id,value): MAVLINK Message ID = 217
     %Description:
     %    Response from a GOPRO_COMMAND get request

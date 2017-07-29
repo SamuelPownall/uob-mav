@@ -1,4 +1,4 @@
-classdef msg_gimbal_erase_firmware_and_config < mavlink_message
+classdef msg_gimbal_erase_firmware_and_config < mavlink_handle
 	%MSG_GIMBAL_ERASE_FIRMWARE_AND_CONFIG(packet,knock,target_system,target_component): MAVLINK Message ID = 208
     %Description:
     %    

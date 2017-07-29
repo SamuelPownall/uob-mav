@@ -1,4 +1,4 @@
-classdef msg_meminfo < mavlink_message
+classdef msg_meminfo < mavlink_handle
 	%MSG_MEMINFO(packet,brkval,freemem): MAVLINK Message ID = 152
     %Description:
     %    state of APM memory

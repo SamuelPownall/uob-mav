@@ -1,4 +1,4 @@
-classdef msg_local_position_ned < mavlink_message
+classdef msg_local_position_ned < mavlink_handle
 	%MSG_LOCAL_POSITION_NED(packet,time_boot_ms,x,y,z,vx,vy,vz): MAVLINK Message ID = 32
     %Description:
     %    The filtered local position (e.g. fused computer vision and accelerometers). Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)

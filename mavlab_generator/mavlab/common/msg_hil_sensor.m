@@ -1,4 +1,4 @@
-classdef msg_hil_sensor < mavlink_message
+classdef msg_hil_sensor < mavlink_handle
 	%MSG_HIL_SENSOR(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature,fields_updated): MAVLINK Message ID = 107
     %Description:
     %    The IMU readings in SI units in NED body frame

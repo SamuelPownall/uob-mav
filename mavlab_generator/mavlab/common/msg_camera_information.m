@@ -1,4 +1,4 @@
-classdef msg_camera_information < mavlink_message
+classdef msg_camera_information < mavlink_handle
 	%MSG_CAMERA_INFORMATION(packet,time_boot_ms,focal_length,sensor_size_h,sensor_size_v,resolution_h,resolution_v,camera_id,vendor_name,model_name,lense_id): MAVLINK Message ID = 259
     %Description:
     %    WIP: Information about a camera

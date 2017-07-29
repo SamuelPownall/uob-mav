@@ -1,4 +1,4 @@
-classdef msg_gimbal_control < mavlink_message
+classdef msg_gimbal_control < mavlink_handle
 	%MSG_GIMBAL_CONTROL(packet,demanded_rate_x,demanded_rate_y,demanded_rate_z,target_system,target_component): MAVLINK Message ID = 201
     %Description:
     %    Control message for rate gimbal

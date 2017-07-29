@@ -1,4 +1,4 @@
-classdef msg_distance_sensor < mavlink_message
+classdef msg_distance_sensor < mavlink_handle
 	%MSG_DISTANCE_SENSOR(packet,time_boot_ms,min_distance,max_distance,current_distance,type,id,orientation,covariance): MAVLINK Message ID = 132
     %Description:
     %    No description available

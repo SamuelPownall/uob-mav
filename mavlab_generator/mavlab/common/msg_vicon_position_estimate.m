@@ -1,4 +1,4 @@
-classdef msg_vicon_position_estimate < mavlink_message
+classdef msg_vicon_position_estimate < mavlink_handle
 	%MSG_VICON_POSITION_ESTIMATE(packet,usec,x,y,z,roll,pitch,yaw): MAVLINK Message ID = 104
     %Description:
     %    No description available

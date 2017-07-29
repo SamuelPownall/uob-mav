@@ -1,4 +1,4 @@
-classdef msg_hil_gps < mavlink_message
+classdef msg_hil_gps < mavlink_handle
 	%MSG_HIL_GPS(packet,time_usec,lat,lon,alt,eph,epv,vel,vn,ve,vd,cog,fix_type,satellites_visible): MAVLINK Message ID = 113
     %Description:
     %    The global position, as returned by the Global Positioning System (GPS). This is

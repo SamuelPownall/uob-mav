@@ -1,4 +1,4 @@
-classdef msg_request_data_stream < mavlink_message
+classdef msg_request_data_stream < mavlink_handle
 	%MSG_REQUEST_DATA_STREAM(packet,req_message_rate,target_system,target_component,req_stream_id,start_stop): MAVLINK Message ID = 66
     %Description:
     %    THIS INTERFACE IS DEPRECATED. USE SET_MESSAGE_INTERVAL INSTEAD.

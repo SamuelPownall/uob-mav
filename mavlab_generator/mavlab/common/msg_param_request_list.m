@@ -1,4 +1,4 @@
-classdef msg_param_request_list < mavlink_message
+classdef msg_param_request_list < mavlink_handle
 	%MSG_PARAM_REQUEST_LIST(packet,target_system,target_component): MAVLINK Message ID = 21
     %Description:
     %    Request all parameters of this component. After this request, all parameters are emitted.

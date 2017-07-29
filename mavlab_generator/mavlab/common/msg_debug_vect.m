@@ -1,4 +1,4 @@
-classdef msg_debug_vect < mavlink_message
+classdef msg_debug_vect < mavlink_handle
 	%MSG_DEBUG_VECT(packet,time_usec,x,y,z,name): MAVLINK Message ID = 250
     %Description:
     %    No description available

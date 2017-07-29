@@ -1,4 +1,4 @@
-classdef msg_message_interval < mavlink_message
+classdef msg_message_interval < mavlink_handle
 	%MSG_MESSAGE_INTERVAL(packet,interval_us,message_id): MAVLINK Message ID = 244
     %Description:
     %    This interface replaces DATA_STREAM

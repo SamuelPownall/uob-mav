@@ -1,4 +1,4 @@
-classdef msg_set_position_target_global_int < mavlink_message
+classdef msg_set_position_target_global_int < mavlink_handle
 	%MSG_SET_POSITION_TARGET_GLOBAL_INT(packet,time_boot_ms,lat_int,lon_int,alt,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,target_system,target_component,coordinate_frame): MAVLINK Message ID = 86
     %Description:
     %    Sets a desired vehicle position, velocity, and/or acceleration in a global coordinate system (WGS84). Used by an external controller to command the vehicle (manual controller or other system).

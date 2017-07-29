@@ -1,4 +1,4 @@
-classdef msg_camera_status < mavlink_message
+classdef msg_camera_status < mavlink_handle
 	%MSG_CAMERA_STATUS(packet,time_usec,p1,p2,p3,p4,img_idx,target_system,cam_idx,event_id): MAVLINK Message ID = 179
     %Description:
     %    Camera Event
