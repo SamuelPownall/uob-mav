@@ -1,9 +1,7 @@
 classdef msg_gimbal_report_factory_tests_progress < mavlink_message
 	%MSG_GIMBAL_REPORT_FACTORY_TESTS_PROGRESS: MAVLINK Message ID = 210
     %Description:
-    %    
-            Reports the current status of a section of a running factory test
-        
+    %    Reports the current status of a section of a running factory test
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

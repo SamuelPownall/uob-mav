@@ -12,9 +12,9 @@ classdef msg_gimbal_report < mavlink_message
     %    delta_velocity_x(single): Delta velocity X (m/s)
     %    delta_velocity_y(single): Delta velocity Y (m/s)
     %    delta_velocity_z(single): Delta velocity Z (m/s)
-    %    joint_roll(single):  Joint ROLL (radians)
-    %    joint_el(single):  Joint EL (radians)
-    %    joint_az(single):  Joint AZ (radians)
+    %    joint_roll(single): Joint ROLL (radians)
+    %    joint_el(single): Joint EL (radians)
+    %    joint_az(single): Joint AZ (radians)
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
 	
@@ -31,9 +31,9 @@ classdef msg_gimbal_report < mavlink_message
         delta_velocity_x	%Delta velocity X (m/s)	|	(single)
         delta_velocity_y	%Delta velocity Y (m/s)	|	(single)
         delta_velocity_z	%Delta velocity Z (m/s)	|	(single)
-        joint_roll	% Joint ROLL (radians)	|	(single)
-        joint_el	% Joint EL (radians)	|	(single)
-        joint_az	% Joint AZ (radians)	|	(single)
+        joint_roll	%Joint ROLL (radians)	|	(single)
+        joint_el	%Joint EL (radians)	|	(single)
+        joint_az	%Joint AZ (radians)	|	(single)
         target_system	%System ID	|	(uint8)
         target_component	%Component ID	|	(uint8)
     end

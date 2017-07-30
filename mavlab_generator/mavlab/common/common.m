@@ -1,5 +1,5 @@
 classdef common < uint16
-    %COMMON: Enumeration class for the 'common' dialect
+%COMMON: Enumeration class for the 'common' dialect
     
     enumeration 
         MAV_AUTOPILOT_GENERIC (0) %Generic autopilot, full support for everything
@@ -192,7 +192,7 @@ classdef common < uint16
         MAV_CMD_NAV_TAKEOFF_LOCAL (24) %Takeoff from local position (local frame only)
         MAV_CMD_NAV_FOLLOW (25) %Vehicle following, i.e. this waypoint represents the position of a moving vehicle
         MAV_CMD_NAV_CONTINUE_AND_CHANGE_ALT (30) %Continue on the current course and climb/descend to specified altitude.  When the altitude is reached continue to the next command (i.e., don't proceed to the next command until the desired altitude is reached.
-        MAV_CMD_NAV_LOITER_TO_ALT (31) %Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint. 
+        MAV_CMD_NAV_LOITER_TO_ALT (31) %Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint.
         MAV_CMD_DO_FOLLOW (32) %Being following a target
         MAV_CMD_DO_FOLLOW_REPOSITION (33) %Reposition the MAV after a follow target command has been sent
         MAV_CMD_NAV_ROI (80) %Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.
@@ -274,9 +274,7 @@ classdef common < uint16
         MAV_CMD_PANORAMA_CREATE (2800) %Create a panorama at the current position
         MAV_CMD_DO_VTOL_TRANSITION (3000) %Request VTOL transition
         MAV_CMD_SET_GUIDED_SUBMODE_STANDARD (4000) %This command sets the submode to standard guided when vehicle is in guided mode. The vehicle holds position and altitude and the user can input the desired velocites along all three axes.
-                  
         MAV_CMD_SET_GUIDED_SUBMODE_CIRCLE (4001) %This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.
-                  
         MAV_CMD_PAYLOAD_PREPARE_DEPLOY (30001) %Deploy payload on a Lat / Lon / Alt position. This includes the navigation to reach the required release position and velocity.
         MAV_CMD_PAYLOAD_CONTROL_DEPLOY (30002) %Control the payload deployment.
         MAV_CMD_WAYPOINT_USER_1 (31000) %User defined waypoint item. Ground Station will show the Vehicle as flying through this item.

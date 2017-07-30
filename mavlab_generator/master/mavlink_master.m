@@ -1,9 +1,9 @@
 classdef mavlink
     %MAVLINK: Contains settings and error handling for MAVLAB
     %Description:
-    %    This class is used to store the system ID and component ID to be used when
-    %    communicating with other MAVLINK devices. It also contains functions that are
-    %    used by other MAVLAB classes to throw errors.
+    %    This class is used to store the system ID and component ID to be used when communicating with
+    %    other MAVLINK devices. It also contains functions that are used by other MAVLAB classes to
+    %    throw errors.
     
     %System and component ID used for all transmissions
     properties(Constant)

@@ -1,9 +1,7 @@
 classdef msg_gimbal_factory_parameters_loaded < mavlink_message
 	%MSG_GIMBAL_FACTORY_PARAMETERS_LOADED: MAVLINK Message ID = 207
     %Description:
-    %    
-            Sent by the gimbal after the factory parameters are successfully loaded, to inform the factory software that the load is complete
-        
+    %    Sent by the gimbal after the factory parameters are successfully loaded, to inform the factory software that the load is complete
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

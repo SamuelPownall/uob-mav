@@ -1,20 +1,24 @@
 classdef mavlab
-    %MAVLAB: MATLAB implementation of the MAVLINK 1.0 message marshalling library
-    %Description:
-    %    This library is used for communicating between MATLAB and a MAVLINK enabled autopilot. It
-    %    allows for the use of MATLAB functions and Simulink in MAV applications. 
+%MAVLAB: MATLAB implementation of the MAVLINK 1.0 message marshalling library
+%Description:
+%    This library is used for communicating between MATLAB and a MAVLINK enabled autopilot. It
+%    allows for the use of MATLAB functions and Simulink in MAV applications. 
     
     methods(Static, Access=public)
         
         function generate(xmlPath, outputPath)
-            %GENERATE: Generates a MATLAB implementation of the MAVLINK 1.0 library
-            %Description:
-            %    Generates a MATLAB implemenation of the MAVLINK 1.0 library from a set of XML dialect files. The MAVLAB
-            %    library allows communication between MATLAB and MAVLINK enabled autopilots.
-            %Arguments:
-            %    xmlPath(string): Path to the folder containing XML dialect files (mandatory)
-            %    outputPath(string): Path to the folder where the mavlab folder will be generated (default = '.')
+        %GENERATE: Generates a MATLAB implementation of the MAVLINK 1.0 library
+        %Description:
+        %    Generates a MATLAB implemenation of the MAVLINK 1.0 library from a set of XML dialect
+        %    files. The MAVLAB library allows communication between MATLAB and MAVLINK enabled
+        %    autopilots.
+        %Arguments:
+        %    xmlPath(string): Path to the folder containing XML dialect files
+        %    outputPath(string): Path to where the mavlab folder will be generated (default = '.')
 
+            %Start timer
+            timer = tic();
+        
             %Handle varying numbers of input arguments
             if nargin == 1
                 outputPath = '.';
@@ -58,11 +62,11 @@ classdef mavlab
                 end
 
                 %Find the message definitions and generate a MATLINK class for each
-                msgList = root.find('messages').findAll('message');
+                msgList = root.find('mavlink').find('messages').findAll('message');
                 parsedMsgList = mavlab.generateMessageClasses(messagePath, msgList);
 
                 %Generate the enumeration class for this dialect
-                enumList = root.find('enums').findAll('enum');
+                enumList = root.find('mavlink').find('enums').findAll('enum');
                 mavlab.generateEnumClass(messagePath, xmlName, enumList);
 
                 %Combine message lists from each dialect
@@ -79,6 +83,8 @@ classdef mavlab
             mavlab.generateCRCClass(mainPath, parsedMsgList);
             %Copy fixed classes into the main folder
             mavlab.copyFixedClasses(mainPath);
+            
+            disp(['MAVLAB Implementation generated successfully! (' num2str(toc(timer)) ' seconds)']);
 
         end
         
@@ -100,7 +106,7 @@ classdef mavlab
 
             %Load the template for MAVLINK message classes
             templateFile = fopen('message_template.txt','r');
-            template = fread(templateFile,[1 inf],'char');
+            template = char(fread(templateFile,[1 inf]));
             fclose(templateFile);
 
             %Generate a MAVLINK class file for each message in the XML file
@@ -229,7 +235,7 @@ classdef mavlab
 
             %Load the template for MAVLINK enum classes
             templateFile = fopen('enum_template.txt','r');
-            template = fread(templateFile,[1 inf],'char');
+            template = char(fread(templateFile,[1 inf]));
             fclose(templateFile);
 
             %Define the struct for parsed enums
@@ -275,15 +281,15 @@ classdef mavlab
         function generatePacketClass(mainPath, parsedMsgList)
             %GENERATEPACKETCLASS: Generates the MAVLINK packet class
             %Description: 
-            %    Uses a list of parsed messages and a template to generate the complete packet class
-            %    for this MAVLINK implementation.
+            %    Uses a list of parsed messages and a template to generate the complete packet class for this
+            %    MAVLINK implementation.
             %Arguments:
             %    mainPath(string): Path to the folder where the packet class will be generated
             %    parsedMsgList(struct): List of message structures compatible with the class template
 
             %Load the template for the MAVLINK packet class
             templateFile = fopen('mavlink_packet_template.txt','r');
-            template = fread(templateFile,[1 inf],'char');
+            template = char(fread(templateFile,[1 inf]));
             fclose(templateFile);
 
             %Write the MAVLINK packet class file
@@ -298,15 +304,15 @@ classdef mavlab
         function generateCRCClass(mainPath, parsedMsgList)
             %GENERATECRCCLASS: Generates the MAVLINK CRC class
             %Description: 
-            %    Uses a list of parsed messages and a template to generate the complete CRC class for
-            %    this MAVLINK implementation.
+            %    Uses a list of parsed messages and a template to generate the complete CRC class for this
+            %    MAVLINK implementation.
             %Arguments:
             %    mainPath(string): Path to the folder where the CRC class will be generated
             %    parsedMsgList(struct): List of message structures compatible with the class template
 
             %Load the template for the MAVLINK CRC class
             templateFile = fopen('mavlink_crc_template.txt','r');
-            template = fread(templateFile,[1 inf],'char');
+            template = char(fread(templateFile,[1 inf]));
             fclose(templateFile);
 
             %Define the struct for CRCs
@@ -338,8 +344,8 @@ classdef mavlab
         function copyFixedClasses(mainPath)
             %COPYFIXEDCLASSES: Copy master files into the MAVLAB implementation
             %Description: 
-            %    Copies one of each master file into the MAVLAB implementation. These files do not need
-            %    to be generate and are the same for any set of XML files.
+            %    Copies one of each master file into the MAVLAB implementation. These files do not need to be
+            %    generated and are the same for any set of XML files.
             %Arguments:
             %    mainPath(string): Path to the folder that the master classes will be copied to
 

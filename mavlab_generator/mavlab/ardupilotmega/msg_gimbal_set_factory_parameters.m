@@ -1,12 +1,10 @@
 classdef msg_gimbal_set_factory_parameters < mavlink_message
 	%MSG_GIMBAL_SET_FACTORY_PARAMETERS: MAVLINK Message ID = 206
     %Description:
-    %    
-            Set factory configuration parameters (such as assembly date and time, and serial number).  This is only intended to be used
+    %    Set factory configuration parameters (such as assembly date and time, and serial number).  This is only intended to be used
             during manufacture, not by end users, so it is protected by a simple checksum of sorts (this won't stop anybody determined,
             it's mostly just to keep the average user from trying to modify these values.  This will need to be revisited if that isn't
             adequate.
-        
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

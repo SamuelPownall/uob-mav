@@ -1,9 +1,7 @@
 classdef msg_gimbal_reset < mavlink_message
 	%MSG_GIMBAL_RESET: MAVLINK Message ID = 202
     %Description:
-    %    
-            Causes the gimbal to reset and boot as if it was just powered on
-        
+    %    Causes the gimbal to reset and boot as if it was just powered on
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

@@ -1,10 +1,9 @@
 classdef mavlink_parser < mavlink_handle
     %MAVLINK_PARSER: Used to parse an input stream for MAVLINK packets
     %Description:
-    %    Parses a stream of chars for MAVLINK packets and returns them so that they can be
-    %    decoded and unpacked.
+    %    Parses a stream of chars for MAVLINK packets and returns them so that they can be decoded and
+    %    unpacked.
     
-    %Private constant properties
     properties(Constant, Access = private)
         STATE_UNINIT = 0;
         STATE_IDLE = 1;
@@ -18,7 +17,6 @@ classdef mavlink_parser < mavlink_handle
         STATE_GOT_CRC1 = 9;
     end
     
-    %Private properties
     properties(Access = private)
         msg_received;
         packet;
@@ -26,19 +24,18 @@ classdef mavlink_parser < mavlink_handle
         last_seq;
     end
     
-    %Public object methods
     methods
         
         function obj = mavlink_parser()
-            %Create a new mavlink_parser object
+            %MAVLINK_PARSER: Create a new mavlink_parser object
             obj.state = obj.STATE_UNINIT;
         end
         
         function packet = parseChar(obj,char)
             %PARSECHAR(char): Parse a stream of chars and return a packet if found
             %Description:
-            %    Parses chars one at a time and returns any packets that are found. If a packet
-            %    is not found this function returns [].
+            %    Parses chars one at a time and returns any packets that are found. If a packet is not found
+            %    this function returns [].
             %Arguments:
             %    char(char): The next char in the stream to be parsed
             

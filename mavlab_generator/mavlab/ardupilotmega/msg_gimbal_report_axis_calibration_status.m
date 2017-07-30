@@ -1,9 +1,7 @@
 classdef msg_gimbal_report_axis_calibration_status < mavlink_message
 	%MSG_GIMBAL_REPORT_AXIS_CALIBRATION_STATUS: MAVLINK Message ID = 212
     %Description:
-    %    
-    		Reports the calibration status for each gimbal axis (whether the axis requires calibration or not)
-    	
+    %    Reports the calibration status for each gimbal axis (whether the axis requires calibration or not)
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

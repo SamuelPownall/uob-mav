@@ -1,9 +1,7 @@
 classdef msg_gimbal_perform_factory_tests < mavlink_message
 	%MSG_GIMBAL_PERFORM_FACTORY_TESTS: MAVLINK Message ID = 209
     %Description:
-    %    
-            Command the gimbal to perform a series of factory tests.  Should not be needed by end users
-        
+    %    Command the gimbal to perform a series of factory tests.  Should not be needed by end users
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

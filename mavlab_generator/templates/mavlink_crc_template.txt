@@ -1,6 +1,6 @@
 classdef mavlink_crc < mavlink_handle
-    %%MAVLINK CRC Class
-    %%Handles the crc x.25 checksum system used by MAVLINK
+%%MAVLINK CRC Class
+%%Handles the crc x.25 checksum system used by MAVLINK
     
     properties(Constant) 
         MAVLINK_MESSAGE_CRCS = uint8([#{crc<#>${value}$,}#0]);

@@ -1,10 +1,8 @@
 classdef msg_gimbal_request_axis_calibration < mavlink_message
 	%MSG_GIMBAL_REQUEST_AXIS_CALIBRATION: MAVLINK Message ID = 213
     %Description:
-    %    
-			Requests any currently uncalibrated gimbal axes to run the axis calibration procedure.  An axis is considered uncalibrated if its commutation calibration
+    %    Requests any currently uncalibrated gimbal axes to run the axis calibration procedure.  An axis is considered uncalibrated if its commutation calibration
 			slope and intercept are 0
-		
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

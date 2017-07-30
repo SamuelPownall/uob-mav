@@ -1,8 +1,8 @@
 classdef mavlink_handle < handle
     %MAVLINK_HANDLE: Improved handle class for MAVLAB
     %Description:
-    %    This class overrides the methods in the MATLAB handle class to make them hidden. This
-    %    ensures that these methods do not show in the help documentation for MAVLAB classes.
+    %    This class overrides the methods in the MATLAB handle class to make them hidden. This ensures
+    %    that these methods do not show in the help documentation for MAVLAB classes.
     
    methods(Hidden)
       function lh = addlistener(varargin)

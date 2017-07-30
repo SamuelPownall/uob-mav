@@ -5,7 +5,7 @@ classdef msg_change_operator_control_ack < mavlink_message
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type
-    %    gcs_system_id(uint8): ID of the GCS this message 
+    %    gcs_system_id(uint8): ID of the GCS this message
     %    control_request(uint8): 0: request control of this MAV, 1: Release control of this MAV
     %    ack(uint8): 0: ACK, 1: NACK: Wrong passkey, 2: NACK: Unsupported passkey encryption method, 3: NACK: Already under control
 	
@@ -15,7 +15,7 @@ classdef msg_change_operator_control_ack < mavlink_message
 	end
 	
 	properties
-        gcs_system_id	%ID of the GCS this message 	|	(uint8)
+        gcs_system_id	%ID of the GCS this message	|	(uint8)
         control_request	%0: request control of this MAV, 1: Release control of this MAV	|	(uint8)
         ack	%0: ACK, 1: NACK: Wrong passkey, 2: NACK: Unsupported passkey encryption method, 3: NACK: Already under control	|	(uint8)
     end

@@ -1,9 +1,7 @@
 classdef msg_gimbal_home_offset_calibration_result < mavlink_message
 	%MSG_GIMBAL_HOME_OFFSET_CALIBRATION_RESULT: MAVLINK Message ID = 205
     %Description:
-    %    
-            Sent by the gimbal after it receives a SET_HOME_OFFSETS message to indicate the result of the home offset calibration
-        
+    %    Sent by the gimbal after it receives a SET_HOME_OFFSETS message to indicate the result of the home offset calibration
     %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
     %    packet(mavlink_packet): Packet to be decoded into this message type

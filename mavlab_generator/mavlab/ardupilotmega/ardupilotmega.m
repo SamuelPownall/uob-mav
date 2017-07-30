@@ -1,5 +1,5 @@
 classdef ardupilotmega < uint16
-    %ARDUPILOTMEGA: Enumeration class for the 'ardupilotmega' dialect
+%ARDUPILOTMEGA: Enumeration class for the 'ardupilotmega' dialect
     
     enumeration 
         MAV_CMD_DO_MOTOR_TEST (209) %Mission command to perform motor test
@@ -9,16 +9,16 @@ classdef ardupilotmega < uint16
         MAV_CMD_DO_START_MAG_CAL (42424) %Initiate a magnetometer calibration
         MAV_CMD_DO_ACCEPT_MAG_CAL (42425) %Initiate a magnetometer calibration
         MAV_CMD_DO_CANCEL_MAG_CAL (42426) %Cancel a running magnetometer calibration
-        LIMITS_INIT (0) % pre-initialization
-        LIMITS_DISABLED (1) % disabled
-        LIMITS_ENABLED (2) % checking limits
-        LIMITS_TRIGGERED (3) % a limit has been breached
-        LIMITS_RECOVERING (4) % taking action eg. RTL
-        LIMITS_RECOVERED (5) % we're no longer in breach of a limit
-        LIMIT_GPSLOCK (1) % pre-initialization
-        LIMIT_GEOFENCE (2) % disabled
-        LIMIT_ALTITUDE (4) % checking limits
-        FAVORABLE_WIND (1) %Flag set when requiring favorable winds for landing. 
+        LIMITS_INIT (0) %pre-initialization
+        LIMITS_DISABLED (1) %disabled
+        LIMITS_ENABLED (2) %checking limits
+        LIMITS_TRIGGERED (3) %a limit has been breached
+        LIMITS_RECOVERING (4) %taking action eg. RTL
+        LIMITS_RECOVERED (5) %we're no longer in breach of a limit
+        LIMIT_GPSLOCK (1) %pre-initialization
+        LIMIT_GEOFENCE (2) %disabled
+        LIMIT_ALTITUDE (4) %checking limits
+        FAVORABLE_WIND (1) %Flag set when requiring favorable winds for landing.
         LAND_IMMEDIATELY (2) %Flag set when plane is to immediately descend to break altitude and land without GCS intervention.  Flag not set when plane is to loiter at Rally point until commanded to land.
         PARACHUTE_DISABLE (0) %Disable parachute release
         PARACHUTE_ENABLE (1) %Enable parachute release
