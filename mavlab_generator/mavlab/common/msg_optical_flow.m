@@ -2,9 +2,9 @@ classdef msg_optical_flow < mavlink_message
 	%MSG_OPTICAL_FLOW: MAVLINK Message ID = 100
     %Description:
     %    Optical flow from a flow sensor (e.g. optical mouse sensor)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (UNIX)
     %    flow_comp_m_x(single): Flow in meters in x-sensor direction, angular-speed compensated
     %    flow_comp_m_y(single): Flow in meters in y-sensor direction, angular-speed compensated
@@ -32,7 +32,7 @@ classdef msg_optical_flow < mavlink_message
 
     methods
 
-        function obj = msg_optical_flow(packet,time_usec,flow_comp_m_x,flow_comp_m_y,ground_distance,flow_x,flow_y,sensor_id,quality)
+        function obj = msg_optical_flow(time_usec,flow_comp_m_x,flow_comp_m_y,ground_distance,flow_x,flow_y,sensor_id,quality,varargin)
         %Create a new optical_flow message
         
             obj.msgid = obj.ID;
@@ -41,15 +41,16 @@ classdef msg_optical_flow < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 8
+            elseif nargin == 8
                 obj.time_usec = time_usec;
                 obj.flow_comp_m_x = flow_comp_m_x;
                 obj.flow_comp_m_y = flow_comp_m_y;

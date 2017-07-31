@@ -2,9 +2,9 @@ classdef msg_wind_cov < mavlink_message
 	%MSG_WIND_COV: MAVLINK Message ID = 231
     %Description:
     %    No description available
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    wind_x(single): Wind in X (NED) direction in m/s
     %    wind_y(single): Wind in Y (NED) direction in m/s
@@ -34,7 +34,7 @@ classdef msg_wind_cov < mavlink_message
 
     methods
 
-        function obj = msg_wind_cov(packet,time_usec,wind_x,wind_y,wind_z,var_horiz,var_vert,wind_alt,horiz_accuracy,vert_accuracy)
+        function obj = msg_wind_cov(time_usec,wind_x,wind_y,wind_z,var_horiz,var_vert,wind_alt,horiz_accuracy,vert_accuracy,varargin)
         %Create a new wind_cov message
         
             obj.msgid = obj.ID;
@@ -43,15 +43,16 @@ classdef msg_wind_cov < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 9
+            elseif nargin == 9
                 obj.time_usec = time_usec;
                 obj.wind_x = wind_x;
                 obj.wind_y = wind_y;

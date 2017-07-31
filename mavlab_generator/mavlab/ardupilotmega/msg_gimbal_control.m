@@ -2,9 +2,9 @@ classdef msg_gimbal_control < mavlink_message
 	%MSG_GIMBAL_CONTROL: MAVLINK Message ID = 201
     %Description:
     %    Control message for rate gimbal
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    demanded_rate_x(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    demanded_rate_x(single): Demanded angular rate X (rad/s)
     %    demanded_rate_y(single): Demanded angular rate Y (rad/s)
     %    demanded_rate_z(single): Demanded angular rate Z (rad/s)
@@ -26,7 +26,7 @@ classdef msg_gimbal_control < mavlink_message
 
     methods
 
-        function obj = msg_gimbal_control(packet,demanded_rate_x,demanded_rate_y,demanded_rate_z,target_system,target_component)
+        function obj = msg_gimbal_control(demanded_rate_x,demanded_rate_y,demanded_rate_z,target_system,target_component,varargin)
         %Create a new gimbal_control message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_gimbal_control < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(demanded_rate_x,'mavlink_packet')
+                    packet = demanded_rate_x;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('demanded_rate_x','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.demanded_rate_x = demanded_rate_x;
                 obj.demanded_rate_y = demanded_rate_y;
                 obj.demanded_rate_z = demanded_rate_z;

@@ -2,9 +2,9 @@ classdef msg_global_position_int_cov < mavlink_message
 	%MSG_GLOBAL_POSITION_INT_COV: MAVLINK Message ID = 63
     %Description:
     %    The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It  is designed as scaled integer message since the resolution of float is not sufficient. NOTE: This message is intended for onboard networks / companion computers and higher-bandwidth links and optimized for accuracy and completeness. Please use the GLOBAL_POSITION_INT message for a minimal subset.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since system boot or since UNIX epoch)
     %    lat(int32): Latitude, expressed as degrees * 1E7
     %    lon(int32): Longitude, expressed as degrees * 1E7
@@ -36,7 +36,7 @@ classdef msg_global_position_int_cov < mavlink_message
 
     methods
 
-        function obj = msg_global_position_int_cov(packet,time_usec,lat,lon,alt,relative_alt,vx,vy,vz,covariance,estimator_type)
+        function obj = msg_global_position_int_cov(time_usec,lat,lon,alt,relative_alt,vx,vy,vz,covariance,estimator_type,varargin)
         %Create a new global_position_int_cov message
         
             obj.msgid = obj.ID;
@@ -45,15 +45,16 @@ classdef msg_global_position_int_cov < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 10
+            elseif nargin == 10
                 obj.time_usec = time_usec;
                 obj.lat = lat;
                 obj.lon = lon;

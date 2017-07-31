@@ -2,9 +2,9 @@ classdef msg_adsb_vehicle < mavlink_message
 	%MSG_ADSB_VEHICLE: MAVLINK Message ID = 246
     %Description:
     %    The location and information of an ADSB vehicle
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    ICAO_address(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    ICAO_address(uint32): ICAO address
     %    lat(int32): Latitude, expressed as degrees * 1E7
     %    lon(int32): Longitude, expressed as degrees * 1E7
@@ -42,7 +42,7 @@ classdef msg_adsb_vehicle < mavlink_message
 
     methods
 
-        function obj = msg_adsb_vehicle(packet,ICAO_address,lat,lon,altitude,heading,hor_velocity,ver_velocity,flags,squawk,altitude_type,callsign,emitter_type,tslc)
+        function obj = msg_adsb_vehicle(ICAO_address,lat,lon,altitude,heading,hor_velocity,ver_velocity,flags,squawk,altitude_type,callsign,emitter_type,tslc,varargin)
         %Create a new adsb_vehicle message
         
             obj.msgid = obj.ID;
@@ -51,15 +51,16 @@ classdef msg_adsb_vehicle < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(ICAO_address,'mavlink_packet')
+                    packet = ICAO_address;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('ICAO_address','mavlink_packet');
                 end
             
-            elseif nargin-1 == 13
+            elseif nargin == 13
                 obj.ICAO_address = ICAO_address;
                 obj.lat = lat;
                 obj.lon = lon;

@@ -2,9 +2,9 @@ classdef msg_gopro_set_request < mavlink_message
 	%MSG_GOPRO_SET_REQUEST: MAVLINK Message ID = 218
     %Description:
     %    Request to set a GOPRO_COMMAND with a desired
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    target_system(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
     %    cmd_id(uint8): Command ID
@@ -24,7 +24,7 @@ classdef msg_gopro_set_request < mavlink_message
 
     methods
 
-        function obj = msg_gopro_set_request(packet,target_system,target_component,cmd_id,value)
+        function obj = msg_gopro_set_request(target_system,target_component,cmd_id,value,varargin)
         %Create a new gopro_set_request message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_gopro_set_request < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(target_system,'mavlink_packet')
+                    packet = target_system;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('target_system','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.target_system = target_system;
                 obj.target_component = target_component;
                 obj.cmd_id = cmd_id;

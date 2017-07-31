@@ -2,9 +2,9 @@ classdef msg_camera_status < mavlink_message
 	%MSG_CAMERA_STATUS: MAVLINK Message ID = 179
     %Description:
     %    Camera Event
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Image timestamp (microseconds since UNIX epoch, according to camera clock)
     %    p1(single): Parameter 1 (meaning depends on event, see CAMERA_STATUS_TYPES enum)
     %    p2(single): Parameter 2 (meaning depends on event, see CAMERA_STATUS_TYPES enum)
@@ -34,7 +34,7 @@ classdef msg_camera_status < mavlink_message
 
     methods
 
-        function obj = msg_camera_status(packet,time_usec,p1,p2,p3,p4,img_idx,target_system,cam_idx,event_id)
+        function obj = msg_camera_status(time_usec,p1,p2,p3,p4,img_idx,target_system,cam_idx,event_id,varargin)
         %Create a new camera_status message
         
             obj.msgid = obj.ID;
@@ -43,15 +43,16 @@ classdef msg_camera_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 9
+            elseif nargin == 9
                 obj.time_usec = time_usec;
                 obj.p1 = p1;
                 obj.p2 = p2;

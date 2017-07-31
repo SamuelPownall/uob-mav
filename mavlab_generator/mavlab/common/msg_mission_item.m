@@ -3,9 +3,9 @@ classdef msg_mission_item < mavlink_message
     %Description:
     %    Message encoding a mission item. This message is emitted to announce
                 the presence of a mission item and to set a mission item on the system. The mission item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude. Local frame is Z-down, right handed (NED), global frame is Z-up, right handed (ENU). See also http://qgroundcontrol.org/mavlink/waypoint_protocol.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    param1(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    param1(single): PARAM1, see MAV_CMD enum
     %    param2(single): PARAM2, see MAV_CMD enum
     %    param3(single): PARAM3, see MAV_CMD enum
@@ -45,7 +45,7 @@ classdef msg_mission_item < mavlink_message
 
     methods
 
-        function obj = msg_mission_item(packet,param1,param2,param3,param4,x,y,z,seq,command,target_system,target_component,frame,current,autocontinue)
+        function obj = msg_mission_item(param1,param2,param3,param4,x,y,z,seq,command,target_system,target_component,frame,current,autocontinue,varargin)
         %Create a new mission_item message
         
             obj.msgid = obj.ID;
@@ -54,15 +54,16 @@ classdef msg_mission_item < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(param1,'mavlink_packet')
+                    packet = param1;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('param1','mavlink_packet');
                 end
             
-            elseif nargin-1 == 14
+            elseif nargin == 14
                 obj.param1 = param1;
                 obj.param2 = param2;
                 obj.param3 = param3;

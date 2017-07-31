@@ -2,9 +2,9 @@ classdef msg_camera_image_captured < mavlink_message
 	%MSG_CAMERA_IMAGE_CAPTURED: MAVLINK Message ID = 263
     %Description:
     %    WIP: Information about a captured image
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_utc(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_utc(uint64): Timestamp (microseconds since UNIX epoch) in UTC. 0 for unknown.
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    lat(int32): Latitude, expressed as degrees * 1E7 where image was taken
@@ -34,7 +34,7 @@ classdef msg_camera_image_captured < mavlink_message
 
     methods
 
-        function obj = msg_camera_image_captured(packet,time_utc,time_boot_ms,lat,lon,alt,relative_alt,q,camera_id,file_path)
+        function obj = msg_camera_image_captured(time_utc,time_boot_ms,lat,lon,alt,relative_alt,q,camera_id,file_path,varargin)
         %Create a new camera_image_captured message
         
             obj.msgid = obj.ID;
@@ -43,15 +43,16 @@ classdef msg_camera_image_captured < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_utc,'mavlink_packet')
+                    packet = time_utc;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_utc','mavlink_packet');
                 end
             
-            elseif nargin-1 == 9
+            elseif nargin == 9
                 obj.time_utc = time_utc;
                 obj.time_boot_ms = time_boot_ms;
                 obj.lat = lat;

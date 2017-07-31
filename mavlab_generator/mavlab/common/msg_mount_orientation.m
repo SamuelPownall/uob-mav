@@ -2,9 +2,9 @@ classdef msg_mount_orientation < mavlink_message
 	%MSG_MOUNT_ORIENTATION: MAVLINK Message ID = 265
     %Description:
     %    WIP: Orientation of a mount
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    roll(single): Roll in degrees
     %    pitch(single): Pitch in degrees
@@ -24,7 +24,7 @@ classdef msg_mount_orientation < mavlink_message
 
     methods
 
-        function obj = msg_mount_orientation(packet,time_boot_ms,roll,pitch,yaw)
+        function obj = msg_mount_orientation(time_boot_ms,roll,pitch,yaw,varargin)
         %Create a new mount_orientation message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_mount_orientation < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.time_boot_ms = time_boot_ms;
                 obj.roll = roll;
                 obj.pitch = pitch;

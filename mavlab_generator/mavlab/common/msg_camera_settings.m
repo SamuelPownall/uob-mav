@@ -2,9 +2,9 @@ classdef msg_camera_settings < mavlink_message
 	%MSG_CAMERA_SETTINGS: MAVLINK Message ID = 260
     %Description:
     %    WIP: Settings of a camera, can be requested using MAV_CMD_REQUEST_CAMERA_SETTINGS and written using MAV_CMD_SET_CAMERA_SETTINGS
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    aperture(single): Aperture is 1/value
     %    shutter_speed(single): Shutter speed in s
@@ -42,7 +42,7 @@ classdef msg_camera_settings < mavlink_message
 
     methods
 
-        function obj = msg_camera_settings(packet,time_boot_ms,aperture,shutter_speed,iso_sensitivity,white_balance,camera_id,aperture_locked,shutter_speed_locked,iso_sensitivity_locked,white_balance_locked,mode_id,color_mode_id,image_format_id)
+        function obj = msg_camera_settings(time_boot_ms,aperture,shutter_speed,iso_sensitivity,white_balance,camera_id,aperture_locked,shutter_speed_locked,iso_sensitivity_locked,white_balance_locked,mode_id,color_mode_id,image_format_id,varargin)
         %Create a new camera_settings message
         
             obj.msgid = obj.ID;
@@ -51,15 +51,16 @@ classdef msg_camera_settings < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 13
+            elseif nargin == 13
                 obj.time_boot_ms = time_boot_ms;
                 obj.aperture = aperture;
                 obj.shutter_speed = shutter_speed;

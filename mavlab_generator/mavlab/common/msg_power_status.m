@@ -2,9 +2,9 @@ classdef msg_power_status < mavlink_message
 	%MSG_POWER_STATUS: MAVLINK Message ID = 125
     %Description:
     %    Power supply status
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    Vcc(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    Vcc(uint16): 5V rail voltage in millivolts
     %    Vservo(uint16): servo rail voltage in millivolts
     %    flags(uint16): power supply status flags (see MAV_POWER_STATUS enum)
@@ -22,7 +22,7 @@ classdef msg_power_status < mavlink_message
 
     methods
 
-        function obj = msg_power_status(packet,Vcc,Vservo,flags)
+        function obj = msg_power_status(Vcc,Vservo,flags,varargin)
         %Create a new power_status message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_power_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(Vcc,'mavlink_packet')
+                    packet = Vcc;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('Vcc','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.Vcc = Vcc;
                 obj.Vservo = Vservo;
                 obj.flags = flags;

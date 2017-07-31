@@ -2,9 +2,9 @@ classdef msg_data64 < mavlink_message
 	%MSG_DATA64: MAVLINK Message ID = 171
     %Description:
     %    Data packet, size 64
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    type(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    type(uint8): data type
     %    len(uint8): data length
     %    data(uint8[64]): raw data
@@ -22,7 +22,7 @@ classdef msg_data64 < mavlink_message
 
     methods
 
-        function obj = msg_data64(packet,type,len,data)
+        function obj = msg_data64(type,len,data,varargin)
         %Create a new data64 message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_data64 < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(type,'mavlink_packet')
+                    packet = type;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('type','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.type = type;
                 obj.len = len;
                 obj.data = data;

@@ -2,9 +2,9 @@ classdef msg_terrain_report < mavlink_message
 	%MSG_TERRAIN_REPORT: MAVLINK Message ID = 136
     %Description:
     %    Response from a TERRAIN_CHECK request
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    lat(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    lat(int32): Latitude (degrees *10^7)
     %    lon(int32): Longitude (degrees *10^7)
     %    terrain_height(single): Terrain height in meters AMSL
@@ -30,7 +30,7 @@ classdef msg_terrain_report < mavlink_message
 
     methods
 
-        function obj = msg_terrain_report(packet,lat,lon,terrain_height,current_height,spacing,pending,loaded)
+        function obj = msg_terrain_report(lat,lon,terrain_height,current_height,spacing,pending,loaded,varargin)
         %Create a new terrain_report message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_terrain_report < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(lat,'mavlink_packet')
+                    packet = lat;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('lat','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.lat = lat;
                 obj.lon = lon;
                 obj.terrain_height = terrain_height;

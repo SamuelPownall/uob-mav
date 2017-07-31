@@ -2,9 +2,9 @@ classdef msg_collision < mavlink_message
 	%MSG_COLLISION: MAVLINK Message ID = 247
     %Description:
     %    Information about a potential collision
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    id(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    id(uint32): Unique identifier, domain based on src field
     %    time_to_minimum_delta(single): Estimated time until collision occurs (seconds)
     %    altitude_minimum_delta(single): Closest vertical distance in meters between vehicle and object
@@ -30,7 +30,7 @@ classdef msg_collision < mavlink_message
 
     methods
 
-        function obj = msg_collision(packet,id,time_to_minimum_delta,altitude_minimum_delta,horizontal_minimum_delta,src,action,threat_level)
+        function obj = msg_collision(id,time_to_minimum_delta,altitude_minimum_delta,horizontal_minimum_delta,src,action,threat_level,varargin)
         %Create a new collision message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_collision < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(id,'mavlink_packet')
+                    packet = id;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('id','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.id = id;
                 obj.time_to_minimum_delta = time_to_minimum_delta;
                 obj.altitude_minimum_delta = altitude_minimum_delta;

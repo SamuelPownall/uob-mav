@@ -2,9 +2,9 @@ classdef msg_system_time < mavlink_message
 	%MSG_SYSTEM_TIME: MAVLINK Message ID = 2
     %Description:
     %    The system time is the time of the master clock, typically the computer clock of the main onboard computer.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_unix_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_unix_usec(uint64): Timestamp of the master clock in microseconds since UNIX epoch.
     %    time_boot_ms(uint32): Timestamp of the component clock since boot time in milliseconds.
 	
@@ -20,7 +20,7 @@ classdef msg_system_time < mavlink_message
 
     methods
 
-        function obj = msg_system_time(packet,time_unix_usec,time_boot_ms)
+        function obj = msg_system_time(time_unix_usec,time_boot_ms,varargin)
         %Create a new system_time message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_system_time < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_unix_usec,'mavlink_packet')
+                    packet = time_unix_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_unix_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.time_unix_usec = time_unix_usec;
                 obj.time_boot_ms = time_boot_ms;
             elseif nargin ~= 0

@@ -2,9 +2,9 @@ classdef msg_param_map_rc < mavlink_message
 	%MSG_PARAM_MAP_RC: MAVLINK Message ID = 50
     %Description:
     %    Bind a RC channel to a parameter. The parameter should change accoding to the RC channel value.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    param_value0(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    param_value0(single): Initial parameter value
     %    scale(single): Scale, maps the RC range [-1, 1] to a parameter value
     %    param_value_min(single): Minimum param value. The protocol does not define if this overwrites an onboard minimum value. (Depends on implementation)
@@ -34,7 +34,7 @@ classdef msg_param_map_rc < mavlink_message
 
     methods
 
-        function obj = msg_param_map_rc(packet,param_value0,scale,param_value_min,param_value_max,param_index,target_system,target_component,param_id,parameter_rc_channel_index)
+        function obj = msg_param_map_rc(param_value0,scale,param_value_min,param_value_max,param_index,target_system,target_component,param_id,parameter_rc_channel_index,varargin)
         %Create a new param_map_rc message
         
             obj.msgid = obj.ID;
@@ -43,15 +43,16 @@ classdef msg_param_map_rc < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(param_value0,'mavlink_packet')
+                    packet = param_value0;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('param_value0','mavlink_packet');
                 end
             
-            elseif nargin-1 == 9
+            elseif nargin == 9
                 obj.param_value0 = param_value0;
                 obj.scale = scale;
                 obj.param_value_min = param_value_min;

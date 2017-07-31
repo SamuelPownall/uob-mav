@@ -2,9 +2,9 @@ classdef msg_camera_trigger < mavlink_message
 	%MSG_CAMERA_TRIGGER: MAVLINK Message ID = 112
     %Description:
     %    Camera-IMU triggering and synchronisation message.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp for the image frame in microseconds
     %    seq(uint32): Image frame sequence
 	
@@ -20,7 +20,7 @@ classdef msg_camera_trigger < mavlink_message
 
     methods
 
-        function obj = msg_camera_trigger(packet,time_usec,seq)
+        function obj = msg_camera_trigger(time_usec,seq,varargin)
         %Create a new camera_trigger message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_camera_trigger < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.time_usec = time_usec;
                 obj.seq = seq;
             elseif nargin ~= 0

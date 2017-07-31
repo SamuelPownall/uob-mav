@@ -2,9 +2,9 @@ classdef msg_ahrs2 < mavlink_message
 	%MSG_AHRS2: MAVLINK Message ID = 178
     %Description:
     %    Status of secondary AHRS filter if available
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    roll(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    roll(single): Roll angle (rad)
     %    pitch(single): Pitch angle (rad)
     %    yaw(single): Yaw angle (rad)
@@ -28,7 +28,7 @@ classdef msg_ahrs2 < mavlink_message
 
     methods
 
-        function obj = msg_ahrs2(packet,roll,pitch,yaw,altitude,lat,lng)
+        function obj = msg_ahrs2(roll,pitch,yaw,altitude,lat,lng,varargin)
         %Create a new ahrs2 message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_ahrs2 < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(roll,'mavlink_packet')
+                    packet = roll;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('roll','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.roll = roll;
                 obj.pitch = pitch;
                 obj.yaw = yaw;

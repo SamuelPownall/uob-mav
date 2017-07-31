@@ -2,9 +2,9 @@ classdef msg_set_home_position < mavlink_message
 	%MSG_SET_HOME_POSITION: MAVLINK Message ID = 243
     %Description:
     %    The position the system will return to and land on. The position is set automatically by the system during the takeoff in case it was not explicitely set by the operator before or after. The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface. Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach. The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    latitude(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    latitude(int32): Latitude (WGS84), in degrees * 1E7
     %    longitude(int32): Longitude (WGS84, in degrees * 1E7
     %    altitude(int32): Altitude (AMSL), in meters * 1000 (positive for up)
@@ -38,7 +38,7 @@ classdef msg_set_home_position < mavlink_message
 
     methods
 
-        function obj = msg_set_home_position(packet,latitude,longitude,altitude,x,y,z,q,approach_x,approach_y,approach_z,target_system)
+        function obj = msg_set_home_position(latitude,longitude,altitude,x,y,z,q,approach_x,approach_y,approach_z,target_system,varargin)
         %Create a new set_home_position message
         
             obj.msgid = obj.ID;
@@ -47,15 +47,16 @@ classdef msg_set_home_position < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(latitude,'mavlink_packet')
+                    packet = latitude;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('latitude','mavlink_packet');
                 end
             
-            elseif nargin-1 == 11
+            elseif nargin == 11
                 obj.latitude = latitude;
                 obj.longitude = longitude;
                 obj.altitude = altitude;

@@ -2,9 +2,9 @@ classdef msg_param_set < mavlink_message
 	%MSG_PARAM_SET: MAVLINK Message ID = 23
     %Description:
     %    Set a parameter value TEMPORARILY to RAM. It will be reset to default on system reboot. Send the ACTION MAV_ACTION_STORAGE_WRITE to PERMANENTLY write the RAM contents to EEPROM. IMPORTANT: The receiving component should acknowledge the new parameter value by sending a param_value message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    param_value(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    param_value(single): Onboard parameter value
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
@@ -26,7 +26,7 @@ classdef msg_param_set < mavlink_message
 
     methods
 
-        function obj = msg_param_set(packet,param_value,target_system,target_component,param_id,param_type)
+        function obj = msg_param_set(param_value,target_system,target_component,param_id,param_type,varargin)
         %Create a new param_set message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_param_set < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(param_value,'mavlink_packet')
+                    packet = param_value;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('param_value','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.param_value = param_value;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

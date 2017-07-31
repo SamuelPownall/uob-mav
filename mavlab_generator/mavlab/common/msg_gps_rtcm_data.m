@@ -2,9 +2,9 @@ classdef msg_gps_rtcm_data < mavlink_message
 	%MSG_GPS_RTCM_DATA: MAVLINK Message ID = 233
     %Description:
     %    WORK IN PROGRESS! RTCM message for injecting into the onboard GPS (used for DGPS)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    flags(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    flags(uint8): LSB: 1 means message is fragmented
     %    len(uint8): data length
     %    data(uint8[127]): RTCM message (may be fragmented)
@@ -22,7 +22,7 @@ classdef msg_gps_rtcm_data < mavlink_message
 
     methods
 
-        function obj = msg_gps_rtcm_data(packet,flags,len,data)
+        function obj = msg_gps_rtcm_data(flags,len,data,varargin)
         %Create a new gps_rtcm_data message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_gps_rtcm_data < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(flags,'mavlink_packet')
+                    packet = flags;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('flags','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.flags = flags;
                 obj.len = len;
                 obj.data = data;

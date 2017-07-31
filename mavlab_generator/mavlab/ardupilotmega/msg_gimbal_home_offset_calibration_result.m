@@ -2,9 +2,9 @@ classdef msg_gimbal_home_offset_calibration_result < mavlink_message
 	%MSG_GIMBAL_HOME_OFFSET_CALIBRATION_RESULT: MAVLINK Message ID = 205
     %Description:
     %    Sent by the gimbal after it receives a SET_HOME_OFFSETS message to indicate the result of the home offset calibration
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    calibration_result(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    calibration_result(uint8): The result of the home offset calibration
 	
 	properties(Constant)
@@ -18,7 +18,7 @@ classdef msg_gimbal_home_offset_calibration_result < mavlink_message
 
     methods
 
-        function obj = msg_gimbal_home_offset_calibration_result(packet,calibration_result)
+        function obj = msg_gimbal_home_offset_calibration_result(calibration_result,varargin)
         %Create a new gimbal_home_offset_calibration_result message
         
             obj.msgid = obj.ID;
@@ -27,16 +27,15 @@ classdef msg_gimbal_home_offset_calibration_result < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(calibration_result,'mavlink_packet')
+                    packet = calibration_result;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    obj.calibration_result = calibration_result;
                 end
             
-            elseif nargin-1 == 1
-                obj.calibration_result = calibration_result;
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

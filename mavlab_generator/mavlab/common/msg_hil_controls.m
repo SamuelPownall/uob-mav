@@ -2,9 +2,9 @@ classdef msg_hil_controls < mavlink_message
 	%MSG_HIL_CONTROLS: MAVLINK Message ID = 91
     %Description:
     %    Sent from autopilot to simulation. Hardware in the loop control outputs
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since UNIX epoch or microseconds since system boot)
     %    roll_ailerons(single): Control output -1 .. 1
     %    pitch_elevator(single): Control output -1 .. 1
@@ -38,7 +38,7 @@ classdef msg_hil_controls < mavlink_message
 
     methods
 
-        function obj = msg_hil_controls(packet,time_usec,roll_ailerons,pitch_elevator,yaw_rudder,throttle,aux1,aux2,aux3,aux4,mode,nav_mode)
+        function obj = msg_hil_controls(time_usec,roll_ailerons,pitch_elevator,yaw_rudder,throttle,aux1,aux2,aux3,aux4,mode,nav_mode,varargin)
         %Create a new hil_controls message
         
             obj.msgid = obj.ID;
@@ -47,15 +47,16 @@ classdef msg_hil_controls < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 11
+            elseif nargin == 11
                 obj.time_usec = time_usec;
                 obj.roll_ailerons = roll_ailerons;
                 obj.pitch_elevator = pitch_elevator;

@@ -2,9 +2,9 @@ classdef msg_raw_pressure < mavlink_message
 	%MSG_RAW_PRESSURE: MAVLINK Message ID = 28
     %Description:
     %    The RAW pressure readings for the typical setup of one absolute pressure and one differential pressure sensor. The sensor values should be the raw, UNSCALED ADC values.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since UNIX epoch or microseconds since system boot)
     %    press_abs(int16): Absolute pressure (raw)
     %    press_diff1(int16): Differential pressure 1 (raw, 0 if nonexistant)
@@ -26,7 +26,7 @@ classdef msg_raw_pressure < mavlink_message
 
     methods
 
-        function obj = msg_raw_pressure(packet,time_usec,press_abs,press_diff1,press_diff2,temperature)
+        function obj = msg_raw_pressure(time_usec,press_abs,press_diff1,press_diff2,temperature,varargin)
         %Create a new raw_pressure message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_raw_pressure < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.time_usec = time_usec;
                 obj.press_abs = press_abs;
                 obj.press_diff1 = press_diff1;

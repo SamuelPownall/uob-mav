@@ -2,9 +2,9 @@ classdef msg_mission_ack < mavlink_message
 	%MSG_MISSION_ACK: MAVLINK Message ID = 47
     %Description:
     %    Ack message during MISSION handling. The type field states if this message is a positive ack (type=0) or if an error happened (type=non-zero).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    target_system(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
     %    type(uint8): See MAV_MISSION_RESULT enum
@@ -22,7 +22,7 @@ classdef msg_mission_ack < mavlink_message
 
     methods
 
-        function obj = msg_mission_ack(packet,target_system,target_component,type)
+        function obj = msg_mission_ack(target_system,target_component,type,varargin)
         %Create a new mission_ack message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_mission_ack < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(target_system,'mavlink_packet')
+                    packet = target_system;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('target_system','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.target_system = target_system;
                 obj.target_component = target_component;
                 obj.type = type;

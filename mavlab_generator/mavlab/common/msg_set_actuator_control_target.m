@@ -2,9 +2,9 @@ classdef msg_set_actuator_control_target < mavlink_message
 	%MSG_SET_ACTUATOR_CONTROL_TARGET: MAVLINK Message ID = 139
     %Description:
     %    Set the vehicle attitude and body angular rates.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    controls(single[8]): Actuator controls. Normed to -1..+1 where 0 is neutral position. Throttle for single rotation direction motors is 0..1, negative range for reverse direction. Standard mapping for attitude controls (group 0): (index 0-7): roll, pitch, yaw, throttle, flaps, spoilers, airbrakes, landing gear. Load a pass-through mixer to repurpose them as generic outputs.
     %    group_mlx(uint8): Actuator group. The "_mlx" indicates this is a multi-instance message and a MAVLink parser should use this field to difference between instances.
@@ -26,7 +26,7 @@ classdef msg_set_actuator_control_target < mavlink_message
 
     methods
 
-        function obj = msg_set_actuator_control_target(packet,time_usec,controls,group_mlx,target_system,target_component)
+        function obj = msg_set_actuator_control_target(time_usec,controls,group_mlx,target_system,target_component,varargin)
         %Create a new set_actuator_control_target message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_set_actuator_control_target < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.time_usec = time_usec;
                 obj.controls = controls;
                 obj.group_mlx = group_mlx;

@@ -2,9 +2,9 @@ classdef msg_rally_point < mavlink_message
 	%MSG_RALLY_POINT: MAVLINK Message ID = 175
     %Description:
     %    A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    lat(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    lat(int32): Latitude of point in degrees * 1E7
     %    lng(int32): Longitude of point in degrees * 1E7
     %    alt(int16): Transit / loiter altitude in meters relative to home
@@ -36,7 +36,7 @@ classdef msg_rally_point < mavlink_message
 
     methods
 
-        function obj = msg_rally_point(packet,lat,lng,alt,break_alt,land_dir,target_system,target_component,idx,count,flags)
+        function obj = msg_rally_point(lat,lng,alt,break_alt,land_dir,target_system,target_component,idx,count,flags,varargin)
         %Create a new rally_point message
         
             obj.msgid = obj.ID;
@@ -45,15 +45,16 @@ classdef msg_rally_point < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(lat,'mavlink_packet')
+                    packet = lat;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('lat','mavlink_packet');
                 end
             
-            elseif nargin-1 == 10
+            elseif nargin == 10
                 obj.lat = lat;
                 obj.lng = lng;
                 obj.alt = alt;

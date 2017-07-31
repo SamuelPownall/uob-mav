@@ -2,9 +2,9 @@ classdef msg_hil_optical_flow < mavlink_message
 	%MSG_HIL_OPTICAL_FLOW: MAVLINK Message ID = 114
     %Description:
     %    Simulated optical flow from a flow sensor (e.g. PX4FLOW or optical mouse sensor)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds, synced to UNIX time or since system boot)
     %    integration_time_us(uint32): Integration time in microseconds. Divide integrated_x and integrated_y by the integration time to obtain average flow. The integration time also indicates the.
     %    integrated_x(single): Flow in radians around X axis (Sensor RH rotation about the X axis induces a positive flow. Sensor linear motion along the positive Y axis induces a negative flow.)
@@ -40,7 +40,7 @@ classdef msg_hil_optical_flow < mavlink_message
 
     methods
 
-        function obj = msg_hil_optical_flow(packet,time_usec,integration_time_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,time_delta_distance_us,distance,temperature,sensor_id,quality)
+        function obj = msg_hil_optical_flow(time_usec,integration_time_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,time_delta_distance_us,distance,temperature,sensor_id,quality,varargin)
         %Create a new hil_optical_flow message
         
             obj.msgid = obj.ID;
@@ -49,15 +49,16 @@ classdef msg_hil_optical_flow < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 12
+            elseif nargin == 12
                 obj.time_usec = time_usec;
                 obj.integration_time_us = integration_time_us;
                 obj.integrated_x = integrated_x;

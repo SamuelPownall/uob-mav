@@ -2,9 +2,9 @@ classdef msg_gps2_raw < mavlink_message
 	%MSG_GPS2_RAW: MAVLINK Message ID = 124
     %Description:
     %    Second GPS data. Coordinate frame is right-handed, Z-axis up (GPS frame).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since UNIX epoch or microseconds since system boot)
     %    lat(int32): Latitude (WGS84), in degrees * 1E7
     %    lon(int32): Longitude (WGS84), in degrees * 1E7
@@ -40,7 +40,7 @@ classdef msg_gps2_raw < mavlink_message
 
     methods
 
-        function obj = msg_gps2_raw(packet,time_usec,lat,lon,alt,dgps_age,eph,epv,vel,cog,fix_type,satellites_visible,dgps_numch)
+        function obj = msg_gps2_raw(time_usec,lat,lon,alt,dgps_age,eph,epv,vel,cog,fix_type,satellites_visible,dgps_numch,varargin)
         %Create a new gps2_raw message
         
             obj.msgid = obj.ID;
@@ -49,15 +49,16 @@ classdef msg_gps2_raw < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 12
+            elseif nargin == 12
                 obj.time_usec = time_usec;
                 obj.lat = lat;
                 obj.lon = lon;

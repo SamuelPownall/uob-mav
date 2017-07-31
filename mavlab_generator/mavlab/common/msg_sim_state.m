@@ -2,9 +2,9 @@ classdef msg_sim_state < mavlink_message
 	%MSG_SIM_STATE: MAVLINK Message ID = 108
     %Description:
     %    Status of simulation environment, if used
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    q1(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    q1(single): True attitude quaternion component 1, w (1 in null-rotation)
     %    q2(single): True attitude quaternion component 2, x (0 in null-rotation)
     %    q3(single): True attitude quaternion component 3, y (0 in null-rotation)
@@ -58,7 +58,7 @@ classdef msg_sim_state < mavlink_message
 
     methods
 
-        function obj = msg_sim_state(packet,q1,q2,q3,q4,roll,pitch,yaw,xacc,yacc,zacc,xgyro,ygyro,zgyro,lat,lon,alt,std_dev_horz,std_dev_vert,vn,ve,vd)
+        function obj = msg_sim_state(q1,q2,q3,q4,roll,pitch,yaw,xacc,yacc,zacc,xgyro,ygyro,zgyro,lat,lon,alt,std_dev_horz,std_dev_vert,vn,ve,vd,varargin)
         %Create a new sim_state message
         
             obj.msgid = obj.ID;
@@ -67,15 +67,16 @@ classdef msg_sim_state < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(q1,'mavlink_packet')
+                    packet = q1;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('q1','mavlink_packet');
                 end
             
-            elseif nargin-1 == 21
+            elseif nargin == 21
                 obj.q1 = q1;
                 obj.q2 = q2;
                 obj.q3 = q3;

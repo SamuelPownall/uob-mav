@@ -2,9 +2,9 @@ classdef msg_vision_speed_estimate < mavlink_message
 	%MSG_VISION_SPEED_ESTIMATE: MAVLINK Message ID = 103
     %Description:
     %    No description available
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    usec(uint64): Timestamp (microseconds, synced to UNIX time or since system boot)
     %    x(single): Global X speed
     %    y(single): Global Y speed
@@ -24,7 +24,7 @@ classdef msg_vision_speed_estimate < mavlink_message
 
     methods
 
-        function obj = msg_vision_speed_estimate(packet,usec,x,y,z)
+        function obj = msg_vision_speed_estimate(usec,x,y,z,varargin)
         %Create a new vision_speed_estimate message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_vision_speed_estimate < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(usec,'mavlink_packet')
+                    packet = usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.usec = usec;
                 obj.x = x;
                 obj.y = y;

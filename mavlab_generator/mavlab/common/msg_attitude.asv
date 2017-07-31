@@ -1,37 +1,37 @@
-classdef msg_local_position_ned_system_global_offset < mavlink_message
-	%MSG_LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET: MAVLINK Message ID = 89
+classdef msg_attitude < mavlink_message
+	%MSG_ATTITUDE: MAVLINK Message ID = 30
     %Description:
-    %    The offset in X, Y, Z and yaw between the LOCAL_POSITION_NED messages of MAV X and the global coordinate frame in NED coordinates. Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)
-    %    Can also be constructed by using a mavlink_packet as the only argument
+    %    The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
+    %    If constructing from fields, packet argument should be set to [].
 	%Arguments:
-    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
+    %    packet(mavlink_packet): Packet to be decoded into this message type
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
-    %    x(single): X Position
-    %    y(single): Y Position
-    %    z(single): Z Position
-    %    roll(single): Roll
-    %    pitch(single): Pitch
-    %    yaw(single): Yaw
+    %    roll(single): Roll angle (rad, -pi..+pi)
+    %    pitch(single): Pitch angle (rad, -pi..+pi)
+    %    yaw(single): Yaw angle (rad, -pi..+pi)
+    %    rollspeed(single): Roll angular speed (rad/s)
+    %    pitchspeed(single): Pitch angular speed (rad/s)
+    %    yawspeed(single): Yaw angular speed (rad/s)
 	
 	properties(Constant)
-		ID = 89
+		ID = 30
 		LEN = 28
 	end
 	
 	properties
         time_boot_ms	%Timestamp (milliseconds since system boot)	|	(uint32)
-        x	%X Position	|	(single)
-        y	%Y Position	|	(single)
-        z	%Z Position	|	(single)
-        roll	%Roll	|	(single)
-        pitch	%Pitch	|	(single)
-        yaw	%Yaw	|	(single)
+        roll	%Roll angle (rad, -pi..+pi)	|	(single)
+        pitch	%Pitch angle (rad, -pi..+pi)	|	(single)
+        yaw	%Yaw angle (rad, -pi..+pi)	|	(single)
+        rollspeed	%Roll angular speed (rad/s)	|	(single)
+        pitchspeed	%Pitch angular speed (rad/s)	|	(single)
+        yawspeed	%Yaw angular speed (rad/s)	|	(single)
     end
 
     methods
 
-        function obj = msg_local_position_ned_system_global_offset(time_boot_ms,x,y,z,roll,pitch,yaw,varargin)
-        %Create a new local_position_ned_system_global_offset message
+        function obj = msg_attitude(time_boot_ms,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed,varargin)
+        %Create a new attitude message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
@@ -40,22 +40,21 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
             if nargin == 1
             
                 if isa(time_boot_ms,'mavlink_packet')
-                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
+                    mavlink.throwTypeError('packet','mavlink_packet');
                 end
             
-            elseif nargin == 7
+            elseif nargin == 1
                 obj.time_boot_ms = time_boot_ms;
-                obj.x = x;
-                obj.y = y;
-                obj.z = z;
                 obj.roll = roll;
                 obj.pitch = pitch;
                 obj.yaw = yaw;
+                obj.rollspeed = rollspeed;
+                obj.pitchspeed = pitchspeed;
+                obj.yawspeed = yawspeed;
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end
@@ -71,18 +70,18 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
             errorField = obj.verify();
             if errorField == 0
 
-                packet = mavlink_packet(msg_local_position_ned_system_global_offset.LEN);
+                packet = mavlink_packet(msg_attitude.LEN);
                 packet.sysid = mavlink.SYSID;
                 packet.compid = mavlink.COMPID;
-                packet.msgid = msg_local_position_ned_system_global_offset.ID;
+                packet.msgid = msg_attitude.ID;
                 
                 packet.payload.putUINT32(obj.time_boot_ms);
-                packet.payload.putSINGLE(obj.x);
-                packet.payload.putSINGLE(obj.y);
-                packet.payload.putSINGLE(obj.z);
                 packet.payload.putSINGLE(obj.roll);
                 packet.payload.putSINGLE(obj.pitch);
                 packet.payload.putSINGLE(obj.yaw);
+                packet.payload.putSINGLE(obj.rollspeed);
+                packet.payload.putSINGLE(obj.pitchspeed);
+                packet.payload.putSINGLE(obj.yawspeed);
 
             else
                 packet = [];
@@ -102,12 +101,12 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
             payload.resetIndex();
             
             obj.time_boot_ms = payload.getUINT32();
-            obj.x = payload.getSINGLE();
-            obj.y = payload.getSINGLE();
-            obj.z = payload.getSINGLE();
             obj.roll = payload.getSINGLE();
             obj.pitch = payload.getSINGLE();
             obj.yaw = payload.getSINGLE();
+            obj.rollspeed = payload.getSINGLE();
+            obj.pitchspeed = payload.getSINGLE();
+            obj.yawspeed = payload.getSINGLE();
 
         end
         
@@ -120,18 +119,18 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
             if 1==0
             elseif size(obj.time_boot_ms,2) ~= 1
                 result = 'time_boot_ms';
-            elseif size(obj.x,2) ~= 1
-                result = 'x';
-            elseif size(obj.y,2) ~= 1
-                result = 'y';
-            elseif size(obj.z,2) ~= 1
-                result = 'z';
             elseif size(obj.roll,2) ~= 1
                 result = 'roll';
             elseif size(obj.pitch,2) ~= 1
                 result = 'pitch';
             elseif size(obj.yaw,2) ~= 1
                 result = 'yaw';
+            elseif size(obj.rollspeed,2) ~= 1
+                result = 'rollspeed';
+            elseif size(obj.pitchspeed,2) ~= 1
+                result = 'pitchspeed';
+            elseif size(obj.yawspeed,2) ~= 1
+                result = 'yawspeed';
 
             else
                 result = 0;
@@ -146,18 +145,6 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
             end
         end
         
-        function set.x(obj,value)
-            obj.x = single(value);
-        end
-        
-        function set.y(obj,value)
-            obj.y = single(value);
-        end
-        
-        function set.z(obj,value)
-            obj.z = single(value);
-        end
-        
         function set.roll(obj,value)
             obj.roll = single(value);
         end
@@ -168,6 +155,18 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
         
         function set.yaw(obj,value)
             obj.yaw = single(value);
+        end
+        
+        function set.rollspeed(obj,value)
+            obj.rollspeed = single(value);
+        end
+        
+        function set.pitchspeed(obj,value)
+            obj.pitchspeed = single(value);
+        end
+        
+        function set.yawspeed(obj,value)
+            obj.yawspeed = single(value);
         end
         
     end

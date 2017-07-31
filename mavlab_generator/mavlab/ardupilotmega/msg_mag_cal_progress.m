@@ -2,9 +2,9 @@ classdef msg_mag_cal_progress < mavlink_message
 	%MSG_MAG_CAL_PROGRESS: MAVLINK Message ID = 191
     %Description:
     %    Reports progress of compass calibration.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    direction_x(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    direction_x(single): Body frame direction vector for display
     %    direction_y(single): Body frame direction vector for display
     %    direction_z(single): Body frame direction vector for display
@@ -34,7 +34,7 @@ classdef msg_mag_cal_progress < mavlink_message
 
     methods
 
-        function obj = msg_mag_cal_progress(packet,direction_x,direction_y,direction_z,compass_id,cal_mask,cal_status,attempt,completion_pct,completion_mask)
+        function obj = msg_mag_cal_progress(direction_x,direction_y,direction_z,compass_id,cal_mask,cal_status,attempt,completion_pct,completion_mask,varargin)
         %Create a new mag_cal_progress message
         
             obj.msgid = obj.ID;
@@ -43,15 +43,16 @@ classdef msg_mag_cal_progress < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(direction_x,'mavlink_packet')
+                    packet = direction_x;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('direction_x','mavlink_packet');
                 end
             
-            elseif nargin-1 == 9
+            elseif nargin == 9
                 obj.direction_x = direction_x;
                 obj.direction_y = direction_y;
                 obj.direction_z = direction_z;

@@ -2,9 +2,9 @@ classdef msg_ekf_status_report < mavlink_message
 	%MSG_EKF_STATUS_REPORT: MAVLINK Message ID = 193
     %Description:
     %    EKF Status message including flags and variances
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    velocity_variance(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    velocity_variance(single): Velocity variance
     %    pos_horiz_variance(single): Horizontal Position variance
     %    pos_vert_variance(single): Vertical Position variance
@@ -28,7 +28,7 @@ classdef msg_ekf_status_report < mavlink_message
 
     methods
 
-        function obj = msg_ekf_status_report(packet,velocity_variance,pos_horiz_variance,pos_vert_variance,compass_variance,terrain_alt_variance,flags)
+        function obj = msg_ekf_status_report(velocity_variance,pos_horiz_variance,pos_vert_variance,compass_variance,terrain_alt_variance,flags,varargin)
         %Create a new ekf_status_report message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_ekf_status_report < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(velocity_variance,'mavlink_packet')
+                    packet = velocity_variance;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('velocity_variance','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.velocity_variance = velocity_variance;
                 obj.pos_horiz_variance = pos_horiz_variance;
                 obj.pos_vert_variance = pos_vert_variance;

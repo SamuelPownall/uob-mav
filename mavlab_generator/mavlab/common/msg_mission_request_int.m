@@ -2,9 +2,9 @@ classdef msg_mission_request_int < mavlink_message
 	%MSG_MISSION_REQUEST_INT: MAVLINK Message ID = 51
     %Description:
     %    Request the information of the mission item with the sequence number seq. The response of the system to this message should be a MISSION_ITEM_INT message. http://qgroundcontrol.org/mavlink/waypoint_protocol
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    seq(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    seq(uint16): Sequence
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
@@ -22,7 +22,7 @@ classdef msg_mission_request_int < mavlink_message
 
     methods
 
-        function obj = msg_mission_request_int(packet,seq,target_system,target_component)
+        function obj = msg_mission_request_int(seq,target_system,target_component,varargin)
         %Create a new mission_request_int message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_mission_request_int < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(seq,'mavlink_packet')
+                    packet = seq;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('seq','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.seq = seq;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

@@ -2,9 +2,9 @@ classdef msg_gopro_heartbeat < mavlink_message
 	%MSG_GOPRO_HEARTBEAT: MAVLINK Message ID = 215
     %Description:
     %    Heartbeat from a HeroBus attached GoPro
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    status(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    status(uint8): Status
 	
 	properties(Constant)
@@ -18,7 +18,7 @@ classdef msg_gopro_heartbeat < mavlink_message
 
     methods
 
-        function obj = msg_gopro_heartbeat(packet,status)
+        function obj = msg_gopro_heartbeat(status,varargin)
         %Create a new gopro_heartbeat message
         
             obj.msgid = obj.ID;
@@ -27,16 +27,15 @@ classdef msg_gopro_heartbeat < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(status,'mavlink_packet')
+                    packet = status;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    obj.status = status;
                 end
             
-            elseif nargin-1 == 1
-                obj.status = status;
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

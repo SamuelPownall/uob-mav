@@ -2,9 +2,9 @@ classdef msg_digicam_configure < mavlink_message
 	%MSG_DIGICAM_CONFIGURE: MAVLINK Message ID = 154
     %Description:
     %    Configure on-board Camera Control System.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    extra_value(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    extra_value(single): Correspondent value to given extra_param
     %    shutter_speed(uint16): Divisor number //e.g. 1000 means 1/1000 (0 means ignore)
     %    target_system(uint8): System ID
@@ -38,7 +38,7 @@ classdef msg_digicam_configure < mavlink_message
 
     methods
 
-        function obj = msg_digicam_configure(packet,extra_value,shutter_speed,target_system,target_component,mode,aperture,iso,exposure_type,command_id,engine_cut_off,extra_param)
+        function obj = msg_digicam_configure(extra_value,shutter_speed,target_system,target_component,mode,aperture,iso,exposure_type,command_id,engine_cut_off,extra_param,varargin)
         %Create a new digicam_configure message
         
             obj.msgid = obj.ID;
@@ -47,15 +47,16 @@ classdef msg_digicam_configure < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(extra_value,'mavlink_packet')
+                    packet = extra_value;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('extra_value','mavlink_packet');
                 end
             
-            elseif nargin-1 == 11
+            elseif nargin == 11
                 obj.extra_value = extra_value;
                 obj.shutter_speed = shutter_speed;
                 obj.target_system = target_system;

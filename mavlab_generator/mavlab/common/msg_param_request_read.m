@@ -2,9 +2,9 @@ classdef msg_param_request_read < mavlink_message
 	%MSG_PARAM_REQUEST_READ: MAVLINK Message ID = 20
     %Description:
     %    Request to read the onboard parameter with the param_id string id. Onboard parameters are stored as key[const char*] -> value[float]. This allows to send a parameter to any other component (such as the GCS) without the need of previous knowledge of possible parameter names. Thus the same GCS can store different parameters for different autopilots. See also http://qgroundcontrol.org/parameter_interface for a full documentation of QGroundControl and IMU code.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    param_index(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    param_index(int16): Parameter index. Send -1 to use the param ID field as identifier (else the param id will be ignored)
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
@@ -24,7 +24,7 @@ classdef msg_param_request_read < mavlink_message
 
     methods
 
-        function obj = msg_param_request_read(packet,param_index,target_system,target_component,param_id)
+        function obj = msg_param_request_read(param_index,target_system,target_component,param_id,varargin)
         %Create a new param_request_read message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_param_request_read < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(param_index,'mavlink_packet')
+                    packet = param_index;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('param_index','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.param_index = param_index;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

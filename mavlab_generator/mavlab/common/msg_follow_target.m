@@ -2,9 +2,9 @@ classdef msg_follow_target < mavlink_message
 	%MSG_FOLLOW_TARGET: MAVLINK Message ID = 144
     %Description:
     %    current motion information from a designated system
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    timestamp(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    timestamp(uint64): Timestamp in milliseconds since system boot
     %    custom_state(uint64): button states or switches of a tracker device
     %    lat(int32): Latitude (WGS84), in degrees * 1E7
@@ -38,7 +38,7 @@ classdef msg_follow_target < mavlink_message
 
     methods
 
-        function obj = msg_follow_target(packet,timestamp,custom_state,lat,lon,alt,vel,acc,attitude_q,rates,position_cov,est_capabilities)
+        function obj = msg_follow_target(timestamp,custom_state,lat,lon,alt,vel,acc,attitude_q,rates,position_cov,est_capabilities,varargin)
         %Create a new follow_target message
         
             obj.msgid = obj.ID;
@@ -47,15 +47,16 @@ classdef msg_follow_target < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(timestamp,'mavlink_packet')
+                    packet = timestamp;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('timestamp','mavlink_packet');
                 end
             
-            elseif nargin-1 == 11
+            elseif nargin == 11
                 obj.timestamp = timestamp;
                 obj.custom_state = custom_state;
                 obj.lat = lat;

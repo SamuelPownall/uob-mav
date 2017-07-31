@@ -3,9 +3,9 @@ classdef msg_sensor_offsets < mavlink_message
     %Description:
     %    Offsets and calibrations values for hardware
         sensors. This makes it easier to debug the calibration process.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    mag_declination(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    mag_declination(single): magnetic declination (radians)
     %    raw_press(int32): raw pressure from barometer
     %    raw_temp(int32): raw temperature from barometer
@@ -41,7 +41,7 @@ classdef msg_sensor_offsets < mavlink_message
 
     methods
 
-        function obj = msg_sensor_offsets(packet,mag_declination,raw_press,raw_temp,gyro_cal_x,gyro_cal_y,gyro_cal_z,accel_cal_x,accel_cal_y,accel_cal_z,mag_ofs_x,mag_ofs_y,mag_ofs_z)
+        function obj = msg_sensor_offsets(mag_declination,raw_press,raw_temp,gyro_cal_x,gyro_cal_y,gyro_cal_z,accel_cal_x,accel_cal_y,accel_cal_z,mag_ofs_x,mag_ofs_y,mag_ofs_z,varargin)
         %Create a new sensor_offsets message
         
             obj.msgid = obj.ID;
@@ -50,15 +50,16 @@ classdef msg_sensor_offsets < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(mag_declination,'mavlink_packet')
+                    packet = mag_declination;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('mag_declination','mavlink_packet');
                 end
             
-            elseif nargin-1 == 12
+            elseif nargin == 12
                 obj.mag_declination = mag_declination;
                 obj.raw_press = raw_press;
                 obj.raw_temp = raw_temp;

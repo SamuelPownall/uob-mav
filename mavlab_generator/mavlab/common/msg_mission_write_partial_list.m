@@ -2,9 +2,9 @@ classdef msg_mission_write_partial_list < mavlink_message
 	%MSG_MISSION_WRITE_PARTIAL_LIST: MAVLINK Message ID = 38
     %Description:
     %    This message is sent to the MAV to write a partial list. If start index == end index, only one item will be transmitted / updated. If the start index is NOT 0 and above the current list size, this request should be REJECTED!
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    start_index(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    start_index(int16): Start index, 0 by default and smaller / equal to the largest index of the current onboard list.
     %    end_index(int16): End index, equal or greater than start index.
     %    target_system(uint8): System ID
@@ -24,7 +24,7 @@ classdef msg_mission_write_partial_list < mavlink_message
 
     methods
 
-        function obj = msg_mission_write_partial_list(packet,start_index,end_index,target_system,target_component)
+        function obj = msg_mission_write_partial_list(start_index,end_index,target_system,target_component,varargin)
         %Create a new mission_write_partial_list message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_mission_write_partial_list < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(start_index,'mavlink_packet')
+                    packet = start_index;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('start_index','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.start_index = start_index;
                 obj.end_index = end_index;
                 obj.target_system = target_system;

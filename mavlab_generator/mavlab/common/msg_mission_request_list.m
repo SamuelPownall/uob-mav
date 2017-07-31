@@ -2,9 +2,9 @@ classdef msg_mission_request_list < mavlink_message
 	%MSG_MISSION_REQUEST_LIST: MAVLINK Message ID = 43
     %Description:
     %    Request the overall list of mission items from the system/component.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    target_system(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
 	
@@ -20,7 +20,7 @@ classdef msg_mission_request_list < mavlink_message
 
     methods
 
-        function obj = msg_mission_request_list(packet,target_system,target_component)
+        function obj = msg_mission_request_list(target_system,target_component,varargin)
         %Create a new mission_request_list message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_mission_request_list < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(target_system,'mavlink_packet')
+                    packet = target_system;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('target_system','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.target_system = target_system;
                 obj.target_component = target_component;
             elseif nargin ~= 0

@@ -2,9 +2,9 @@ classdef msg_distance_sensor < mavlink_message
 	%MSG_DISTANCE_SENSOR: MAVLINK Message ID = 132
     %Description:
     %    No description available
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Time since system boot
     %    min_distance(uint16): Minimum distance the sensor can measure in centimeters
     %    max_distance(uint16): Maximum distance the sensor can measure in centimeters
@@ -32,7 +32,7 @@ classdef msg_distance_sensor < mavlink_message
 
     methods
 
-        function obj = msg_distance_sensor(packet,time_boot_ms,min_distance,max_distance,current_distance,type,id,orientation,covariance)
+        function obj = msg_distance_sensor(time_boot_ms,min_distance,max_distance,current_distance,type,id,orientation,covariance,varargin)
         %Create a new distance_sensor message
         
             obj.msgid = obj.ID;
@@ -41,15 +41,16 @@ classdef msg_distance_sensor < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 8
+            elseif nargin == 8
                 obj.time_boot_ms = time_boot_ms;
                 obj.min_distance = min_distance;
                 obj.max_distance = max_distance;

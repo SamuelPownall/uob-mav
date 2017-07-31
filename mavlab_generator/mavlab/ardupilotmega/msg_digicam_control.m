@@ -2,9 +2,9 @@ classdef msg_digicam_control < mavlink_message
 	%MSG_DIGICAM_CONTROL: MAVLINK Message ID = 155
     %Description:
     %    Control on-board Camera Control System to take shots.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    extra_value(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    extra_value(single): Correspondent value to given extra_param
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
@@ -36,7 +36,7 @@ classdef msg_digicam_control < mavlink_message
 
     methods
 
-        function obj = msg_digicam_control(packet,extra_value,target_system,target_component,session,zoom_pos,zoom_step,focus_lock,shot,command_id,extra_param)
+        function obj = msg_digicam_control(extra_value,target_system,target_component,session,zoom_pos,zoom_step,focus_lock,shot,command_id,extra_param,varargin)
         %Create a new digicam_control message
         
             obj.msgid = obj.ID;
@@ -45,15 +45,16 @@ classdef msg_digicam_control < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(extra_value,'mavlink_packet')
+                    packet = extra_value;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('extra_value','mavlink_packet');
                 end
             
-            elseif nargin-1 == 10
+            elseif nargin == 10
                 obj.extra_value = extra_value;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

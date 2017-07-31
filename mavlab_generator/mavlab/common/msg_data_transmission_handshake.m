@@ -2,9 +2,9 @@ classdef msg_data_transmission_handshake < mavlink_message
 	%MSG_DATA_TRANSMISSION_HANDSHAKE: MAVLINK Message ID = 130
     %Description:
     %    No description available
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    size(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    size(uint32): total data size in bytes (set on ACK only)
     %    width(uint16): Width of a matrix or image
     %    height(uint16): Height of a matrix or image
@@ -30,7 +30,7 @@ classdef msg_data_transmission_handshake < mavlink_message
 
     methods
 
-        function obj = msg_data_transmission_handshake(packet,size,width,height,packets,type,payload,jpg_quality)
+        function obj = msg_data_transmission_handshake(size,width,height,packets,type,payload,jpg_quality,varargin)
         %Create a new data_transmission_handshake message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_data_transmission_handshake < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(size,'mavlink_packet')
+                    packet = size;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('size','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.size = size;
                 obj.width = width;
                 obj.height = height;

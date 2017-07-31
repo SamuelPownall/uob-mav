@@ -2,9 +2,9 @@ classdef msg_ahrs < mavlink_message
 	%MSG_AHRS: MAVLINK Message ID = 163
     %Description:
     %    Status of DCM attitude estimator
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    omegaIx(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    omegaIx(single): X gyro drift estimate rad/s
     %    omegaIy(single): Y gyro drift estimate rad/s
     %    omegaIz(single): Z gyro drift estimate rad/s
@@ -30,7 +30,7 @@ classdef msg_ahrs < mavlink_message
 
     methods
 
-        function obj = msg_ahrs(packet,omegaIx,omegaIy,omegaIz,accel_weight,renorm_val,error_rp,error_yaw)
+        function obj = msg_ahrs(omegaIx,omegaIy,omegaIz,accel_weight,renorm_val,error_rp,error_yaw,varargin)
         %Create a new ahrs message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_ahrs < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(omegaIx,'mavlink_packet')
+                    packet = omegaIx;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('omegaIx','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.omegaIx = omegaIx;
                 obj.omegaIy = omegaIy;
                 obj.omegaIz = omegaIz;

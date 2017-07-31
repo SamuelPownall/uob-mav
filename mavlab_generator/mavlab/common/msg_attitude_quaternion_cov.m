@@ -2,9 +2,9 @@ classdef msg_attitude_quaternion_cov < mavlink_message
 	%MSG_ATTITUDE_QUATERNION_COV: MAVLINK Message ID = 61
     %Description:
     %    The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right), expressed as quaternion. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since system boot or since UNIX epoch)
     %    q(single[4]): Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation)
     %    rollspeed(single): Roll angular speed (rad/s)
@@ -28,7 +28,7 @@ classdef msg_attitude_quaternion_cov < mavlink_message
 
     methods
 
-        function obj = msg_attitude_quaternion_cov(packet,time_usec,q,rollspeed,pitchspeed,yawspeed,covariance)
+        function obj = msg_attitude_quaternion_cov(time_usec,q,rollspeed,pitchspeed,yawspeed,covariance,varargin)
         %Create a new attitude_quaternion_cov message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_attitude_quaternion_cov < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.time_usec = time_usec;
                 obj.q = q;
                 obj.rollspeed = rollspeed;

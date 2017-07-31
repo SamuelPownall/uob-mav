@@ -2,9 +2,9 @@ classdef msg_auth_key < mavlink_message
 	%MSG_AUTH_KEY: MAVLINK Message ID = 7
     %Description:
     %    Emit an encrypted signature / key identifying this system. PLEASE NOTE: This protocol has been kept simple, so transmitting the key requires an encrypted channel for true safety.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    key(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    key(uint8[32]): key
 	
 	properties(Constant)
@@ -18,7 +18,7 @@ classdef msg_auth_key < mavlink_message
 
     methods
 
-        function obj = msg_auth_key(packet,key)
+        function obj = msg_auth_key(key,varargin)
         %Create a new auth_key message
         
             obj.msgid = obj.ID;
@@ -27,16 +27,15 @@ classdef msg_auth_key < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(key,'mavlink_packet')
+                    packet = key;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    obj.key = key;
                 end
             
-            elseif nargin-1 == 1
-                obj.key = key;
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

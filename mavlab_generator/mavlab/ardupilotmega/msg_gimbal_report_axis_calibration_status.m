@@ -2,9 +2,9 @@ classdef msg_gimbal_report_axis_calibration_status < mavlink_message
 	%MSG_GIMBAL_REPORT_AXIS_CALIBRATION_STATUS: MAVLINK Message ID = 212
     %Description:
     %    Reports the calibration status for each gimbal axis (whether the axis requires calibration or not)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    yaw_requires_calibration(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    yaw_requires_calibration(uint8): Whether or not the yaw axis requires calibration, see GIMBAL_AXIS_CALIBRATION_REQUIRED enumeration
     %    pitch_requires_calibration(uint8): Whether or not the pitch axis requires calibration, see GIMBAL_AXIS_CALIBRATION_REQUIRED enumeration
     %    roll_requires_calibration(uint8): Whether or not the roll axis requires calibration, see GIMBAL_AXIS_CALIBRATION_REQUIRED enumeration
@@ -22,7 +22,7 @@ classdef msg_gimbal_report_axis_calibration_status < mavlink_message
 
     methods
 
-        function obj = msg_gimbal_report_axis_calibration_status(packet,yaw_requires_calibration,pitch_requires_calibration,roll_requires_calibration)
+        function obj = msg_gimbal_report_axis_calibration_status(yaw_requires_calibration,pitch_requires_calibration,roll_requires_calibration,varargin)
         %Create a new gimbal_report_axis_calibration_status message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_gimbal_report_axis_calibration_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(yaw_requires_calibration,'mavlink_packet')
+                    packet = yaw_requires_calibration;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('yaw_requires_calibration','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.yaw_requires_calibration = yaw_requires_calibration;
                 obj.pitch_requires_calibration = pitch_requires_calibration;
                 obj.roll_requires_calibration = roll_requires_calibration;

@@ -2,9 +2,9 @@ classdef msg_attitude_quaternion < mavlink_message
 	%MSG_ATTITUDE_QUATERNION: MAVLINK Message ID = 31
     %Description:
     %    The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right), expressed as quaternion. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    q1(single): Quaternion component 1, w (1 in null-rotation)
     %    q2(single): Quaternion component 2, x (0 in null-rotation)
@@ -32,7 +32,7 @@ classdef msg_attitude_quaternion < mavlink_message
 
     methods
 
-        function obj = msg_attitude_quaternion(packet,time_boot_ms,q1,q2,q3,q4,rollspeed,pitchspeed,yawspeed)
+        function obj = msg_attitude_quaternion(time_boot_ms,q1,q2,q3,q4,rollspeed,pitchspeed,yawspeed,varargin)
         %Create a new attitude_quaternion message
         
             obj.msgid = obj.ID;
@@ -41,15 +41,16 @@ classdef msg_attitude_quaternion < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 8
+            elseif nargin == 8
                 obj.time_boot_ms = time_boot_ms;
                 obj.q1 = q1;
                 obj.q2 = q2;

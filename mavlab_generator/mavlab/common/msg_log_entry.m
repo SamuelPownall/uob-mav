@@ -2,9 +2,9 @@ classdef msg_log_entry < mavlink_message
 	%MSG_LOG_ENTRY: MAVLINK Message ID = 118
     %Description:
     %    Reply to LOG_REQUEST_LIST
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_utc(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_utc(uint32): UTC timestamp of log in seconds since 1970, or 0 if not available
     %    size(uint32): Size of the log (may be approximate) in bytes
     %    id(uint16): Log id
@@ -26,7 +26,7 @@ classdef msg_log_entry < mavlink_message
 
     methods
 
-        function obj = msg_log_entry(packet,time_utc,size,id,num_logs,last_log_num)
+        function obj = msg_log_entry(time_utc,size,id,num_logs,last_log_num,varargin)
         %Create a new log_entry message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_log_entry < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_utc,'mavlink_packet')
+                    packet = time_utc;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_utc','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.time_utc = time_utc;
                 obj.size = size;
                 obj.id = id;

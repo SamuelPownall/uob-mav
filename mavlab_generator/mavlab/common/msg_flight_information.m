@@ -2,9 +2,9 @@ classdef msg_flight_information < mavlink_message
 	%MSG_FLIGHT_INFORMATION: MAVLINK Message ID = 264
     %Description:
     %    WIP: Information about flight since last arming
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    arming_time_utc(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    arming_time_utc(uint64): Timestamp at arming (microseconds since UNIX epoch) in UTC, 0 for unknown
     %    takeoff_time_utc(uint64): Timestamp at takeoff (microseconds since UNIX epoch) in UTC, 0 for unknown
     %    flight_uuid(uint64): Universally unique identifier (UUID) of flight, should correspond to name of logfiles
@@ -24,7 +24,7 @@ classdef msg_flight_information < mavlink_message
 
     methods
 
-        function obj = msg_flight_information(packet,arming_time_utc,takeoff_time_utc,flight_uuid,time_boot_ms)
+        function obj = msg_flight_information(arming_time_utc,takeoff_time_utc,flight_uuid,time_boot_ms,varargin)
         %Create a new flight_information message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_flight_information < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(arming_time_utc,'mavlink_packet')
+                    packet = arming_time_utc;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('arming_time_utc','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.arming_time_utc = arming_time_utc;
                 obj.takeoff_time_utc = takeoff_time_utc;
                 obj.flight_uuid = flight_uuid;

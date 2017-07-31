@@ -2,9 +2,9 @@ classdef msg_vfr_hud < mavlink_message
 	%MSG_VFR_HUD: MAVLINK Message ID = 74
     %Description:
     %    Metrics typically displayed on a HUD for fixed wing aircraft
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    airspeed(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    airspeed(single): Current airspeed in m/s
     %    groundspeed(single): Current ground speed in m/s
     %    alt(single): Current altitude (MSL), in meters
@@ -28,7 +28,7 @@ classdef msg_vfr_hud < mavlink_message
 
     methods
 
-        function obj = msg_vfr_hud(packet,airspeed,groundspeed,alt,climb,heading,throttle)
+        function obj = msg_vfr_hud(airspeed,groundspeed,alt,climb,heading,throttle,varargin)
         %Create a new vfr_hud message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_vfr_hud < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(airspeed,'mavlink_packet')
+                    packet = airspeed;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('airspeed','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.airspeed = airspeed;
                 obj.groundspeed = groundspeed;
                 obj.alt = alt;

@@ -2,9 +2,9 @@ classdef msg_landing_target < mavlink_message
 	%MSG_LANDING_TARGET: MAVLINK Message ID = 149
     %Description:
     %    The location of a landing area captured from a downward facing camera
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    angle_x(single): X-axis angular offset (in radians) of the target from the center of the image
     %    angle_y(single): Y-axis angular offset (in radians) of the target from the center of the image
@@ -32,7 +32,7 @@ classdef msg_landing_target < mavlink_message
 
     methods
 
-        function obj = msg_landing_target(packet,time_usec,angle_x,angle_y,distance,size_x,size_y,target_num,frame)
+        function obj = msg_landing_target(time_usec,angle_x,angle_y,distance,size_x,size_y,target_num,frame,varargin)
         %Create a new landing_target message
         
             obj.msgid = obj.ID;
@@ -41,15 +41,16 @@ classdef msg_landing_target < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 8
+            elseif nargin == 8
                 obj.time_usec = time_usec;
                 obj.angle_x = angle_x;
                 obj.angle_y = angle_y;

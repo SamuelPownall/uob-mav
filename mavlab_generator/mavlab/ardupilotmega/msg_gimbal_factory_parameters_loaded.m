@@ -2,9 +2,9 @@ classdef msg_gimbal_factory_parameters_loaded < mavlink_message
 	%MSG_GIMBAL_FACTORY_PARAMETERS_LOADED: MAVLINK Message ID = 207
     %Description:
     %    Sent by the gimbal after the factory parameters are successfully loaded, to inform the factory software that the load is complete
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    dummy(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    dummy(uint8): Dummy field because mavgen doesn't allow messages with no fields
 	
 	properties(Constant)
@@ -18,7 +18,7 @@ classdef msg_gimbal_factory_parameters_loaded < mavlink_message
 
     methods
 
-        function obj = msg_gimbal_factory_parameters_loaded(packet,dummy)
+        function obj = msg_gimbal_factory_parameters_loaded(dummy,varargin)
         %Create a new gimbal_factory_parameters_loaded message
         
             obj.msgid = obj.ID;
@@ -27,16 +27,15 @@ classdef msg_gimbal_factory_parameters_loaded < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(dummy,'mavlink_packet')
+                    packet = dummy;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    obj.dummy = dummy;
                 end
             
-            elseif nargin-1 == 1
-                obj.dummy = dummy;
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

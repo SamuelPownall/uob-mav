@@ -2,9 +2,9 @@ classdef msg_airspeed_autocal < mavlink_message
 	%MSG_AIRSPEED_AUTOCAL: MAVLINK Message ID = 174
     %Description:
     %    Airspeed auto-calibration
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    vx(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    vx(single): GPS velocity north m/s
     %    vy(single): GPS velocity east m/s
     %    vz(single): GPS velocity down m/s
@@ -40,7 +40,7 @@ classdef msg_airspeed_autocal < mavlink_message
 
     methods
 
-        function obj = msg_airspeed_autocal(packet,vx,vy,vz,diff_pressure,EAS2TAS,ratio,state_x,state_y,state_z,Pax,Pby,Pcz)
+        function obj = msg_airspeed_autocal(vx,vy,vz,diff_pressure,EAS2TAS,ratio,state_x,state_y,state_z,Pax,Pby,Pcz,varargin)
         %Create a new airspeed_autocal message
         
             obj.msgid = obj.ID;
@@ -49,15 +49,16 @@ classdef msg_airspeed_autocal < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(vx,'mavlink_packet')
+                    packet = vx;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('vx','mavlink_packet');
                 end
             
-            elseif nargin-1 == 12
+            elseif nargin == 12
                 obj.vx = vx;
                 obj.vy = vy;
                 obj.vz = vz;

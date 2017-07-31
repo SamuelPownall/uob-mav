@@ -2,9 +2,9 @@ classdef msg_gps_status < mavlink_message
 	%MSG_GPS_STATUS: MAVLINK Message ID = 25
     %Description:
     %    The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    satellites_visible(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    satellites_visible(uint8): Number of satellites visible
     %    satellite_prn(uint8[20]): Global satellite ID
     %    satellite_used(uint8[20]): 0: Satellite not used, 1: used for localization
@@ -28,7 +28,7 @@ classdef msg_gps_status < mavlink_message
 
     methods
 
-        function obj = msg_gps_status(packet,satellites_visible,satellite_prn,satellite_used,satellite_elevation,satellite_azimuth,satellite_snr)
+        function obj = msg_gps_status(satellites_visible,satellite_prn,satellite_used,satellite_elevation,satellite_azimuth,satellite_snr,varargin)
         %Create a new gps_status message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_gps_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(satellites_visible,'mavlink_packet')
+                    packet = satellites_visible;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('satellites_visible','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.satellites_visible = satellites_visible;
                 obj.satellite_prn = satellite_prn;
                 obj.satellite_used = satellite_used;

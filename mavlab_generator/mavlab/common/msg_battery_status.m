@@ -2,9 +2,9 @@ classdef msg_battery_status < mavlink_message
 	%MSG_BATTERY_STATUS: MAVLINK Message ID = 147
     %Description:
     %    Battery information
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    current_consumed(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    current_consumed(int32): Consumed charge, in milliampere hours (1 = 1 mAh), -1: autopilot does not provide mAh consumption estimate
     %    energy_consumed(int32): Consumed energy, in 100*Joules (intergrated U*I*dt)  (1 = 100 Joule), -1: autopilot does not provide energy consumption estimate
     %    temperature(int16): Temperature of the battery in centi-degrees celsius. INT16_MAX for unknown temperature.

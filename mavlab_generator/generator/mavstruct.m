@@ -98,13 +98,13 @@ classdef mavstruct
         end
         
         function result = findAllUntil(obj,query,until)
-            %FINDALLUNTIL: Finds all children with the requested name until a given other child is found
-            %Description:
-            %    Searches the current nodes children array and attemts to find all of the children with the name
-            %    requested until a given field is found.
-            %Arguments:
-            %    query(string): The name of the children being requested
-            %    until(string): The name of the cut-off child
+        %FINDALLUNTIL: Finds all children with the requested name until a given other child is found
+        %Description:
+        %    Searches the current nodes children array and attemts to find all of the children with the name
+        %    requested until a given field is found.
+        %Arguments:
+        %    query(string): The name of the children being requested
+        %    until(string): The name of the cut-off child
             
             result = {};
             if ~isempty(obj.children)

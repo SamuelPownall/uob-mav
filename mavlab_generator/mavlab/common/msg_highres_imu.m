@@ -2,9 +2,9 @@ classdef msg_highres_imu < mavlink_message
 	%MSG_HIGHRES_IMU: MAVLINK Message ID = 105
     %Description:
     %    The IMU readings in SI units in NED body frame
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds, synced to UNIX time or since system boot)
     %    xacc(single): X acceleration (m/s^2)
     %    yacc(single): Y acceleration (m/s^2)
@@ -46,7 +46,7 @@ classdef msg_highres_imu < mavlink_message
 
     methods
 
-        function obj = msg_highres_imu(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature,fields_updated)
+        function obj = msg_highres_imu(time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature,fields_updated,varargin)
         %Create a new highres_imu message
         
             obj.msgid = obj.ID;
@@ -55,15 +55,16 @@ classdef msg_highres_imu < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 15
+            elseif nargin == 15
                 obj.time_usec = time_usec;
                 obj.xacc = xacc;
                 obj.yacc = yacc;

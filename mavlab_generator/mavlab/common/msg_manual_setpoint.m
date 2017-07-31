@@ -2,9 +2,9 @@ classdef msg_manual_setpoint < mavlink_message
 	%MSG_MANUAL_SETPOINT: MAVLINK Message ID = 81
     %Description:
     %    Setpoint in roll, pitch, yaw and thrust from the operator
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp in milliseconds since system boot
     %    roll(single): Desired roll rate in radians per second
     %    pitch(single): Desired pitch rate in radians per second
@@ -30,7 +30,7 @@ classdef msg_manual_setpoint < mavlink_message
 
     methods
 
-        function obj = msg_manual_setpoint(packet,time_boot_ms,roll,pitch,yaw,thrust,mode_switch,manual_override_switch)
+        function obj = msg_manual_setpoint(time_boot_ms,roll,pitch,yaw,thrust,mode_switch,manual_override_switch,varargin)
         %Create a new manual_setpoint message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_manual_setpoint < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.time_boot_ms = time_boot_ms;
                 obj.roll = roll;
                 obj.pitch = pitch;

@@ -2,9 +2,9 @@ classdef msg_wind < mavlink_message
 	%MSG_WIND: MAVLINK Message ID = 168
     %Description:
     %    Wind estimation
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    direction(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    direction(single): wind direction that wind is coming from (degrees)
     %    speed(single): wind speed in ground plane (m/s)
     %    speed_z(single): vertical wind speed (m/s)
@@ -22,7 +22,7 @@ classdef msg_wind < mavlink_message
 
     methods
 
-        function obj = msg_wind(packet,direction,speed,speed_z)
+        function obj = msg_wind(direction,speed,speed_z,varargin)
         %Create a new wind message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_wind < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(direction,'mavlink_packet')
+                    packet = direction;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('direction','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.direction = direction;
                 obj.speed = speed;
                 obj.speed_z = speed_z;

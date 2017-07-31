@@ -2,9 +2,9 @@ classdef msg_statustext < mavlink_message
 	%MSG_STATUSTEXT: MAVLINK Message ID = 253
     %Description:
     %    Status text message. These messages are printed in yellow in the COMM console of QGroundControl. WARNING: They consume quite some bandwidth, so use only for important status and error messages. If implemented wisely, these messages are buffered on the MCU and sent only at a limited rate (e.g. 10 Hz).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    severity(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    severity(uint8): Severity of status. Relies on the definitions within RFC-5424. See enum MAV_SEVERITY.
     %    text(uint8[50]): Status text message, without null termination character
 	
@@ -20,7 +20,7 @@ classdef msg_statustext < mavlink_message
 
     methods
 
-        function obj = msg_statustext(packet,severity,text)
+        function obj = msg_statustext(severity,text,varargin)
         %Create a new statustext message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_statustext < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(severity,'mavlink_packet')
+                    packet = severity;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('severity','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.severity = severity;
                 obj.text = text;
             elseif nargin ~= 0

@@ -2,9 +2,9 @@ classdef msg_high_latency < mavlink_message
 	%MSG_HIGH_LATENCY: MAVLINK Message ID = 234
     %Description:
     %    Message appropriate for high latency connections like Iridium
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    custom_mode(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    custom_mode(uint32): A bitfield for use for autopilot-specific flags.
     %    latitude(int32): Latitude, expressed as degrees * 1E7
     %    longitude(int32): Longitude, expressed as degrees * 1E7
@@ -64,7 +64,7 @@ classdef msg_high_latency < mavlink_message
 
     methods
 
-        function obj = msg_high_latency(packet,custom_mode,latitude,longitude,roll,pitch,heading,heading_sp,altitude_amsl,altitude_sp,wp_distance,base_mode,landed_state,throttle,airspeed,airspeed_sp,groundspeed,climb_rate,gps_nsat,gps_fix_type,battery_remaining,temperature,temperature_air,failsafe,wp_num)
+        function obj = msg_high_latency(custom_mode,latitude,longitude,roll,pitch,heading,heading_sp,altitude_amsl,altitude_sp,wp_distance,base_mode,landed_state,throttle,airspeed,airspeed_sp,groundspeed,climb_rate,gps_nsat,gps_fix_type,battery_remaining,temperature,temperature_air,failsafe,wp_num,varargin)
         %Create a new high_latency message
         
             obj.msgid = obj.ID;
@@ -73,15 +73,16 @@ classdef msg_high_latency < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(custom_mode,'mavlink_packet')
+                    packet = custom_mode;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('custom_mode','mavlink_packet');
                 end
             
-            elseif nargin-1 == 24
+            elseif nargin == 24
                 obj.custom_mode = custom_mode;
                 obj.latitude = latitude;
                 obj.longitude = longitude;

@@ -2,9 +2,9 @@ classdef msg_raw_imu < mavlink_message
 	%MSG_RAW_IMU: MAVLINK Message ID = 27
     %Description:
     %    The RAW IMU readings for the usual 9DOF sensor setup. This message should always contain the true raw values without any scaling to allow data capture and system debugging.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since UNIX epoch or microseconds since system boot)
     %    xacc(int16): X acceleration (raw)
     %    yacc(int16): Y acceleration (raw)
@@ -36,7 +36,7 @@ classdef msg_raw_imu < mavlink_message
 
     methods
 
-        function obj = msg_raw_imu(packet,time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag)
+        function obj = msg_raw_imu(time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,varargin)
         %Create a new raw_imu message
         
             obj.msgid = obj.ID;
@@ -45,15 +45,16 @@ classdef msg_raw_imu < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 10
+            elseif nargin == 10
                 obj.time_usec = time_usec;
                 obj.xacc = xacc;
                 obj.yacc = yacc;

@@ -2,9 +2,9 @@ classdef msg_manual_control < mavlink_message
 	%MSG_MANUAL_CONTROL: MAVLINK Message ID = 69
     %Description:
     %    This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled an buttons are also transmit as boolean values of their
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    x(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    x(int16): X-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to forward(1000)-backward(-1000) movement on a joystick and the pitch of a vehicle.
     %    y(int16): Y-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to left(-1000)-right(1000) movement on a joystick and the roll of a vehicle.
     %    z(int16): Z-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a separate slider movement with maximum being 1000 and minimum being -1000 on a joystick and the thrust of a vehicle. Positive values are positive thrust, negative values are negative thrust.
@@ -28,7 +28,7 @@ classdef msg_manual_control < mavlink_message
 
     methods
 
-        function obj = msg_manual_control(packet,x,y,z,r,buttons,target)
+        function obj = msg_manual_control(x,y,z,r,buttons,target,varargin)
         %Create a new manual_control message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_manual_control < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(x,'mavlink_packet')
+                    packet = x;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('x','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.x = x;
                 obj.y = y;
                 obj.z = z;

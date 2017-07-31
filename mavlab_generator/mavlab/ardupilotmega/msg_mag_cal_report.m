@@ -2,9 +2,9 @@ classdef msg_mag_cal_report < mavlink_message
 	%MSG_MAG_CAL_REPORT: MAVLINK Message ID = 192
     %Description:
     %    Reports results of completed compass calibration. Sent until MAG_CAL_ACK received.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    fitness(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    fitness(single): RMS milligauss residuals
     %    ofs_x(single): X offset
     %    ofs_y(single): Y offset
@@ -44,7 +44,7 @@ classdef msg_mag_cal_report < mavlink_message
 
     methods
 
-        function obj = msg_mag_cal_report(packet,fitness,ofs_x,ofs_y,ofs_z,diag_x,diag_y,diag_z,offdiag_x,offdiag_y,offdiag_z,compass_id,cal_mask,cal_status,autosaved)
+        function obj = msg_mag_cal_report(fitness,ofs_x,ofs_y,ofs_z,diag_x,diag_y,diag_z,offdiag_x,offdiag_y,offdiag_z,compass_id,cal_mask,cal_status,autosaved,varargin)
         %Create a new mag_cal_report message
         
             obj.msgid = obj.ID;
@@ -53,15 +53,16 @@ classdef msg_mag_cal_report < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(fitness,'mavlink_packet')
+                    packet = fitness;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('fitness','mavlink_packet');
                 end
             
-            elseif nargin-1 == 14
+            elseif nargin == 14
                 obj.fitness = fitness;
                 obj.ofs_x = ofs_x;
                 obj.ofs_y = ofs_y;

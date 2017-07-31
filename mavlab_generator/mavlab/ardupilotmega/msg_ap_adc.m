@@ -2,9 +2,9 @@ classdef msg_ap_adc < mavlink_message
 	%MSG_AP_ADC: MAVLINK Message ID = 153
     %Description:
     %    raw ADC output
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    adc1(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    adc1(uint16): ADC output 1
     %    adc2(uint16): ADC output 2
     %    adc3(uint16): ADC output 3
@@ -28,7 +28,7 @@ classdef msg_ap_adc < mavlink_message
 
     methods
 
-        function obj = msg_ap_adc(packet,adc1,adc2,adc3,adc4,adc5,adc6)
+        function obj = msg_ap_adc(adc1,adc2,adc3,adc4,adc5,adc6,varargin)
         %Create a new ap_adc message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_ap_adc < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(adc1,'mavlink_packet')
+                    packet = adc1;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('adc1','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.adc1 = adc1;
                 obj.adc2 = adc2;
                 obj.adc3 = adc3;

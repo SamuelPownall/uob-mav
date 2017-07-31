@@ -2,9 +2,9 @@ classdef msg_memory_vect < mavlink_message
 	%MSG_MEMORY_VECT: MAVLINK Message ID = 249
     %Description:
     %    Send raw controller memory. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    address(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    address(uint16): Starting address of the debug variables
     %    ver(uint8): Version code of the type variable. 0=unknown, type ignored and assumed int16_t. 1=as below
     %    type(uint8): Type code of the memory variables. for ver = 1: 0=16 x int16_t, 1=16 x uint16_t, 2=16 x Q15, 3=16 x 1Q14
@@ -24,7 +24,7 @@ classdef msg_memory_vect < mavlink_message
 
     methods
 
-        function obj = msg_memory_vect(packet,address,ver,type,value)
+        function obj = msg_memory_vect(address,ver,type,value,varargin)
         %Create a new memory_vect message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_memory_vect < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(address,'mavlink_packet')
+                    packet = address;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('address','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.address = address;
                 obj.ver = ver;
                 obj.type = type;

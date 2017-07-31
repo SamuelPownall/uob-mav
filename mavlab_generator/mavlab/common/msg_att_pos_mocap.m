@@ -2,9 +2,9 @@ classdef msg_att_pos_mocap < mavlink_message
 	%MSG_ATT_POS_MOCAP: MAVLINK Message ID = 138
     %Description:
     %    Motion capture attitude and position
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    q(single[4]): Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
     %    x(single): X position in meters (NED)
@@ -26,7 +26,7 @@ classdef msg_att_pos_mocap < mavlink_message
 
     methods
 
-        function obj = msg_att_pos_mocap(packet,time_usec,q,x,y,z)
+        function obj = msg_att_pos_mocap(time_usec,q,x,y,z,varargin)
         %Create a new att_pos_mocap message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_att_pos_mocap < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.time_usec = time_usec;
                 obj.q = q;
                 obj.x = x;

@@ -2,9 +2,9 @@ classdef msg_rangefinder < mavlink_message
 	%MSG_RANGEFINDER: MAVLINK Message ID = 173
     %Description:
     %    Rangefinder reporting
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    distance(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    distance(single): distance in meters
     %    voltage(single): raw voltage if available, zero otherwise
 	
@@ -20,7 +20,7 @@ classdef msg_rangefinder < mavlink_message
 
     methods
 
-        function obj = msg_rangefinder(packet,distance,voltage)
+        function obj = msg_rangefinder(distance,voltage,varargin)
         %Create a new rangefinder message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_rangefinder < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(distance,'mavlink_packet')
+                    packet = distance;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('distance','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.distance = distance;
                 obj.voltage = voltage;
             elseif nargin ~= 0

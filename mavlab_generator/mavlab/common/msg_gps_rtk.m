@@ -2,9 +2,9 @@ classdef msg_gps_rtk < mavlink_message
 	%MSG_GPS_RTK: MAVLINK Message ID = 127
     %Description:
     %    RTK GPS data. Gives information on the relative baseline calculation the GPS is reporting
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_last_baseline_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_last_baseline_ms(uint32): Time since boot of last baseline message received in ms.
     %    tow(uint32): GPS Time of Week of last baseline
     %    baseline_a_mm(int32): Current baseline in ECEF x or NED north component in mm.
@@ -42,7 +42,7 @@ classdef msg_gps_rtk < mavlink_message
 
     methods
 
-        function obj = msg_gps_rtk(packet,time_last_baseline_ms,tow,baseline_a_mm,baseline_b_mm,baseline_c_mm,accuracy,iar_num_hypotheses,wn,rtk_receiver_id,rtk_health,rtk_rate,nsats,baseline_coords_type)
+        function obj = msg_gps_rtk(time_last_baseline_ms,tow,baseline_a_mm,baseline_b_mm,baseline_c_mm,accuracy,iar_num_hypotheses,wn,rtk_receiver_id,rtk_health,rtk_rate,nsats,baseline_coords_type,varargin)
         %Create a new gps_rtk message
         
             obj.msgid = obj.ID;
@@ -51,15 +51,16 @@ classdef msg_gps_rtk < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_last_baseline_ms,'mavlink_packet')
+                    packet = time_last_baseline_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_last_baseline_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 13
+            elseif nargin == 13
                 obj.time_last_baseline_ms = time_last_baseline_ms;
                 obj.tow = tow;
                 obj.baseline_a_mm = baseline_a_mm;

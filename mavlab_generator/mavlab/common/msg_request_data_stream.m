@@ -2,9 +2,9 @@ classdef msg_request_data_stream < mavlink_message
 	%MSG_REQUEST_DATA_STREAM: MAVLINK Message ID = 66
     %Description:
     %    THIS INTERFACE IS DEPRECATED. USE SET_MESSAGE_INTERVAL INSTEAD.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    req_message_rate(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    req_message_rate(uint16): The requested message rate
     %    target_system(uint8): The target requested to send the message stream.
     %    target_component(uint8): The target requested to send the message stream.
@@ -26,7 +26,7 @@ classdef msg_request_data_stream < mavlink_message
 
     methods
 
-        function obj = msg_request_data_stream(packet,req_message_rate,target_system,target_component,req_stream_id,start_stop)
+        function obj = msg_request_data_stream(req_message_rate,target_system,target_component,req_stream_id,start_stop,varargin)
         %Create a new request_data_stream message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_request_data_stream < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(req_message_rate,'mavlink_packet')
+                    packet = req_message_rate;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('req_message_rate','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.req_message_rate = req_message_rate;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

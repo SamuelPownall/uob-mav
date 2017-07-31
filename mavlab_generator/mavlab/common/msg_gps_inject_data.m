@@ -2,9 +2,9 @@ classdef msg_gps_inject_data < mavlink_message
 	%MSG_GPS_INJECT_DATA: MAVLINK Message ID = 123
     %Description:
     %    data for injecting into the onboard GPS (used for DGPS)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    target_system(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
     %    len(uint8): data length
@@ -24,7 +24,7 @@ classdef msg_gps_inject_data < mavlink_message
 
     methods
 
-        function obj = msg_gps_inject_data(packet,target_system,target_component,len,data)
+        function obj = msg_gps_inject_data(target_system,target_component,len,data,varargin)
         %Create a new gps_inject_data message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_gps_inject_data < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(target_system,'mavlink_packet')
+                    packet = target_system;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('target_system','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.target_system = target_system;
                 obj.target_component = target_component;
                 obj.len = len;

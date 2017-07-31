@@ -2,9 +2,9 @@ classdef msg_compassmot_status < mavlink_message
 	%MSG_COMPASSMOT_STATUS: MAVLINK Message ID = 177
     %Description:
     %    Status of compassmot calibration
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    current(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    current(single): current (amps)
     %    CompensationX(single): Motor Compensation X
     %    CompensationY(single): Motor Compensation Y
@@ -28,7 +28,7 @@ classdef msg_compassmot_status < mavlink_message
 
     methods
 
-        function obj = msg_compassmot_status(packet,current,CompensationX,CompensationY,CompensationZ,throttle,interference)
+        function obj = msg_compassmot_status(current,CompensationX,CompensationY,CompensationZ,throttle,interference,varargin)
         %Create a new compassmot_status message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_compassmot_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(current,'mavlink_packet')
+                    packet = current;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('current','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.current = current;
                 obj.CompensationX = CompensationX;
                 obj.CompensationY = CompensationY;

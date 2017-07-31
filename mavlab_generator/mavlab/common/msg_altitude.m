@@ -2,9 +2,9 @@ classdef msg_altitude < mavlink_message
 	%MSG_ALTITUDE: MAVLINK Message ID = 141
     %Description:
     %    The current system altitude.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    altitude_monotonic(single): This altitude measure is initialized on system boot and monotonic (it is never reset, but represents the local altitude change). The only guarantee on this field is that it will never be reset and is consistent within a flight. The recommended value for this field is the uncorrected barometric altitude at boot time. This altitude will also drift and vary between flights.
     %    altitude_amsl(single): This altitude measure is strictly above mean sea level and might be non-monotonic (it might reset on events like GPS lock or when a new QNH value is set). It should be the altitude to which global altitude waypoints are compared to. Note that it is *not* the GPS altitude, however, most GPS modules already output AMSL by default and not the WGS84 altitude.
@@ -30,7 +30,7 @@ classdef msg_altitude < mavlink_message
 
     methods
 
-        function obj = msg_altitude(packet,time_usec,altitude_monotonic,altitude_amsl,altitude_local,altitude_relative,altitude_terrain,bottom_clearance)
+        function obj = msg_altitude(time_usec,altitude_monotonic,altitude_amsl,altitude_local,altitude_relative,altitude_terrain,bottom_clearance,varargin)
         %Create a new altitude message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_altitude < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.time_usec = time_usec;
                 obj.altitude_monotonic = altitude_monotonic;
                 obj.altitude_amsl = altitude_amsl;

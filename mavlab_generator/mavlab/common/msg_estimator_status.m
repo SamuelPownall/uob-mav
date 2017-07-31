@@ -2,9 +2,9 @@ classdef msg_estimator_status < mavlink_message
 	%MSG_ESTIMATOR_STATUS: MAVLINK Message ID = 230
     %Description:
     %    Estimator status message including flags, innovation test ratios and estimated accuracies. The flags message is an integer bitmask containing information on which EKF outputs are valid. See the ESTIMATOR_STATUS_FLAGS enum definition for further information. The innovaton test ratios show the magnitude of the sensor innovation divided by the innovation check threshold. Under normal operation the innovaton test ratios should be below 0.5 with occasional values up to 1.0. Values greater than 1.0 should be rare under normal operation and indicate that a measurement has been rejected by the filter. The user should be notified if an innovation test ratio greater than 1.0 is recorded. Notifications for values in the range between 0.5 and 1.0 should be optional and controllable by the user.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    vel_ratio(single): Velocity innovation test ratio
     %    pos_horiz_ratio(single): Horizontal position innovation test ratio
@@ -36,7 +36,7 @@ classdef msg_estimator_status < mavlink_message
 
     methods
 
-        function obj = msg_estimator_status(packet,time_usec,vel_ratio,pos_horiz_ratio,pos_vert_ratio,mag_ratio,hagl_ratio,tas_ratio,pos_horiz_accuracy,pos_vert_accuracy,flags)
+        function obj = msg_estimator_status(time_usec,vel_ratio,pos_horiz_ratio,pos_vert_ratio,mag_ratio,hagl_ratio,tas_ratio,pos_horiz_accuracy,pos_vert_accuracy,flags,varargin)
         %Create a new estimator_status message
         
             obj.msgid = obj.ID;
@@ -45,15 +45,16 @@ classdef msg_estimator_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 10
+            elseif nargin == 10
                 obj.time_usec = time_usec;
                 obj.vel_ratio = vel_ratio;
                 obj.pos_horiz_ratio = pos_horiz_ratio;

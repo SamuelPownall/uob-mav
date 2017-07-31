@@ -2,9 +2,9 @@ classdef msg_hwstatus < mavlink_message
 	%MSG_HWSTATUS: MAVLINK Message ID = 165
     %Description:
     %    Status of key hardware
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    Vcc(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    Vcc(uint16): board voltage (mV)
     %    I2Cerr(uint8): I2C error count
 	
@@ -20,7 +20,7 @@ classdef msg_hwstatus < mavlink_message
 
     methods
 
-        function obj = msg_hwstatus(packet,Vcc,I2Cerr)
+        function obj = msg_hwstatus(Vcc,I2Cerr,varargin)
         %Create a new hwstatus message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_hwstatus < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(Vcc,'mavlink_packet')
+                    packet = Vcc;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('Vcc','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.Vcc = Vcc;
                 obj.I2Cerr = I2Cerr;
             elseif nargin ~= 0

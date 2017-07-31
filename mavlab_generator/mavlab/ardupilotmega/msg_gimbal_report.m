@@ -2,9 +2,9 @@ classdef msg_gimbal_report < mavlink_message
 	%MSG_GIMBAL_REPORT: MAVLINK Message ID = 200
     %Description:
     %    3 axis gimbal mesuraments
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    delta_time(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    delta_time(single): Time since last update (seconds)
     %    delta_angle_x(single): Delta angle X (radians)
     %    delta_angle_y(single): Delta angle Y (radians)
@@ -40,7 +40,7 @@ classdef msg_gimbal_report < mavlink_message
 
     methods
 
-        function obj = msg_gimbal_report(packet,delta_time,delta_angle_x,delta_angle_y,delta_angle_z,delta_velocity_x,delta_velocity_y,delta_velocity_z,joint_roll,joint_el,joint_az,target_system,target_component)
+        function obj = msg_gimbal_report(delta_time,delta_angle_x,delta_angle_y,delta_angle_z,delta_velocity_x,delta_velocity_y,delta_velocity_z,joint_roll,joint_el,joint_az,target_system,target_component,varargin)
         %Create a new gimbal_report message
         
             obj.msgid = obj.ID;
@@ -49,15 +49,16 @@ classdef msg_gimbal_report < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(delta_time,'mavlink_packet')
+                    packet = delta_time;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('delta_time','mavlink_packet');
                 end
             
-            elseif nargin-1 == 12
+            elseif nargin == 12
                 obj.delta_time = delta_time;
                 obj.delta_angle_x = delta_angle_x;
                 obj.delta_angle_y = delta_angle_y;

@@ -2,9 +2,9 @@ classdef msg_command_ack < mavlink_message
 	%MSG_COMMAND_ACK: MAVLINK Message ID = 77
     %Description:
     %    Report status of a command. Includes feedback wether the command was executed.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    command(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    command(uint16): Command ID, as defined by MAV_CMD enum.
     %    result(uint8): See MAV_RESULT enum
 	
@@ -20,7 +20,7 @@ classdef msg_command_ack < mavlink_message
 
     methods
 
-        function obj = msg_command_ack(packet,command,result)
+        function obj = msg_command_ack(command,result,varargin)
         %Create a new command_ack message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_command_ack < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(command,'mavlink_packet')
+                    packet = command;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('command','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.command = command;
                 obj.result = result;
             elseif nargin ~= 0

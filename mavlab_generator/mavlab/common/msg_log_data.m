@@ -2,9 +2,9 @@ classdef msg_log_data < mavlink_message
 	%MSG_LOG_DATA: MAVLINK Message ID = 120
     %Description:
     %    Reply to LOG_REQUEST_DATA
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    ofs(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    ofs(uint32): Offset into the log
     %    id(uint16): Log id (from LOG_ENTRY reply)
     %    count(uint8): Number of bytes (zero for end of log)
@@ -24,7 +24,7 @@ classdef msg_log_data < mavlink_message
 
     methods
 
-        function obj = msg_log_data(packet,ofs,id,count,data)
+        function obj = msg_log_data(ofs,id,count,data,varargin)
         %Create a new log_data message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_log_data < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(ofs,'mavlink_packet')
+                    packet = ofs;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('ofs','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.ofs = ofs;
                 obj.id = id;
                 obj.count = count;

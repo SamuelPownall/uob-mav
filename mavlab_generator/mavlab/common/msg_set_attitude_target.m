@@ -2,9 +2,9 @@ classdef msg_set_attitude_target < mavlink_message
 	%MSG_SET_ATTITUDE_TARGET: MAVLINK Message ID = 82
     %Description:
     %    Sets a desired vehicle attitude. Used by an external controller to command the vehicle (manual controller or other system).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp in milliseconds since system boot
     %    q(single[4]): Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
     %    body_roll_rate(single): Body roll rate in radians per second
@@ -34,7 +34,7 @@ classdef msg_set_attitude_target < mavlink_message
 
     methods
 
-        function obj = msg_set_attitude_target(packet,time_boot_ms,q,body_roll_rate,body_pitch_rate,body_yaw_rate,thrust,target_system,target_component,type_mask)
+        function obj = msg_set_attitude_target(time_boot_ms,q,body_roll_rate,body_pitch_rate,body_yaw_rate,thrust,target_system,target_component,type_mask,varargin)
         %Create a new set_attitude_target message
         
             obj.msgid = obj.ID;
@@ -43,15 +43,16 @@ classdef msg_set_attitude_target < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 9
+            elseif nargin == 9
                 obj.time_boot_ms = time_boot_ms;
                 obj.q = q;
                 obj.body_roll_rate = body_roll_rate;

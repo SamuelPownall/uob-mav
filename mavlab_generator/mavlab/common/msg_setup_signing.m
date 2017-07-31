@@ -2,9 +2,9 @@ classdef msg_setup_signing < mavlink_message
 	%MSG_SETUP_SIGNING: MAVLINK Message ID = 256
     %Description:
     %    Setup a MAVLink2 signing key. If called with secret_key of all zero and zero initial_timestamp will disable signing
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    initial_timestamp(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    initial_timestamp(uint64): initial timestamp
     %    target_system(uint8): system id of the target
     %    target_component(uint8): component ID of the target
@@ -24,7 +24,7 @@ classdef msg_setup_signing < mavlink_message
 
     methods
 
-        function obj = msg_setup_signing(packet,initial_timestamp,target_system,target_component,secret_key)
+        function obj = msg_setup_signing(initial_timestamp,target_system,target_component,secret_key,varargin)
         %Create a new setup_signing message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_setup_signing < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(initial_timestamp,'mavlink_packet')
+                    packet = initial_timestamp;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('initial_timestamp','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.initial_timestamp = initial_timestamp;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

@@ -2,9 +2,9 @@ classdef msg_safety_allowed_area < mavlink_message
 	%MSG_SAFETY_ALLOWED_AREA: MAVLINK Message ID = 55
     %Description:
     %    Read out the safety zone the MAV currently assumes.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    p1x(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    p1x(single): x position 1 / Latitude 1
     %    p1y(single): y position 1 / Longitude 1
     %    p1z(single): z position 1 / Altitude 1
@@ -30,7 +30,7 @@ classdef msg_safety_allowed_area < mavlink_message
 
     methods
 
-        function obj = msg_safety_allowed_area(packet,p1x,p1y,p1z,p2x,p2y,p2z,frame)
+        function obj = msg_safety_allowed_area(p1x,p1y,p1z,p2x,p2y,p2z,frame,varargin)
         %Create a new safety_allowed_area message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_safety_allowed_area < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(p1x,'mavlink_packet')
+                    packet = p1x;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('p1x','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.p1x = p1x;
                 obj.p1y = p1y;
                 obj.p1z = p1z;

@@ -2,9 +2,9 @@ classdef msg_set_mag_offsets < mavlink_message
 	%MSG_SET_MAG_OFFSETS: MAVLINK Message ID = 151
     %Description:
     %    Deprecated. Use MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS instead. Set the magnetometer offsets
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    mag_ofs_x(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    mag_ofs_x(int16): magnetometer X offset
     %    mag_ofs_y(int16): magnetometer Y offset
     %    mag_ofs_z(int16): magnetometer Z offset
@@ -26,7 +26,7 @@ classdef msg_set_mag_offsets < mavlink_message
 
     methods
 
-        function obj = msg_set_mag_offsets(packet,mag_ofs_x,mag_ofs_y,mag_ofs_z,target_system,target_component)
+        function obj = msg_set_mag_offsets(mag_ofs_x,mag_ofs_y,mag_ofs_z,target_system,target_component,varargin)
         %Create a new set_mag_offsets message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_set_mag_offsets < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(mag_ofs_x,'mavlink_packet')
+                    packet = mag_ofs_x;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('mag_ofs_x','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.mag_ofs_x = mag_ofs_x;
                 obj.mag_ofs_y = mag_ofs_y;
                 obj.mag_ofs_z = mag_ofs_z;

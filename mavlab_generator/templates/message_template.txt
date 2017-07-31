@@ -2,9 +2,9 @@ classdef msg_${name}$ < mavlink_message
 	%%MSG_${nameUpper}$: MAVLINK Message ID = ${msgid}$
     %%Description:
     %%    ${desc}$
-    %%    If constructing from fields, packet argument should be set to [].
+    %%    Can also be constructed by using a mavlink_packet as the only argument
 	%%Arguments:
-    %%    packet(mavlink_packet): Packet to be decoded into this message type
+    %%    ${firstFieldName}$(mavlink_packet): Alternative way to construct a message using a mavlink_packet
 #{orderedFields<#>    %%    ${name}$(${type}$?{${size}$>1<?>[${size}$]<?>}?): ${desc}$
 }#	
 	properties(Constant)
@@ -17,25 +17,24 @@ classdef msg_${name}$ < mavlink_message
 
     methods
 
-        function obj = msg_${name}$(packet#{orderedFields<#>,${name}$}#)
+        function obj = msg_${name}$(#{orderedFields<#>${name}$,}#varargin)
         %%Create a new ${name}$ message
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
-                if isa(packet,'mavlink_packet')
+            if nargin == 1 
+                if isa(${firstFieldName}$,'mavlink_packet')
+                    packet = ${firstFieldName}$;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    ?{${numFields}$==1<?>obj.${firstFieldName}$ = ${firstFieldName}$;<?>mavlink.throwTypeError('${firstFieldName}$','mavlink_packet');}?
                 end
-            
-            elseif nargin-1 == ${numFields}$
-#{orderedFields<#>                obj.${name}$ = ${name}$;\n}#            elseif nargin ~= 0
+?{${numFields}$==1<?><?>            elseif nargin == ${numFields}$
+#{orderedFields<#>                obj.${name}$ = ${name}$;\n}#}?            elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end
 

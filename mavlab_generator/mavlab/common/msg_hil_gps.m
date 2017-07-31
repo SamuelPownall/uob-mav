@@ -3,9 +3,9 @@ classdef msg_hil_gps < mavlink_message
     %Description:
     %    The global position, as returned by the Global Positioning System (GPS). This is
                  NOT the global position estimate of the sytem, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate. Coordinate frame is right-handed, Z-axis up (GPS frame).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since UNIX epoch or microseconds since system boot)
     %    lat(int32): Latitude (WGS84), in degrees * 1E7
     %    lon(int32): Longitude (WGS84), in degrees * 1E7
@@ -43,7 +43,7 @@ classdef msg_hil_gps < mavlink_message
 
     methods
 
-        function obj = msg_hil_gps(packet,time_usec,lat,lon,alt,eph,epv,vel,vn,ve,vd,cog,fix_type,satellites_visible)
+        function obj = msg_hil_gps(time_usec,lat,lon,alt,eph,epv,vel,vn,ve,vd,cog,fix_type,satellites_visible,varargin)
         %Create a new hil_gps message
         
             obj.msgid = obj.ID;
@@ -52,15 +52,16 @@ classdef msg_hil_gps < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 13
+            elseif nargin == 13
                 obj.time_usec = time_usec;
                 obj.lat = lat;
                 obj.lon = lon;

@@ -2,9 +2,9 @@ classdef msg_gopro_set_response < mavlink_message
 	%MSG_GOPRO_SET_RESPONSE: MAVLINK Message ID = 219
     %Description:
     %    Response from a GOPRO_COMMAND set request
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    cmd_id(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    cmd_id(uint8): Command ID
     %    result(uint8): Result
 	
@@ -20,7 +20,7 @@ classdef msg_gopro_set_response < mavlink_message
 
     methods
 
-        function obj = msg_gopro_set_response(packet,cmd_id,result)
+        function obj = msg_gopro_set_response(cmd_id,result,varargin)
         %Create a new gopro_set_response message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_gopro_set_response < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(cmd_id,'mavlink_packet')
+                    packet = cmd_id;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('cmd_id','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.cmd_id = cmd_id;
                 obj.result = result;
             elseif nargin ~= 0

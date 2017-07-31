@@ -2,9 +2,9 @@ classdef msg_debug < mavlink_message
 	%MSG_DEBUG: MAVLINK Message ID = 254
     %Description:
     %    Send a debug value. The index is used to discriminate between values. These values show up in the plot of QGroundControl as DEBUG N.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    value(single): DEBUG value
     %    ind(uint8): index of debug variable
@@ -22,7 +22,7 @@ classdef msg_debug < mavlink_message
 
     methods
 
-        function obj = msg_debug(packet,time_boot_ms,value,ind)
+        function obj = msg_debug(time_boot_ms,value,ind,varargin)
         %Create a new debug message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_debug < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.time_boot_ms = time_boot_ms;
                 obj.value = value;
                 obj.ind = ind;

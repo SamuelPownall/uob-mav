@@ -5,9 +5,9 @@ classdef msg_gimbal_set_factory_parameters < mavlink_message
             during manufacture, not by end users, so it is protected by a simple checksum of sorts (this won't stop anybody determined,
             it's mostly just to keep the average user from trying to modify these values.  This will need to be revisited if that isn't
             adequate.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    magic_1(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    magic_1(uint32): Magic number 1 for validation
     %    magic_2(uint32): Magic number 2 for validation
     %    magic_3(uint32): Magic number 3 for validation
@@ -47,7 +47,7 @@ classdef msg_gimbal_set_factory_parameters < mavlink_message
 
     methods
 
-        function obj = msg_gimbal_set_factory_parameters(packet,magic_1,magic_2,magic_3,serial_number_pt_1,serial_number_pt_2,serial_number_pt_3,assembly_year,target_system,target_component,assembly_month,assembly_day,assembly_hour,assembly_minute,assembly_second)
+        function obj = msg_gimbal_set_factory_parameters(magic_1,magic_2,magic_3,serial_number_pt_1,serial_number_pt_2,serial_number_pt_3,assembly_year,target_system,target_component,assembly_month,assembly_day,assembly_hour,assembly_minute,assembly_second,varargin)
         %Create a new gimbal_set_factory_parameters message
         
             obj.msgid = obj.ID;
@@ -56,15 +56,16 @@ classdef msg_gimbal_set_factory_parameters < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(magic_1,'mavlink_packet')
+                    packet = magic_1;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('magic_1','mavlink_packet');
                 end
             
-            elseif nargin-1 == 14
+            elseif nargin == 14
                 obj.magic_1 = magic_1;
                 obj.magic_2 = magic_2;
                 obj.magic_3 = magic_3;

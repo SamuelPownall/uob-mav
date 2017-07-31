@@ -3,9 +3,9 @@ classdef msg_limits_status < mavlink_message
     %Description:
     %    Status of AP_Limits. Sent in extended
 	    status stream when AP_Limits is enabled
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    last_trigger(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    last_trigger(uint32): time of last breach in milliseconds since boot
     %    last_action(uint32): time of last recovery action in milliseconds since boot
     %    last_recovery(uint32): time of last successful recovery in milliseconds since boot
@@ -35,7 +35,7 @@ classdef msg_limits_status < mavlink_message
 
     methods
 
-        function obj = msg_limits_status(packet,last_trigger,last_action,last_recovery,last_clear,breach_count,limits_state,mods_enabled,mods_required,mods_triggered)
+        function obj = msg_limits_status(last_trigger,last_action,last_recovery,last_clear,breach_count,limits_state,mods_enabled,mods_required,mods_triggered,varargin)
         %Create a new limits_status message
         
             obj.msgid = obj.ID;
@@ -44,15 +44,16 @@ classdef msg_limits_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(last_trigger,'mavlink_packet')
+                    packet = last_trigger;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('last_trigger','mavlink_packet');
                 end
             
-            elseif nargin-1 == 9
+            elseif nargin == 9
                 obj.last_trigger = last_trigger;
                 obj.last_action = last_action;
                 obj.last_recovery = last_recovery;

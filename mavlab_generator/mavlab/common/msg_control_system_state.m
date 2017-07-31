@@ -2,9 +2,9 @@ classdef msg_control_system_state < mavlink_message
 	%MSG_CONTROL_SYSTEM_STATE: MAVLINK Message ID = 146
     %Description:
     %    The smoothed, monotonic system state used to feed the control loops of the system.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    x_acc(single): X acceleration in body frame
     %    y_acc(single): Y acceleration in body frame
@@ -50,7 +50,7 @@ classdef msg_control_system_state < mavlink_message
 
     methods
 
-        function obj = msg_control_system_state(packet,time_usec,x_acc,y_acc,z_acc,x_vel,y_vel,z_vel,x_pos,y_pos,z_pos,airspeed,vel_variance,pos_variance,q,roll_rate,pitch_rate,yaw_rate)
+        function obj = msg_control_system_state(time_usec,x_acc,y_acc,z_acc,x_vel,y_vel,z_vel,x_pos,y_pos,z_pos,airspeed,vel_variance,pos_variance,q,roll_rate,pitch_rate,yaw_rate,varargin)
         %Create a new control_system_state message
         
             obj.msgid = obj.ID;
@@ -59,15 +59,16 @@ classdef msg_control_system_state < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 17
+            elseif nargin == 17
                 obj.time_usec = time_usec;
                 obj.x_acc = x_acc;
                 obj.y_acc = y_acc;

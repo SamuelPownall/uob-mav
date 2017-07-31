@@ -2,9 +2,9 @@ classdef msg_gps_input < mavlink_message
 	%MSG_GPS_INPUT: MAVLINK Message ID = 232
     %Description:
     %    GPS sensor input message.  This is a raw sensor value sent by the GPS. This is NOT the global position estimate of the sytem.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    time_week_ms(uint32): GPS time (milliseconds from start of GPS week)
     %    lat(int32): Latitude (WGS84), in degrees * 1E7
@@ -52,7 +52,7 @@ classdef msg_gps_input < mavlink_message
 
     methods
 
-        function obj = msg_gps_input(packet,time_usec,time_week_ms,lat,lon,alt,hdop,vdop,vn,ve,vd,speed_accuracy,horiz_accuracy,vert_accuracy,ignore_flags,time_week,gps_id,fix_type,satellites_visible)
+        function obj = msg_gps_input(time_usec,time_week_ms,lat,lon,alt,hdop,vdop,vn,ve,vd,speed_accuracy,horiz_accuracy,vert_accuracy,ignore_flags,time_week,gps_id,fix_type,satellites_visible,varargin)
         %Create a new gps_input message
         
             obj.msgid = obj.ID;
@@ -61,15 +61,16 @@ classdef msg_gps_input < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 18
+            elseif nargin == 18
                 obj.time_usec = time_usec;
                 obj.time_week_ms = time_week_ms;
                 obj.lat = lat;

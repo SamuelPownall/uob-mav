@@ -2,9 +2,9 @@ classdef msg_v2_extension < mavlink_message
 	%MSG_V2_EXTENSION: MAVLINK Message ID = 248
     %Description:
     %    Message implementing parts of the V2 payload specs in V1 frames for transitional support.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    message_type(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    message_type(uint16): A code that identifies the software component that understands this message (analogous to usb device classes or mime type strings).  If this code is less than 32768, it is considered a 'registered' protocol extension and the corresponding entry should be added to https://github.com/mavlink/mavlink/extension-message-ids.xml.  Software creators can register blocks of message IDs as needed (useful for GCS specific metadata, etc...). Message_types greater than 32767 are considered local experiments and should not be checked in to any widely distributed codebase.
     %    target_network(uint8): Network ID (0 for broadcast)
     %    target_system(uint8): System ID (0 for broadcast)
@@ -26,7 +26,7 @@ classdef msg_v2_extension < mavlink_message
 
     methods
 
-        function obj = msg_v2_extension(packet,message_type,target_network,target_system,target_component,payload)
+        function obj = msg_v2_extension(message_type,target_network,target_system,target_component,payload,varargin)
         %Create a new v2_extension message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_v2_extension < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(message_type,'mavlink_packet')
+                    packet = message_type;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('message_type','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.message_type = message_type;
                 obj.target_network = target_network;
                 obj.target_system = target_system;

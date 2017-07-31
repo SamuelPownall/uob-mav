@@ -2,9 +2,9 @@ classdef msg_attitude < mavlink_message
 	%MSG_ATTITUDE: MAVLINK Message ID = 30
     %Description:
     %    The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    roll(single): Roll angle (rad, -pi..+pi)
     %    pitch(single): Pitch angle (rad, -pi..+pi)
@@ -30,7 +30,7 @@ classdef msg_attitude < mavlink_message
 
     methods
 
-        function obj = msg_attitude(packet,time_boot_ms,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed)
+        function obj = msg_attitude(time_boot_ms,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed,varargin)
         %Create a new attitude message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_attitude < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.time_boot_ms = time_boot_ms;
                 obj.roll = roll;
                 obj.pitch = pitch;

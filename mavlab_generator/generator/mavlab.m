@@ -180,8 +180,9 @@ classdef mavlab
 
             end
 
-            %Sort the fields of this message into data type order
+            %Sort the fields of this message into data type order and store the name of the first
             parsedMsg.orderedFields = mavlab.fieldSort(parsedFields, typeSize);
+            parsedMsg.firstFieldName = parsedMsg.orderedFields(1).name;
             %Find the number of fields in this message
             parsedMsg.numFields = size(parsedMsg.orderedFields,2);
 

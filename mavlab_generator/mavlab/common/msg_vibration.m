@@ -2,9 +2,9 @@ classdef msg_vibration < mavlink_message
 	%MSG_VIBRATION: MAVLINK Message ID = 241
     %Description:
     %    Vibration levels and accelerometer clipping
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (micros since boot or Unix epoch)
     %    vibration_x(single): Vibration levels on X-axis
     %    vibration_y(single): Vibration levels on Y-axis
@@ -30,7 +30,7 @@ classdef msg_vibration < mavlink_message
 
     methods
 
-        function obj = msg_vibration(packet,time_usec,vibration_x,vibration_y,vibration_z,clipping_0,clipping_1,clipping_2)
+        function obj = msg_vibration(time_usec,vibration_x,vibration_y,vibration_z,clipping_0,clipping_1,clipping_2,varargin)
         %Create a new vibration message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_vibration < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.time_usec = time_usec;
                 obj.vibration_x = vibration_x;
                 obj.vibration_y = vibration_y;

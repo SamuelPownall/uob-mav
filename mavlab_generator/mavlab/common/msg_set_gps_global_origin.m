@@ -2,9 +2,9 @@ classdef msg_set_gps_global_origin < mavlink_message
 	%MSG_SET_GPS_GLOBAL_ORIGIN: MAVLINK Message ID = 48
     %Description:
     %    As local waypoints exist, the global MISSION reference allows to transform between the local coordinate frame and the global (GPS) coordinate frame. This can be necessary when e.g. in- and outdoor settings are connected and the MAV should move from in- to outdoor.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    latitude(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    latitude(int32): Latitude (WGS84), in degrees * 1E7
     %    longitude(int32): Longitude (WGS84, in degrees * 1E7
     %    altitude(int32): Altitude (AMSL), in meters * 1000 (positive for up)
@@ -24,7 +24,7 @@ classdef msg_set_gps_global_origin < mavlink_message
 
     methods
 
-        function obj = msg_set_gps_global_origin(packet,latitude,longitude,altitude,target_system)
+        function obj = msg_set_gps_global_origin(latitude,longitude,altitude,target_system,varargin)
         %Create a new set_gps_global_origin message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_set_gps_global_origin < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(latitude,'mavlink_packet')
+                    packet = latitude;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('latitude','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.latitude = latitude;
                 obj.longitude = longitude;
                 obj.altitude = altitude;

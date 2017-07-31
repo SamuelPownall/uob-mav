@@ -2,9 +2,9 @@ classdef msg_hil_state_quaternion < mavlink_message
 	%MSG_HIL_STATE_QUATERNION: MAVLINK Message ID = 115
     %Description:
     %    Sent from simulation to autopilot, avoids in contrast to HIL_STATE singularities. This packet is useful for high throughput applications such as hardware in the loop simulations.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since UNIX epoch or microseconds since system boot)
     %    attitude_quaternion(single[4]): Vehicle attitude expressed as normalized quaternion in w, x, y, z order (with 1 0 0 0 being the null-rotation)
     %    rollspeed(single): Body frame roll / phi angular speed (rad/s)
@@ -48,7 +48,7 @@ classdef msg_hil_state_quaternion < mavlink_message
 
     methods
 
-        function obj = msg_hil_state_quaternion(packet,time_usec,attitude_quaternion,rollspeed,pitchspeed,yawspeed,lat,lon,alt,vx,vy,vz,ind_airspeed,true_airspeed,xacc,yacc,zacc)
+        function obj = msg_hil_state_quaternion(time_usec,attitude_quaternion,rollspeed,pitchspeed,yawspeed,lat,lon,alt,vx,vy,vz,ind_airspeed,true_airspeed,xacc,yacc,zacc,varargin)
         %Create a new hil_state_quaternion message
         
             obj.msgid = obj.ID;
@@ -57,15 +57,16 @@ classdef msg_hil_state_quaternion < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 16
+            elseif nargin == 16
                 obj.time_usec = time_usec;
                 obj.attitude_quaternion = attitude_quaternion;
                 obj.rollspeed = rollspeed;

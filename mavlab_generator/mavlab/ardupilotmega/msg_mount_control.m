@@ -2,9 +2,9 @@ classdef msg_mount_control < mavlink_message
 	%MSG_MOUNT_CONTROL: MAVLINK Message ID = 157
     %Description:
     %    Message to control a camera mount, directional antenna, etc.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    input_a(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    input_a(int32): pitch(deg*100) or lat, depending on mount mode
     %    input_b(int32): roll(deg*100) or lon depending on mount mode
     %    input_c(int32): yaw(deg*100) or alt (in cm) depending on mount mode
@@ -28,7 +28,7 @@ classdef msg_mount_control < mavlink_message
 
     methods
 
-        function obj = msg_mount_control(packet,input_a,input_b,input_c,target_system,target_component,save_position)
+        function obj = msg_mount_control(input_a,input_b,input_c,target_system,target_component,save_position,varargin)
         %Create a new mount_control message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_mount_control < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(input_a,'mavlink_packet')
+                    packet = input_a;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('input_a','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.input_a = input_a;
                 obj.input_b = input_b;
                 obj.input_c = input_c;

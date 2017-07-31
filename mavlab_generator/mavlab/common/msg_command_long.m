@@ -2,9 +2,9 @@ classdef msg_command_long < mavlink_message
 	%MSG_COMMAND_LONG: MAVLINK Message ID = 76
     %Description:
     %    Send a command with up to seven parameters to the MAV
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    param1(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    param1(single): Parameter 1, as defined by MAV_CMD enum.
     %    param2(single): Parameter 2, as defined by MAV_CMD enum.
     %    param3(single): Parameter 3, as defined by MAV_CMD enum.
@@ -38,7 +38,7 @@ classdef msg_command_long < mavlink_message
 
     methods
 
-        function obj = msg_command_long(packet,param1,param2,param3,param4,param5,param6,param7,command,target_system,target_component,confirmation)
+        function obj = msg_command_long(param1,param2,param3,param4,param5,param6,param7,command,target_system,target_component,confirmation,varargin)
         %Create a new command_long message
         
             obj.msgid = obj.ID;
@@ -47,15 +47,16 @@ classdef msg_command_long < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(param1,'mavlink_packet')
+                    packet = param1;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('param1','mavlink_packet');
                 end
             
-            elseif nargin-1 == 11
+            elseif nargin == 11
                 obj.param1 = param1;
                 obj.param2 = param2;
                 obj.param3 = param3;

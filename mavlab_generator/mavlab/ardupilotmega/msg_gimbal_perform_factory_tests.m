@@ -2,9 +2,9 @@ classdef msg_gimbal_perform_factory_tests < mavlink_message
 	%MSG_GIMBAL_PERFORM_FACTORY_TESTS: MAVLINK Message ID = 209
     %Description:
     %    Command the gimbal to perform a series of factory tests.  Should not be needed by end users
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    target_system(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
 	
@@ -20,7 +20,7 @@ classdef msg_gimbal_perform_factory_tests < mavlink_message
 
     methods
 
-        function obj = msg_gimbal_perform_factory_tests(packet,target_system,target_component)
+        function obj = msg_gimbal_perform_factory_tests(target_system,target_component,varargin)
         %Create a new gimbal_perform_factory_tests message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_gimbal_perform_factory_tests < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(target_system,'mavlink_packet')
+                    packet = target_system;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('target_system','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.target_system = target_system;
                 obj.target_component = target_component;
             elseif nargin ~= 0

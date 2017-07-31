@@ -2,9 +2,9 @@ classdef msg_storage_information < mavlink_message
 	%MSG_STORAGE_INFORMATION: MAVLINK Message ID = 261
     %Description:
     %    WIP: Information about a storage medium
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    total_capacity(single): Total capacity in MiB
     %    used_capacity(single): Used capacity in MiB
@@ -32,7 +32,7 @@ classdef msg_storage_information < mavlink_message
 
     methods
 
-        function obj = msg_storage_information(packet,time_boot_ms,total_capacity,used_capacity,available_capacity,read_speed,write_speed,storage_id,status)
+        function obj = msg_storage_information(time_boot_ms,total_capacity,used_capacity,available_capacity,read_speed,write_speed,storage_id,status,varargin)
         %Create a new storage_information message
         
             obj.msgid = obj.ID;
@@ -41,15 +41,16 @@ classdef msg_storage_information < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 8
+            elseif nargin == 8
                 obj.time_boot_ms = time_boot_ms;
                 obj.total_capacity = total_capacity;
                 obj.used_capacity = used_capacity;

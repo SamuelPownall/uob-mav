@@ -2,9 +2,9 @@ classdef msg_attitude_target < mavlink_message
 	%MSG_ATTITUDE_TARGET: MAVLINK Message ID = 83
     %Description:
     %    Reports the current commanded attitude of the vehicle as specified by the autopilot. This should match the commands sent in a SET_ATTITUDE_TARGET message if the vehicle is being controlled this way.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp in milliseconds since system boot
     %    q(single[4]): Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)
     %    body_roll_rate(single): Body roll rate in radians per second
@@ -30,7 +30,7 @@ classdef msg_attitude_target < mavlink_message
 
     methods
 
-        function obj = msg_attitude_target(packet,time_boot_ms,q,body_roll_rate,body_pitch_rate,body_yaw_rate,thrust,type_mask)
+        function obj = msg_attitude_target(time_boot_ms,q,body_roll_rate,body_pitch_rate,body_yaw_rate,thrust,type_mask,varargin)
         %Create a new attitude_target message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_attitude_target < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.time_boot_ms = time_boot_ms;
                 obj.q = q;
                 obj.body_roll_rate = body_roll_rate;

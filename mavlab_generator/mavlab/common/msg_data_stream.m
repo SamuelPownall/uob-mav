@@ -2,9 +2,9 @@ classdef msg_data_stream < mavlink_message
 	%MSG_DATA_STREAM: MAVLINK Message ID = 67
     %Description:
     %    THIS INTERFACE IS DEPRECATED. USE MESSAGE_INTERVAL INSTEAD.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    message_rate(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    message_rate(uint16): The message rate
     %    stream_id(uint8): The ID of the requested data stream
     %    on_off(uint8): 1 stream is enabled, 0 stream is stopped.
@@ -22,7 +22,7 @@ classdef msg_data_stream < mavlink_message
 
     methods
 
-        function obj = msg_data_stream(packet,message_rate,stream_id,on_off)
+        function obj = msg_data_stream(message_rate,stream_id,on_off,varargin)
         %Create a new data_stream message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_data_stream < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(message_rate,'mavlink_packet')
+                    packet = message_rate;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('message_rate','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.message_rate = message_rate;
                 obj.stream_id = stream_id;
                 obj.on_off = on_off;

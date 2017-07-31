@@ -2,9 +2,9 @@ classdef msg_local_position_ned_cov < mavlink_message
 	%MSG_LOCAL_POSITION_NED_COV: MAVLINK Message ID = 64
     %Description:
     %    The filtered local position (e.g. fused computer vision and accelerometers). Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since system boot or since UNIX epoch)
     %    x(single): X Position
     %    y(single): Y Position
@@ -40,7 +40,7 @@ classdef msg_local_position_ned_cov < mavlink_message
 
     methods
 
-        function obj = msg_local_position_ned_cov(packet,time_usec,x,y,z,vx,vy,vz,ax,ay,az,covariance,estimator_type)
+        function obj = msg_local_position_ned_cov(time_usec,x,y,z,vx,vy,vz,ax,ay,az,covariance,estimator_type,varargin)
         %Create a new local_position_ned_cov message
         
             obj.msgid = obj.ID;
@@ -49,15 +49,16 @@ classdef msg_local_position_ned_cov < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 12
+            elseif nargin == 12
                 obj.time_usec = time_usec;
                 obj.x = x;
                 obj.y = y;

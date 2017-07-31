@@ -2,9 +2,9 @@ classdef msg_position_target_global_int < mavlink_message
 	%MSG_POSITION_TARGET_GLOBAL_INT: MAVLINK Message ID = 87
     %Description:
     %    Reports the current commanded vehicle position, velocity, and acceleration as specified by the autopilot. This should match the commands sent in SET_POSITION_TARGET_GLOBAL_INT if the vehicle is being controlled this way.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp in milliseconds since system boot. The rationale for the timestamp in the setpoint is to allow the system to compensate for the transport delay of the setpoint. This allows the system to compensate processing latency.
     %    lat_int(int32): X Position in WGS84 frame in 1e7 * meters
     %    lon_int(int32): Y Position in WGS84 frame in 1e7 * meters
@@ -44,7 +44,7 @@ classdef msg_position_target_global_int < mavlink_message
 
     methods
 
-        function obj = msg_position_target_global_int(packet,time_boot_ms,lat_int,lon_int,alt,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,coordinate_frame)
+        function obj = msg_position_target_global_int(time_boot_ms,lat_int,lon_int,alt,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,coordinate_frame,varargin)
         %Create a new position_target_global_int message
         
             obj.msgid = obj.ID;
@@ -53,15 +53,16 @@ classdef msg_position_target_global_int < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 14
+            elseif nargin == 14
                 obj.time_boot_ms = time_boot_ms;
                 obj.lat_int = lat_int;
                 obj.lon_int = lon_int;

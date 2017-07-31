@@ -3,9 +3,9 @@ classdef msg_fence_point < mavlink_message
     %Description:
     %    A fence point. Used to set a point when from
 	      GCS -> MAV. Also used to return a point from MAV -> GCS
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    lat(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    lat(single): Latitude of point
     %    lng(single): Longitude of point
     %    target_system(uint8): System ID
@@ -29,7 +29,7 @@ classdef msg_fence_point < mavlink_message
 
     methods
 
-        function obj = msg_fence_point(packet,lat,lng,target_system,target_component,idx,count)
+        function obj = msg_fence_point(lat,lng,target_system,target_component,idx,count,varargin)
         %Create a new fence_point message
         
             obj.msgid = obj.ID;
@@ -38,15 +38,16 @@ classdef msg_fence_point < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(lat,'mavlink_packet')
+                    packet = lat;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('lat','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.lat = lat;
                 obj.lng = lng;
                 obj.target_system = target_system;

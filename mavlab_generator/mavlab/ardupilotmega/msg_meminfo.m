@@ -2,9 +2,9 @@ classdef msg_meminfo < mavlink_message
 	%MSG_MEMINFO: MAVLINK Message ID = 152
     %Description:
     %    state of APM memory
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    brkval(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    brkval(uint16): heap top
     %    freemem(uint16): free memory
 	
@@ -20,7 +20,7 @@ classdef msg_meminfo < mavlink_message
 
     methods
 
-        function obj = msg_meminfo(packet,brkval,freemem)
+        function obj = msg_meminfo(brkval,freemem,varargin)
         %Create a new meminfo message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_meminfo < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(brkval,'mavlink_packet')
+                    packet = brkval;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('brkval','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.brkval = brkval;
                 obj.freemem = freemem;
             elseif nargin ~= 0

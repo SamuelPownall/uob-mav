@@ -2,9 +2,9 @@ classdef msg_file_transfer_protocol < mavlink_message
 	%MSG_FILE_TRANSFER_PROTOCOL: MAVLINK Message ID = 110
     %Description:
     %    File transfer message
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    target_network(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    target_network(uint8): Network ID (0 for broadcast)
     %    target_system(uint8): System ID (0 for broadcast)
     %    target_component(uint8): Component ID (0 for broadcast)
@@ -24,7 +24,7 @@ classdef msg_file_transfer_protocol < mavlink_message
 
     methods
 
-        function obj = msg_file_transfer_protocol(packet,target_network,target_system,target_component,payload)
+        function obj = msg_file_transfer_protocol(target_network,target_system,target_component,payload,varargin)
         %Create a new file_transfer_protocol message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_file_transfer_protocol < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(target_network,'mavlink_packet')
+                    packet = target_network;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('target_network','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.target_network = target_network;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

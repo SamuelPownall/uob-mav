@@ -2,9 +2,9 @@ classdef msg_timesync < mavlink_message
 	%MSG_TIMESYNC: MAVLINK Message ID = 111
     %Description:
     %    Time synchronization message.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    tc1(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    tc1(int64): Time sync timestamp 1
     %    ts1(int64): Time sync timestamp 2
 	
@@ -20,7 +20,7 @@ classdef msg_timesync < mavlink_message
 
     methods
 
-        function obj = msg_timesync(packet,tc1,ts1)
+        function obj = msg_timesync(tc1,ts1,varargin)
         %Create a new timesync message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_timesync < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(tc1,'mavlink_packet')
+                    packet = tc1;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('tc1','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.tc1 = tc1;
                 obj.ts1 = ts1;
             elseif nargin ~= 0

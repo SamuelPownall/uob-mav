@@ -1,4 +1,4 @@
-function [outString,exitChar] = mavstring(inString,schema,startIndex,endIndex)
+function [outString,exitChar] = mavstring(inString,schema)
 %MAVSTRING: The MAVLAB templating engine
 %Description:
 %    Parses a string and injects data from a schema into it using a simple templating system. Error
@@ -16,44 +16,37 @@ function [outString,exitChar] = mavstring(inString,schema,startIndex,endIndex)
     %Initialise some variables
     varName = []; condition = []; outString = []; exitChar = 0;
     conditionStart = 0;
-
-    %Handle varying numbers of arguments to allow for recursive functionality
-    if nargin < 4
-        endIndex = size(inString,2);
-    end
-    if nargin < 3
-        startIndex = 1;
-    end
     
+    %Find all tags in the file and sort them in character index order
     tags = sort([strfind(inString,'${') strfind(inString,'#{') strfind(inString,'?{') strfind(inString,'}#') ...
         strfind(inString,'}?') strfind(inString,'<?>')]);
     
     %Initialise the parser loop
-    i = startIndex;
+    stringIndex = 1;
     
     %Parse until no more special tags are found
     for tagIndex=1:1:size(tags,2)
-        
-        if tags(tagIndex) >= i;
-                
-            outString = [outString inString(i:tags(tagIndex)-1)];
-            
+        %Ignore any tags that occur before the current string index
+        if tags(tagIndex) >= stringIndex;
+            %Add text between the current string index and next tag to the output string
+            outString = [outString inString(stringIndex:tags(tagIndex)-1)];
+            %Determine the tag type and handle appropriately
             switch(inString(tags(tagIndex):tags(tagIndex)+1))
                 %Variable start tag
                 case '${'
                     [returnedString,exitChar] = variable(inString(tags(tagIndex)+2:end),schema);
                     outString = [outString, returnedString];
-                    i = tags(tagIndex) + exitChar + 1;
+                    stringIndex = tags(tagIndex) + exitChar + 1;
                 %Repetition start tag
                 case '#{'
                     [returnedString,exitChar] = repetition(inString(tags(tagIndex)+2:end),schema);
                     outString = [outString, returnedString];
-                    i = tags(tagIndex) + exitChar + 1;
+                    stringIndex = tags(tagIndex) + exitChar + 1;
                 %Conditional start tag
                 case '?{'
                     [returnedString,exitChar] = conditional(inString(tags(tagIndex)+2:end),schema);
                     outString = [outString, returnedString];
-                    i = tags(tagIndex) + exitChar + 1;
+                    stringIndex = tags(tagIndex) + exitChar + 1;
                 %Repetition end tag
                 case '}#'
                     exitChar = tags(tagIndex) + 1;
@@ -71,10 +64,18 @@ function [outString,exitChar] = mavstring(inString,schema,startIndex,endIndex)
         end
         
     end
-    outString = [outString inString(i:end)];
+    %Add remaining text after the last found tag to the output string
+    outString = [outString inString(stringIndex:end)];
 end
 
 function [outString,exitChar] = variable(inString,schema)
+%VARIABLE: Handles replacement of ${var}$ tags
+%Description:
+%    Replaces a variable tag with data found in the supplied schema. Throws an error if the input
+%    string is not formatted correctly.
+%Arguments:
+%    inString(string): String to be parsed for a variable name
+%    schema(struct): Source of the data used to replace the ${var}$ tag
     outString = [];
     tagStart = strfind(inString,'}$');
     varName = inString(1:tagStart(1)-1);
@@ -89,6 +90,13 @@ function [outString,exitChar] = variable(inString,schema)
 end
 
 function [outString,exitChar] = repetition(inString,schema)
+%VARIABLE: Handles replacement of #{array<#>text}# tags
+%Description:
+%    Replaces a repetition tag with data found in the supplied schema. Throws an error if the input
+%    string is not formatted correctly. Supports nesting.
+%Arguments:
+%    inString(string): String to be parsed for an array name and replacement text
+%    schema(struct): Source of the array data
     outString = [];
     tagStart = strfind(inString,'<#>');
     varName = inString(1:tagStart(1)-1);
@@ -108,6 +116,13 @@ function [outString,exitChar] = repetition(inString,schema)
 end
 
 function [outString,exitChar] = conditional(inString,schema)
+%VARIABLE: Handles replacement of ?{condition<?>expression1<?>expression2}? tags
+%Description:
+%    Replaces a conditional tag with data found in the supplied schema. Throws an error if the input
+%    string is not formatted correctly. Does not support nesting.
+%Arguments:
+%    inString(string): String to be parsed for a condition and expressions
+%    schema(struct): Source of the data used by any nested tags
     outString = []; evaluation = -1;
     tagStart = strfind(inString,'<?>');
     [condition,~] = mavstring(inString(1:tagStart(1)-1),schema);

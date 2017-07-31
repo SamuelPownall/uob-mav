@@ -3,9 +3,9 @@ classdef msg_fence_status < mavlink_message
     %Description:
     %    Status of geo-fencing. Sent in extended
 	    status stream when fencing enabled
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    breach_time(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    breach_time(uint32): time of last breach in milliseconds since boot
     %    breach_count(uint16): number of fence breaches
     %    breach_status(uint8): 0 if currently inside fence, 1 if outside
@@ -25,7 +25,7 @@ classdef msg_fence_status < mavlink_message
 
     methods
 
-        function obj = msg_fence_status(packet,breach_time,breach_count,breach_status,breach_type)
+        function obj = msg_fence_status(breach_time,breach_count,breach_status,breach_type,varargin)
         %Create a new fence_status message
         
             obj.msgid = obj.ID;
@@ -34,15 +34,16 @@ classdef msg_fence_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(breach_time,'mavlink_packet')
+                    packet = breach_time;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('breach_time','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.breach_time = breach_time;
                 obj.breach_count = breach_count;
                 obj.breach_status = breach_status;

@@ -2,9 +2,9 @@ classdef msg_nav_controller_output < mavlink_message
 	%MSG_NAV_CONTROLLER_OUTPUT: MAVLINK Message ID = 62
     %Description:
     %    The state of the fixed wing navigation and position controller.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    nav_roll(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    nav_roll(single): Current desired roll in degrees
     %    nav_pitch(single): Current desired pitch in degrees
     %    alt_error(single): Current altitude error in meters
@@ -32,7 +32,7 @@ classdef msg_nav_controller_output < mavlink_message
 
     methods
 
-        function obj = msg_nav_controller_output(packet,nav_roll,nav_pitch,alt_error,aspd_error,xtrack_error,nav_bearing,target_bearing,wp_dist)
+        function obj = msg_nav_controller_output(nav_roll,nav_pitch,alt_error,aspd_error,xtrack_error,nav_bearing,target_bearing,wp_dist,varargin)
         %Create a new nav_controller_output message
         
             obj.msgid = obj.ID;
@@ -41,15 +41,16 @@ classdef msg_nav_controller_output < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(nav_roll,'mavlink_packet')
+                    packet = nav_roll;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('nav_roll','mavlink_packet');
                 end
             
-            elseif nargin-1 == 8
+            elseif nargin == 8
                 obj.nav_roll = nav_roll;
                 obj.nav_pitch = nav_pitch;
                 obj.alt_error = alt_error;

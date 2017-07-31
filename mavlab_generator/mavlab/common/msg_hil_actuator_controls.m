@@ -2,9 +2,9 @@ classdef msg_hil_actuator_controls < mavlink_message
 	%MSG_HIL_ACTUATOR_CONTROLS: MAVLINK Message ID = 93
     %Description:
     %    Sent from autopilot to simulation. Hardware in the loop control outputs (replacement for HIL_CONTROLS)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp (microseconds since UNIX epoch or microseconds since system boot)
     %    flags(uint64): Flags as bitfield, reserved for future use.
     %    controls(single[16]): Control outputs -1 .. 1. Channel assignment depends on the simulated hardware.
@@ -24,7 +24,7 @@ classdef msg_hil_actuator_controls < mavlink_message
 
     methods
 
-        function obj = msg_hil_actuator_controls(packet,time_usec,flags,controls,mode)
+        function obj = msg_hil_actuator_controls(time_usec,flags,controls,mode,varargin)
         %Create a new hil_actuator_controls message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_hil_actuator_controls < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.time_usec = time_usec;
                 obj.flags = flags;
                 obj.controls = controls;

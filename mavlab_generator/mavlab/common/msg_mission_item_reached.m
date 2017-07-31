@@ -2,9 +2,9 @@ classdef msg_mission_item_reached < mavlink_message
 	%MSG_MISSION_ITEM_REACHED: MAVLINK Message ID = 46
     %Description:
     %    A certain mission item has been reached. The system will either hold this position (or circle on the orbit) or (if the autocontinue on the WP was set) continue to the next MISSION.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    seq(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    seq(uint16): Sequence
 	
 	properties(Constant)
@@ -18,7 +18,7 @@ classdef msg_mission_item_reached < mavlink_message
 
     methods
 
-        function obj = msg_mission_item_reached(packet,seq)
+        function obj = msg_mission_item_reached(seq,varargin)
         %Create a new mission_item_reached message
         
             obj.msgid = obj.ID;
@@ -27,16 +27,15 @@ classdef msg_mission_item_reached < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(seq,'mavlink_packet')
+                    packet = seq;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    obj.seq = seq;
                 end
             
-            elseif nargin-1 == 1
-                obj.seq = seq;
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

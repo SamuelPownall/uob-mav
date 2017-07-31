@@ -2,9 +2,9 @@ classdef msg_command_int < mavlink_message
 	%MSG_COMMAND_INT: MAVLINK Message ID = 75
     %Description:
     %    Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    param1(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    param1(single): PARAM1, see MAV_CMD enum
     %    param2(single): PARAM2, see MAV_CMD enum
     %    param3(single): PARAM3, see MAV_CMD enum
@@ -42,7 +42,7 @@ classdef msg_command_int < mavlink_message
 
     methods
 
-        function obj = msg_command_int(packet,param1,param2,param3,param4,x,y,z,command,target_system,target_component,frame,current,autocontinue)
+        function obj = msg_command_int(param1,param2,param3,param4,x,y,z,command,target_system,target_component,frame,current,autocontinue,varargin)
         %Create a new command_int message
         
             obj.msgid = obj.ID;
@@ -51,15 +51,16 @@ classdef msg_command_int < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(param1,'mavlink_packet')
+                    packet = param1;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('param1','mavlink_packet');
                 end
             
-            elseif nargin-1 == 13
+            elseif nargin == 13
                 obj.param1 = param1;
                 obj.param2 = param2;
                 obj.param3 = param3;

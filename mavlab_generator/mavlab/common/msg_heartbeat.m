@@ -2,9 +2,9 @@ classdef msg_heartbeat < mavlink_message
 	%MSG_HEARTBEAT: MAVLINK Message ID = 0
     %Description:
     %    The heartbeat message shows that a system is present and responding. The type of the MAV and Autopilot hardware allow the receiving system to treat further messages from this system appropriate (e.g. by laying out the user interface based on the autopilot).
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    custom_mode(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    custom_mode(uint32): A bitfield for use for autopilot-specific flags.
     %    type(uint8): Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
     %    autopilot(uint8): Autopilot type / class. defined in MAV_AUTOPILOT ENUM
@@ -28,7 +28,7 @@ classdef msg_heartbeat < mavlink_message
 
     methods
 
-        function obj = msg_heartbeat(packet,custom_mode,type,autopilot,base_mode,system_status,mavlink_version)
+        function obj = msg_heartbeat(custom_mode,type,autopilot,base_mode,system_status,mavlink_version,varargin)
         %Create a new heartbeat message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_heartbeat < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(custom_mode,'mavlink_packet')
+                    packet = custom_mode;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('custom_mode','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.custom_mode = custom_mode;
                 obj.type = type;
                 obj.autopilot = autopilot;

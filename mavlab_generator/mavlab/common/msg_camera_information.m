@@ -2,9 +2,9 @@ classdef msg_camera_information < mavlink_message
 	%MSG_CAMERA_INFORMATION: MAVLINK Message ID = 259
     %Description:
     %    WIP: Information about a camera
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    focal_length(single): Focal length in mm
     %    sensor_size_h(single): Image sensor size horizontal in mm
@@ -36,7 +36,7 @@ classdef msg_camera_information < mavlink_message
 
     methods
 
-        function obj = msg_camera_information(packet,time_boot_ms,focal_length,sensor_size_h,sensor_size_v,resolution_h,resolution_v,camera_id,vendor_name,model_name,lense_id)
+        function obj = msg_camera_information(time_boot_ms,focal_length,sensor_size_h,sensor_size_v,resolution_h,resolution_v,camera_id,vendor_name,model_name,lense_id,varargin)
         %Create a new camera_information message
         
             obj.msgid = obj.ID;
@@ -45,15 +45,16 @@ classdef msg_camera_information < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 10
+            elseif nargin == 10
                 obj.time_boot_ms = time_boot_ms;
                 obj.focal_length = focal_length;
                 obj.sensor_size_h = sensor_size_h;

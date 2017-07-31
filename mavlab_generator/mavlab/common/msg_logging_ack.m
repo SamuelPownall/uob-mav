@@ -2,9 +2,9 @@ classdef msg_logging_ack < mavlink_message
 	%MSG_LOGGING_ACK: MAVLINK Message ID = 268
     %Description:
     %    An ack for a LOGGING_DATA_ACKED message
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    sequence(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    sequence(uint16): sequence number (must match the one in LOGGING_DATA_ACKED)
     %    target_system(uint8): system ID of the target
     %    target_component(uint8): component ID of the target
@@ -22,7 +22,7 @@ classdef msg_logging_ack < mavlink_message
 
     methods
 
-        function obj = msg_logging_ack(packet,sequence,target_system,target_component)
+        function obj = msg_logging_ack(sequence,target_system,target_component,varargin)
         %Create a new logging_ack message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_logging_ack < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(sequence,'mavlink_packet')
+                    packet = sequence;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('sequence','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.sequence = sequence;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

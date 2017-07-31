@@ -2,9 +2,9 @@ classdef msg_terrain_data < mavlink_message
 	%MSG_TERRAIN_DATA: MAVLINK Message ID = 134
     %Description:
     %    Terrain data sent from GCS. The lat/lon and grid_spacing must be the same as a lat/lon from a TERRAIN_REQUEST
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    lat(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    lat(int32): Latitude of SW corner of first grid (degrees *10^7)
     %    lon(int32): Longitude of SW corner of first grid (in degrees *10^7)
     %    grid_spacing(uint16): Grid spacing in meters
@@ -26,7 +26,7 @@ classdef msg_terrain_data < mavlink_message
 
     methods
 
-        function obj = msg_terrain_data(packet,lat,lon,grid_spacing,data,gridbit)
+        function obj = msg_terrain_data(lat,lon,grid_spacing,data,gridbit,varargin)
         %Create a new terrain_data message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_terrain_data < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(lat,'mavlink_packet')
+                    packet = lat;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('lat','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.lat = lat;
                 obj.lon = lon;
                 obj.grid_spacing = grid_spacing;

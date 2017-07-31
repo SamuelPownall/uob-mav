@@ -2,9 +2,9 @@ classdef msg_autopilot_version < mavlink_message
 	%MSG_AUTOPILOT_VERSION: MAVLINK Message ID = 148
     %Description:
     %    Version and capability of autopilot software
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    capabilities(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    capabilities(uint64): bitmask of capabilities (see MAV_PROTOCOL_CAPABILITY enum)
     %    uid(uint64): UID if provided by hardware
     %    flight_sw_version(uint32): Firmware version number
@@ -38,7 +38,7 @@ classdef msg_autopilot_version < mavlink_message
 
     methods
 
-        function obj = msg_autopilot_version(packet,capabilities,uid,flight_sw_version,middleware_sw_version,os_sw_version,board_version,vendor_id,product_id,flight_custom_version,middleware_custom_version,os_custom_version)
+        function obj = msg_autopilot_version(capabilities,uid,flight_sw_version,middleware_sw_version,os_sw_version,board_version,vendor_id,product_id,flight_custom_version,middleware_custom_version,os_custom_version,varargin)
         %Create a new autopilot_version message
         
             obj.msgid = obj.ID;
@@ -47,15 +47,16 @@ classdef msg_autopilot_version < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(capabilities,'mavlink_packet')
+                    packet = capabilities;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('capabilities','mavlink_packet');
                 end
             
-            elseif nargin-1 == 11
+            elseif nargin == 11
                 obj.capabilities = capabilities;
                 obj.uid = uid;
                 obj.flight_sw_version = flight_sw_version;

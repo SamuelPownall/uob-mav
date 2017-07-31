@@ -2,9 +2,9 @@ classdef msg_mission_count < mavlink_message
 	%MSG_MISSION_COUNT: MAVLINK Message ID = 44
     %Description:
     %    This message is emitted as response to MISSION_REQUEST_LIST by the MAV and to initiate a write transaction. The GCS can then request the individual mission item based on the knowledge of the total number of MISSIONs.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    count(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    count(uint16): Number of mission items in the sequence
     %    target_system(uint8): System ID
     %    target_component(uint8): Component ID
@@ -22,7 +22,7 @@ classdef msg_mission_count < mavlink_message
 
     methods
 
-        function obj = msg_mission_count(packet,count,target_system,target_component)
+        function obj = msg_mission_count(count,target_system,target_component,varargin)
         %Create a new mission_count message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_mission_count < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(count,'mavlink_packet')
+                    packet = count;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('count','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.count = count;
                 obj.target_system = target_system;
                 obj.target_component = target_component;

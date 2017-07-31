@@ -2,9 +2,9 @@ classdef msg_log_request_list < mavlink_message
 	%MSG_LOG_REQUEST_LIST: MAVLINK Message ID = 117
     %Description:
     %    Request a list of available logs. On some systems calling this may stop on-board logging until LOG_REQUEST_END is called.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    start(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    start(uint16): First log id (0 for first available)
     %    end(uint16): Last log id (0xffff for last available)
     %    target_system(uint8): System ID
@@ -24,7 +24,7 @@ classdef msg_log_request_list < mavlink_message
 
     methods
 
-        function obj = msg_log_request_list(packet,start,end,target_system,target_component)
+        function obj = msg_log_request_list(start,end,target_system,target_component,varargin)
         %Create a new log_request_list message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_log_request_list < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(start,'mavlink_packet')
+                    packet = start;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('start','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.start = start;
                 obj.end = end;
                 obj.target_system = target_system;

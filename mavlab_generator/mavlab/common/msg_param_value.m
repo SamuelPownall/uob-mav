@@ -2,9 +2,9 @@ classdef msg_param_value < mavlink_message
 	%MSG_PARAM_VALUE: MAVLINK Message ID = 22
     %Description:
     %    Emit the value of a onboard parameter. The inclusion of param_count and param_index in the message allows the recipient to keep track of received parameters and allows him to re-request missing parameters after a loss or timeout.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    param_value(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    param_value(single): Onboard parameter value
     %    param_count(uint16): Total number of onboard parameters
     %    param_index(uint16): Index of this onboard parameter
@@ -26,7 +26,7 @@ classdef msg_param_value < mavlink_message
 
     methods
 
-        function obj = msg_param_value(packet,param_value,param_count,param_index,param_id,param_type)
+        function obj = msg_param_value(param_value,param_count,param_index,param_id,param_type,varargin)
         %Create a new param_value message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_param_value < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(param_value,'mavlink_packet')
+                    packet = param_value;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('param_value','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.param_value = param_value;
                 obj.param_count = param_count;
                 obj.param_index = param_index;

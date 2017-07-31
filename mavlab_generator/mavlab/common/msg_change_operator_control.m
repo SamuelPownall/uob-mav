@@ -2,9 +2,9 @@ classdef msg_change_operator_control < mavlink_message
 	%MSG_CHANGE_OPERATOR_CONTROL: MAVLINK Message ID = 5
     %Description:
     %    Request to control this MAV
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    target_system(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    target_system(uint8): System the GCS requests control for
     %    control_request(uint8): 0: request control of this MAV, 1: Release control of this MAV
     %    version(uint8): 0: key as plaintext, 1-255: future, different hashing/encryption variants. The GCS should in general use the safest mode possible initially and then gradually move down the encryption level if it gets a NACK message indicating an encryption mismatch.
@@ -24,7 +24,7 @@ classdef msg_change_operator_control < mavlink_message
 
     methods
 
-        function obj = msg_change_operator_control(packet,target_system,control_request,version,passkey)
+        function obj = msg_change_operator_control(target_system,control_request,version,passkey,varargin)
         %Create a new change_operator_control message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_change_operator_control < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(target_system,'mavlink_packet')
+                    packet = target_system;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('target_system','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.target_system = target_system;
                 obj.control_request = control_request;
                 obj.version = version;

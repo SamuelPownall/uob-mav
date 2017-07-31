@@ -2,9 +2,9 @@ classdef msg_pid_tuning < mavlink_message
 	%MSG_PID_TUNING: MAVLINK Message ID = 194
     %Description:
     %    PID tuning information
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    desired(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    desired(single): desired rate (degrees/s)
     %    achieved(single): achieved rate (degrees/s)
     %    FF(single): FF component
@@ -30,7 +30,7 @@ classdef msg_pid_tuning < mavlink_message
 
     methods
 
-        function obj = msg_pid_tuning(packet,desired,achieved,FF,P,I,D,axis)
+        function obj = msg_pid_tuning(desired,achieved,FF,P,I,D,axis,varargin)
         %Create a new pid_tuning message
         
             obj.msgid = obj.ID;
@@ -39,15 +39,16 @@ classdef msg_pid_tuning < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(desired,'mavlink_packet')
+                    packet = desired;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('desired','mavlink_packet');
                 end
             
-            elseif nargin-1 == 7
+            elseif nargin == 7
                 obj.desired = desired;
                 obj.achieved = achieved;
                 obj.FF = FF;

@@ -2,9 +2,9 @@ classdef msg_mount_status < mavlink_message
 	%MSG_MOUNT_STATUS: MAVLINK Message ID = 158
     %Description:
     %    Message with some status from APM to GCS about camera or antenna mount
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    pointing_a(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    pointing_a(int32): pitch(deg*100)
     %    pointing_b(int32): roll(deg*100)
     %    pointing_c(int32): yaw(deg*100)
@@ -26,7 +26,7 @@ classdef msg_mount_status < mavlink_message
 
     methods
 
-        function obj = msg_mount_status(packet,pointing_a,pointing_b,pointing_c,target_system,target_component)
+        function obj = msg_mount_status(pointing_a,pointing_b,pointing_c,target_system,target_component,varargin)
         %Create a new mount_status message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_mount_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(pointing_a,'mavlink_packet')
+                    packet = pointing_a;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('pointing_a','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.pointing_a = pointing_a;
                 obj.pointing_b = pointing_b;
                 obj.pointing_c = pointing_c;

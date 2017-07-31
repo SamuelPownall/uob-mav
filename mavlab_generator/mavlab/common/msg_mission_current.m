@@ -2,9 +2,9 @@ classdef msg_mission_current < mavlink_message
 	%MSG_MISSION_CURRENT: MAVLINK Message ID = 42
     %Description:
     %    Message that announces the sequence number of the current active mission item. The MAV will fly towards this mission item.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    seq(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    seq(uint16): Sequence
 	
 	properties(Constant)
@@ -18,7 +18,7 @@ classdef msg_mission_current < mavlink_message
 
     methods
 
-        function obj = msg_mission_current(packet,seq)
+        function obj = msg_mission_current(seq,varargin)
         %Create a new mission_current message
         
             obj.msgid = obj.ID;
@@ -27,16 +27,15 @@ classdef msg_mission_current < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(seq,'mavlink_packet')
+                    packet = seq;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    obj.seq = seq;
                 end
             
-            elseif nargin-1 == 1
-                obj.seq = seq;
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

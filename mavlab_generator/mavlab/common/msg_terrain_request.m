@@ -2,9 +2,9 @@ classdef msg_terrain_request < mavlink_message
 	%MSG_TERRAIN_REQUEST: MAVLINK Message ID = 133
     %Description:
     %    Request for terrain data and terrain status
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    mask(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    mask(uint64): Bitmask of requested 4x4 grids (row major 8x7 array of grids, 56 bits)
     %    lat(int32): Latitude of SW corner of first grid (degrees *10^7)
     %    lon(int32): Longitude of SW corner of first grid (in degrees *10^7)
@@ -24,7 +24,7 @@ classdef msg_terrain_request < mavlink_message
 
     methods
 
-        function obj = msg_terrain_request(packet,mask,lat,lon,grid_spacing)
+        function obj = msg_terrain_request(mask,lat,lon,grid_spacing,varargin)
         %Create a new terrain_request message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_terrain_request < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(mask,'mavlink_packet')
+                    packet = mask;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('mask','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.mask = mask;
                 obj.lat = lat;
                 obj.lon = lon;

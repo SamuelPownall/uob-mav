@@ -2,9 +2,9 @@ classdef msg_extended_sys_state < mavlink_message
 	%MSG_EXTENDED_SYS_STATE: MAVLINK Message ID = 245
     %Description:
     %    Provides state for additional features
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    vtol_state(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    vtol_state(uint8): The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
     %    landed_state(uint8): The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
 	
@@ -20,7 +20,7 @@ classdef msg_extended_sys_state < mavlink_message
 
     methods
 
-        function obj = msg_extended_sys_state(packet,vtol_state,landed_state)
+        function obj = msg_extended_sys_state(vtol_state,landed_state,varargin)
         %Create a new extended_sys_state message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_extended_sys_state < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(vtol_state,'mavlink_packet')
+                    packet = vtol_state;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('vtol_state','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.vtol_state = vtol_state;
                 obj.landed_state = landed_state;
             elseif nargin ~= 0

@@ -2,9 +2,9 @@ classdef msg_set_mode < mavlink_message
 	%MSG_SET_MODE: MAVLINK Message ID = 11
     %Description:
     %    THIS INTERFACE IS DEPRECATED. USE COMMAND_LONG with MAV_CMD_DO_SET_MODE INSTEAD. Set the system mode, as defined by enum MAV_MODE. There is no target component id as the mode is by definition for the overall aircraft, not only for one component.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    custom_mode(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    custom_mode(uint32): The new autopilot-specific mode. This field can be ignored by an autopilot.
     %    target_system(uint8): The system setting the mode
     %    base_mode(uint8): The new base mode
@@ -22,7 +22,7 @@ classdef msg_set_mode < mavlink_message
 
     methods
 
-        function obj = msg_set_mode(packet,custom_mode,target_system,base_mode)
+        function obj = msg_set_mode(custom_mode,target_system,base_mode,varargin)
         %Create a new set_mode message
         
             obj.msgid = obj.ID;
@@ -31,15 +31,16 @@ classdef msg_set_mode < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(custom_mode,'mavlink_packet')
+                    packet = custom_mode;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('custom_mode','mavlink_packet');
                 end
             
-            elseif nargin-1 == 3
+            elseif nargin == 3
                 obj.custom_mode = custom_mode;
                 obj.target_system = target_system;
                 obj.base_mode = base_mode;

@@ -2,9 +2,9 @@ classdef msg_serial_control < mavlink_message
 	%MSG_SERIAL_CONTROL: MAVLINK Message ID = 126
     %Description:
     %    Control a serial port. This can be used for raw access to an onboard serial peripheral such as a GPS or telemetry radio. It is designed to make it possible to update the devices firmware via MAVLink messages or change the devices settings. A message with zero bytes can be used to change just the baudrate.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    baudrate(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    baudrate(uint32): Baudrate of transfer. Zero means no change.
     %    timeout(uint16): Timeout for reply data in milliseconds
     %    device(uint8): See SERIAL_CONTROL_DEV enum
@@ -28,7 +28,7 @@ classdef msg_serial_control < mavlink_message
 
     methods
 
-        function obj = msg_serial_control(packet,baudrate,timeout,device,flags,count,data)
+        function obj = msg_serial_control(baudrate,timeout,device,flags,count,data,varargin)
         %Create a new serial_control message
         
             obj.msgid = obj.ID;
@@ -37,15 +37,16 @@ classdef msg_serial_control < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(baudrate,'mavlink_packet')
+                    packet = baudrate;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('baudrate','mavlink_packet');
                 end
             
-            elseif nargin-1 == 6
+            elseif nargin == 6
                 obj.baudrate = baudrate;
                 obj.timeout = timeout;
                 obj.device = device;

@@ -2,9 +2,9 @@ classdef msg_encapsulated_data < mavlink_message
 	%MSG_ENCAPSULATED_DATA: MAVLINK Message ID = 131
     %Description:
     %    No description available
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    seqnr(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    seqnr(uint16): sequence number (starting with 0 on every transmission)
     %    data(uint8[127]): image data bytes
 	
@@ -20,7 +20,7 @@ classdef msg_encapsulated_data < mavlink_message
 
     methods
 
-        function obj = msg_encapsulated_data(packet,seqnr,data)
+        function obj = msg_encapsulated_data(seqnr,data,varargin)
         %Create a new encapsulated_data message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_encapsulated_data < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(seqnr,'mavlink_packet')
+                    packet = seqnr;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('seqnr','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.seqnr = seqnr;
                 obj.data = data;
             elseif nargin ~= 0

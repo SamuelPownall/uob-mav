@@ -2,9 +2,9 @@ classdef msg_debug_vect < mavlink_message
 	%MSG_DEBUG_VECT: MAVLINK Message ID = 250
     %Description:
     %    No description available
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Timestamp
     %    x(single): x
     %    y(single): y
@@ -26,7 +26,7 @@ classdef msg_debug_vect < mavlink_message
 
     methods
 
-        function obj = msg_debug_vect(packet,time_usec,x,y,z,name)
+        function obj = msg_debug_vect(time_usec,x,y,z,name,varargin)
         %Create a new debug_vect message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_debug_vect < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.time_usec = time_usec;
                 obj.x = x;
                 obj.y = y;

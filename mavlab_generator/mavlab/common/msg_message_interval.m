@@ -2,9 +2,9 @@ classdef msg_message_interval < mavlink_message
 	%MSG_MESSAGE_INTERVAL: MAVLINK Message ID = 244
     %Description:
     %    This interface replaces DATA_STREAM
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    interval_us(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    interval_us(int32): The interval between two messages, in microseconds. A value of -1 indicates this stream is disabled, 0 indicates it is not available, > 0 indicates the interval at which it is sent.
     %    message_id(uint16): The ID of the requested MAVLink message. v1.0 is limited to 254 messages.
 	
@@ -20,7 +20,7 @@ classdef msg_message_interval < mavlink_message
 
     methods
 
-        function obj = msg_message_interval(packet,interval_us,message_id)
+        function obj = msg_message_interval(interval_us,message_id,varargin)
         %Create a new message_interval message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_message_interval < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(interval_us,'mavlink_packet')
+                    packet = interval_us;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('interval_us','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.interval_us = interval_us;
                 obj.message_id = message_id;
             elseif nargin ~= 0

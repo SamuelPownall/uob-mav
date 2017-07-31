@@ -2,9 +2,9 @@ classdef msg_ping < mavlink_message
 	%MSG_PING: MAVLINK Message ID = 4
     %Description:
     %    A ping message either requesting or responding to a ping. This allows to measure the system latencies, including serial port, radio modem and UDP connections.
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Unix timestamp in microseconds or since system boot if smaller than MAVLink epoch (1.1.2009)
     %    seq(uint32): PING sequence
     %    target_system(uint8): 0: request ping from all receiving systems, if greater than 0: message is a ping response and number is the system id of the requesting system
@@ -24,7 +24,7 @@ classdef msg_ping < mavlink_message
 
     methods
 
-        function obj = msg_ping(packet,time_usec,seq,target_system,target_component)
+        function obj = msg_ping(time_usec,seq,target_system,target_component,varargin)
         %Create a new ping message
         
             obj.msgid = obj.ID;
@@ -33,15 +33,16 @@ classdef msg_ping < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 4
+            elseif nargin == 4
                 obj.time_usec = time_usec;
                 obj.seq = seq;
                 obj.target_system = target_system;

@@ -2,9 +2,9 @@ classdef msg_camera_feedback < mavlink_message
 	%MSG_CAMERA_FEEDBACK: MAVLINK Message ID = 180
     %Description:
     %    Camera Capture Feedback
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_usec(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_usec(uint64): Image timestamp (microseconds since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB)
     %    lat(int32): Latitude in (deg * 1E7)
     %    lng(int32): Longitude in (deg * 1E7)
@@ -42,7 +42,7 @@ classdef msg_camera_feedback < mavlink_message
 
     methods
 
-        function obj = msg_camera_feedback(packet,time_usec,lat,lng,alt_msl,alt_rel,roll,pitch,yaw,foc_len,img_idx,target_system,cam_idx,flags)
+        function obj = msg_camera_feedback(time_usec,lat,lng,alt_msl,alt_rel,roll,pitch,yaw,foc_len,img_idx,target_system,cam_idx,flags,varargin)
         %Create a new camera_feedback message
         
             obj.msgid = obj.ID;
@@ -51,15 +51,16 @@ classdef msg_camera_feedback < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_usec,'mavlink_packet')
+                    packet = time_usec;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
             
-            elseif nargin-1 == 13
+            elseif nargin == 13
                 obj.time_usec = time_usec;
                 obj.lat = lat;
                 obj.lng = lng;

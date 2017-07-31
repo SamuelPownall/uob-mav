@@ -2,9 +2,9 @@ classdef msg_camera_capture_status < mavlink_message
 	%MSG_CAMERA_CAPTURE_STATUS: MAVLINK Message ID = 262
     %Description:
     %    WIP: Information about the status of a capture
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    time_boot_ms(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    time_boot_ms(uint32): Timestamp (milliseconds since system boot)
     %    image_interval(single): Image capture interval in seconds
     %    video_framerate(single): Video frame rate in Hz
@@ -36,7 +36,7 @@ classdef msg_camera_capture_status < mavlink_message
 
     methods
 
-        function obj = msg_camera_capture_status(packet,time_boot_ms,image_interval,video_framerate,image_resolution_h,image_resolution_v,video_resolution_h,video_resolution_v,camera_id,image_status,video_status)
+        function obj = msg_camera_capture_status(time_boot_ms,image_interval,video_framerate,image_resolution_h,image_resolution_v,video_resolution_h,video_resolution_v,camera_id,image_status,video_status,varargin)
         %Create a new camera_capture_status message
         
             obj.msgid = obj.ID;
@@ -45,15 +45,16 @@ classdef msg_camera_capture_status < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(time_boot_ms,'mavlink_packet')
+                    packet = time_boot_ms;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
             
-            elseif nargin-1 == 10
+            elseif nargin == 10
                 obj.time_boot_ms = time_boot_ms;
                 obj.image_interval = image_interval;
                 obj.video_framerate = video_framerate;

@@ -2,9 +2,9 @@ classdef msg_resource_request < mavlink_message
 	%MSG_RESOURCE_REQUEST: MAVLINK Message ID = 142
     %Description:
     %    The autopilot is requesting a resource (file, binary, other type of data)
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    request_id(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    request_id(uint8): Request ID. This ID should be re-used when sending back URI contents
     %    uri_type(uint8): The type of requested URI. 0 = a file via URL. 1 = a UAVCAN binary
     %    uri(uint8[120]): The requested unique resource identifier (URI). It is not necessarily a straight domain name (depends on the URI type enum)
@@ -26,7 +26,7 @@ classdef msg_resource_request < mavlink_message
 
     methods
 
-        function obj = msg_resource_request(packet,request_id,uri_type,uri,transfer_type,storage)
+        function obj = msg_resource_request(request_id,uri_type,uri,transfer_type,storage,varargin)
         %Create a new resource_request message
         
             obj.msgid = obj.ID;
@@ -35,15 +35,16 @@ classdef msg_resource_request < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(request_id,'mavlink_packet')
+                    packet = request_id;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('request_id','mavlink_packet');
                 end
             
-            elseif nargin-1 == 5
+            elseif nargin == 5
                 obj.request_id = request_id;
                 obj.uri_type = uri_type;
                 obj.uri = uri;

@@ -2,9 +2,9 @@ classdef msg_battery2 < mavlink_message
 	%MSG_BATTERY2: MAVLINK Message ID = 181
     %Description:
     %    2nd Battery status
-    %    If constructing from fields, packet argument should be set to [].
+    %    Can also be constructed by using a mavlink_packet as the only argument
 	%Arguments:
-    %    packet(mavlink_packet): Packet to be decoded into this message type
+    %    voltage(mavlink_packet): Alternative way to construct a message using a mavlink_packet
     %    voltage(uint16): voltage in millivolts
     %    current_battery(int16): Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current
 	
@@ -20,7 +20,7 @@ classdef msg_battery2 < mavlink_message
 
     methods
 
-        function obj = msg_battery2(packet,voltage,current_battery)
+        function obj = msg_battery2(voltage,current_battery,varargin)
         %Create a new battery2 message
         
             obj.msgid = obj.ID;
@@ -29,15 +29,16 @@ classdef msg_battery2 < mavlink_message
 
             if nargin == 1
             
-                if isa(packet,'mavlink_packet')
+                if isa(voltage,'mavlink_packet')
+                    packet = voltage;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    mavlink.throwTypeError('packet','mavlink_packet');
+                    mavlink.throwTypeError('voltage','mavlink_packet');
                 end
             
-            elseif nargin-1 == 2
+            elseif nargin == 2
                 obj.voltage = voltage;
                 obj.current_battery = current_battery;
             elseif nargin ~= 0
