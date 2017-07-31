@@ -23,14 +23,13 @@ classdef msg_power_status < mavlink_message
     methods
 
         function obj = msg_power_status(Vcc,Vservo,flags,varargin)
-        %Create a new power_status message
+        %MSG_POWER_STATUS: Create a new power_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(Vcc,'mavlink_packet')
                     packet = Vcc;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_power_status < mavlink_message
                 else
                     mavlink.throwTypeError('Vcc','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.Vcc = Vcc;
                 obj.Vservo = Vservo;

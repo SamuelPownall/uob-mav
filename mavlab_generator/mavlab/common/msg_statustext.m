@@ -21,14 +21,13 @@ classdef msg_statustext < mavlink_message
     methods
 
         function obj = msg_statustext(severity,text,varargin)
-        %Create a new statustext message
+        %MSG_STATUSTEXT: Create a new statustext message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(severity,'mavlink_packet')
                     packet = severity;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_statustext < mavlink_message
                 else
                     mavlink.throwTypeError('severity','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.severity = severity;
                 obj.text = text;

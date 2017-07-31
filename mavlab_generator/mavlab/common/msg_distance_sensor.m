@@ -33,14 +33,13 @@ classdef msg_distance_sensor < mavlink_message
     methods
 
         function obj = msg_distance_sensor(time_boot_ms,min_distance,max_distance,current_distance,type,id,orientation,covariance,varargin)
-        %Create a new distance_sensor message
+        %MSG_DISTANCE_SENSOR: Create a new distance_sensor message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -49,7 +48,6 @@ classdef msg_distance_sensor < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 8
                 obj.time_boot_ms = time_boot_ms;
                 obj.min_distance = min_distance;

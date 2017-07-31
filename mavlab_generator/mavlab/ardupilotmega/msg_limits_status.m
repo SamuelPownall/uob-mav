@@ -36,14 +36,13 @@ classdef msg_limits_status < mavlink_message
     methods
 
         function obj = msg_limits_status(last_trigger,last_action,last_recovery,last_clear,breach_count,limits_state,mods_enabled,mods_required,mods_triggered,varargin)
-        %Create a new limits_status message
+        %MSG_LIMITS_STATUS: Create a new limits_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(last_trigger,'mavlink_packet')
                     packet = last_trigger;
                     obj.sysid = packet.sysid;
@@ -52,7 +51,6 @@ classdef msg_limits_status < mavlink_message
                 else
                     mavlink.throwTypeError('last_trigger','mavlink_packet');
                 end
-            
             elseif nargin == 9
                 obj.last_trigger = last_trigger;
                 obj.last_action = last_action;

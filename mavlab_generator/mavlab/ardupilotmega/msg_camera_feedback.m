@@ -43,14 +43,13 @@ classdef msg_camera_feedback < mavlink_message
     methods
 
         function obj = msg_camera_feedback(time_usec,lat,lng,alt_msl,alt_rel,roll,pitch,yaw,foc_len,img_idx,target_system,cam_idx,flags,varargin)
-        %Create a new camera_feedback message
+        %MSG_CAMERA_FEEDBACK: Create a new camera_feedback message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -59,7 +58,6 @@ classdef msg_camera_feedback < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 13
                 obj.time_usec = time_usec;
                 obj.lat = lat;

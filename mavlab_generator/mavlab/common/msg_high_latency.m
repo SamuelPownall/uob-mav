@@ -65,14 +65,13 @@ classdef msg_high_latency < mavlink_message
     methods
 
         function obj = msg_high_latency(custom_mode,latitude,longitude,roll,pitch,heading,heading_sp,altitude_amsl,altitude_sp,wp_distance,base_mode,landed_state,throttle,airspeed,airspeed_sp,groundspeed,climb_rate,gps_nsat,gps_fix_type,battery_remaining,temperature,temperature_air,failsafe,wp_num,varargin)
-        %Create a new high_latency message
+        %MSG_HIGH_LATENCY: Create a new high_latency message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(custom_mode,'mavlink_packet')
                     packet = custom_mode;
                     obj.sysid = packet.sysid;
@@ -81,7 +80,6 @@ classdef msg_high_latency < mavlink_message
                 else
                     mavlink.throwTypeError('custom_mode','mavlink_packet');
                 end
-            
             elseif nargin == 24
                 obj.custom_mode = custom_mode;
                 obj.latitude = latitude;

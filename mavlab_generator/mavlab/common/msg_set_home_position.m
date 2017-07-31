@@ -39,14 +39,13 @@ classdef msg_set_home_position < mavlink_message
     methods
 
         function obj = msg_set_home_position(latitude,longitude,altitude,x,y,z,q,approach_x,approach_y,approach_z,target_system,varargin)
-        %Create a new set_home_position message
+        %MSG_SET_HOME_POSITION: Create a new set_home_position message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(latitude,'mavlink_packet')
                     packet = latitude;
                     obj.sysid = packet.sysid;
@@ -55,7 +54,6 @@ classdef msg_set_home_position < mavlink_message
                 else
                     mavlink.throwTypeError('latitude','mavlink_packet');
                 end
-            
             elseif nargin == 11
                 obj.latitude = latitude;
                 obj.longitude = longitude;

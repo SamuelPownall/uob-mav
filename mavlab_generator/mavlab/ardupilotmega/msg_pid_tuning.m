@@ -31,14 +31,13 @@ classdef msg_pid_tuning < mavlink_message
     methods
 
         function obj = msg_pid_tuning(desired,achieved,FF,P,I,D,axis,varargin)
-        %Create a new pid_tuning message
+        %MSG_PID_TUNING: Create a new pid_tuning message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(desired,'mavlink_packet')
                     packet = desired;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_pid_tuning < mavlink_message
                 else
                     mavlink.throwTypeError('desired','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.desired = desired;
                 obj.achieved = achieved;

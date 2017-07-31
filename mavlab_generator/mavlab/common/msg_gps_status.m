@@ -29,14 +29,13 @@ classdef msg_gps_status < mavlink_message
     methods
 
         function obj = msg_gps_status(satellites_visible,satellite_prn,satellite_used,satellite_elevation,satellite_azimuth,satellite_snr,varargin)
-        %Create a new gps_status message
+        %MSG_GPS_STATUS: Create a new gps_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(satellites_visible,'mavlink_packet')
                     packet = satellites_visible;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_gps_status < mavlink_message
                 else
                     mavlink.throwTypeError('satellites_visible','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.satellites_visible = satellites_visible;
                 obj.satellite_prn = satellite_prn;

@@ -25,14 +25,13 @@ classdef msg_log_data < mavlink_message
     methods
 
         function obj = msg_log_data(ofs,id,count,data,varargin)
-        %Create a new log_data message
+        %MSG_LOG_DATA: Create a new log_data message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(ofs,'mavlink_packet')
                     packet = ofs;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_log_data < mavlink_message
                 else
                     mavlink.throwTypeError('ofs','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.ofs = ofs;
                 obj.id = id;

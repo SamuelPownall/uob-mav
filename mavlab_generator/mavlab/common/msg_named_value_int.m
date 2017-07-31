@@ -23,14 +23,13 @@ classdef msg_named_value_int < mavlink_message
     methods
 
         function obj = msg_named_value_int(time_boot_ms,value,name,varargin)
-        %Create a new named_value_int message
+        %MSG_NAMED_VALUE_INT: Create a new named_value_int message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_named_value_int < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.time_boot_ms = time_boot_ms;
                 obj.value = value;

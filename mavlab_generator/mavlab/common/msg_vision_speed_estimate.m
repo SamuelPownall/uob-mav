@@ -25,14 +25,13 @@ classdef msg_vision_speed_estimate < mavlink_message
     methods
 
         function obj = msg_vision_speed_estimate(usec,x,y,z,varargin)
-        %Create a new vision_speed_estimate message
+        %MSG_VISION_SPEED_ESTIMATE: Create a new vision_speed_estimate message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(usec,'mavlink_packet')
                     packet = usec;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_vision_speed_estimate < mavlink_message
                 else
                     mavlink.throwTypeError('usec','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.usec = usec;
                 obj.x = x;

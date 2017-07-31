@@ -21,14 +21,13 @@ classdef msg_param_request_list < mavlink_message
     methods
 
         function obj = msg_param_request_list(target_system,target_component,varargin)
-        %Create a new param_request_list message
+        %MSG_PARAM_REQUEST_LIST: Create a new param_request_list message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(target_system,'mavlink_packet')
                     packet = target_system;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_param_request_list < mavlink_message
                 else
                     mavlink.throwTypeError('target_system','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.target_system = target_system;
                 obj.target_component = target_component;

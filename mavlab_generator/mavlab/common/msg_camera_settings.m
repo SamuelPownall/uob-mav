@@ -43,14 +43,13 @@ classdef msg_camera_settings < mavlink_message
     methods
 
         function obj = msg_camera_settings(time_boot_ms,aperture,shutter_speed,iso_sensitivity,white_balance,camera_id,aperture_locked,shutter_speed_locked,iso_sensitivity_locked,white_balance_locked,mode_id,color_mode_id,image_format_id,varargin)
-        %Create a new camera_settings message
+        %MSG_CAMERA_SETTINGS: Create a new camera_settings message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -59,7 +58,6 @@ classdef msg_camera_settings < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 13
                 obj.time_boot_ms = time_boot_ms;
                 obj.aperture = aperture;

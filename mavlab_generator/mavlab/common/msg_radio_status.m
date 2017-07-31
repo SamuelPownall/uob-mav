@@ -31,14 +31,13 @@ classdef msg_radio_status < mavlink_message
     methods
 
         function obj = msg_radio_status(rxerrors,fixed,rssi,remrssi,txbuf,noise,remnoise,varargin)
-        %Create a new radio_status message
+        %MSG_RADIO_STATUS: Create a new radio_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(rxerrors,'mavlink_packet')
                     packet = rxerrors;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_radio_status < mavlink_message
                 else
                     mavlink.throwTypeError('rxerrors','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.rxerrors = rxerrors;
                 obj.fixed = fixed;

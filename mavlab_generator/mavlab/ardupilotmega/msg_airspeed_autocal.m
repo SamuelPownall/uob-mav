@@ -41,14 +41,13 @@ classdef msg_airspeed_autocal < mavlink_message
     methods
 
         function obj = msg_airspeed_autocal(vx,vy,vz,diff_pressure,EAS2TAS,ratio,state_x,state_y,state_z,Pax,Pby,Pcz,varargin)
-        %Create a new airspeed_autocal message
+        %MSG_AIRSPEED_AUTOCAL: Create a new airspeed_autocal message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(vx,'mavlink_packet')
                     packet = vx;
                     obj.sysid = packet.sysid;
@@ -57,7 +56,6 @@ classdef msg_airspeed_autocal < mavlink_message
                 else
                     mavlink.throwTypeError('vx','mavlink_packet');
                 end
-            
             elseif nargin == 12
                 obj.vx = vx;
                 obj.vy = vy;

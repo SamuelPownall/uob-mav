@@ -31,14 +31,13 @@ classdef msg_altitude < mavlink_message
     methods
 
         function obj = msg_altitude(time_usec,altitude_monotonic,altitude_amsl,altitude_local,altitude_relative,altitude_terrain,bottom_clearance,varargin)
-        %Create a new altitude message
+        %MSG_ALTITUDE: Create a new altitude message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_altitude < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.time_usec = time_usec;
                 obj.altitude_monotonic = altitude_monotonic;

@@ -21,14 +21,13 @@ classdef msg_encapsulated_data < mavlink_message
     methods
 
         function obj = msg_encapsulated_data(seqnr,data,varargin)
-        %Create a new encapsulated_data message
+        %MSG_ENCAPSULATED_DATA: Create a new encapsulated_data message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(seqnr,'mavlink_packet')
                     packet = seqnr;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_encapsulated_data < mavlink_message
                 else
                     mavlink.throwTypeError('seqnr','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.seqnr = seqnr;
                 obj.data = data;

@@ -21,14 +21,13 @@ classdef msg_gopro_get_response < mavlink_message
     methods
 
         function obj = msg_gopro_get_response(cmd_id,value,varargin)
-        %Create a new gopro_get_response message
+        %MSG_GOPRO_GET_RESPONSE: Create a new gopro_get_response message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(cmd_id,'mavlink_packet')
                     packet = cmd_id;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_gopro_get_response < mavlink_message
                 else
                     mavlink.throwTypeError('cmd_id','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.cmd_id = cmd_id;
                 obj.value = value;

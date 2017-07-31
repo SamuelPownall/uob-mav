@@ -25,14 +25,13 @@ classdef msg_scaled_pressure < mavlink_message
     methods
 
         function obj = msg_scaled_pressure(time_boot_ms,press_abs,press_diff,temperature,varargin)
-        %Create a new scaled_pressure message
+        %MSG_SCALED_PRESSURE: Create a new scaled_pressure message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_scaled_pressure < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.time_boot_ms = time_boot_ms;
                 obj.press_abs = press_abs;

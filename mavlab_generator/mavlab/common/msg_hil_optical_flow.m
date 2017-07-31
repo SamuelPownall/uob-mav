@@ -41,14 +41,13 @@ classdef msg_hil_optical_flow < mavlink_message
     methods
 
         function obj = msg_hil_optical_flow(time_usec,integration_time_us,integrated_x,integrated_y,integrated_xgyro,integrated_ygyro,integrated_zgyro,time_delta_distance_us,distance,temperature,sensor_id,quality,varargin)
-        %Create a new hil_optical_flow message
+        %MSG_HIL_OPTICAL_FLOW: Create a new hil_optical_flow message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -57,7 +56,6 @@ classdef msg_hil_optical_flow < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 12
                 obj.time_usec = time_usec;
                 obj.integration_time_us = integration_time_us;

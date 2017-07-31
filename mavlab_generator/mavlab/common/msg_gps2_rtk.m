@@ -43,14 +43,13 @@ classdef msg_gps2_rtk < mavlink_message
     methods
 
         function obj = msg_gps2_rtk(time_last_baseline_ms,tow,baseline_a_mm,baseline_b_mm,baseline_c_mm,accuracy,iar_num_hypotheses,wn,rtk_receiver_id,rtk_health,rtk_rate,nsats,baseline_coords_type,varargin)
-        %Create a new gps2_rtk message
+        %MSG_GPS2_RTK: Create a new gps2_rtk message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_last_baseline_ms,'mavlink_packet')
                     packet = time_last_baseline_ms;
                     obj.sysid = packet.sysid;
@@ -59,7 +58,6 @@ classdef msg_gps2_rtk < mavlink_message
                 else
                     mavlink.throwTypeError('time_last_baseline_ms','mavlink_packet');
                 end
-            
             elseif nargin == 13
                 obj.time_last_baseline_ms = time_last_baseline_ms;
                 obj.tow = tow;

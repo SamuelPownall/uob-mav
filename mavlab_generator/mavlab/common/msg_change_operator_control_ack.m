@@ -23,14 +23,13 @@ classdef msg_change_operator_control_ack < mavlink_message
     methods
 
         function obj = msg_change_operator_control_ack(gcs_system_id,control_request,ack,varargin)
-        %Create a new change_operator_control_ack message
+        %MSG_CHANGE_OPERATOR_CONTROL_ACK: Create a new change_operator_control_ack message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(gcs_system_id,'mavlink_packet')
                     packet = gcs_system_id;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_change_operator_control_ack < mavlink_message
                 else
                     mavlink.throwTypeError('gcs_system_id','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.gcs_system_id = gcs_system_id;
                 obj.control_request = control_request;

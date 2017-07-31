@@ -19,14 +19,13 @@ classdef msg_auth_key < mavlink_message
     methods
 
         function obj = msg_auth_key(key,varargin)
-        %Create a new auth_key message
+        %MSG_AUTH_KEY: Create a new auth_key message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(key,'mavlink_packet')
                     packet = key;
                     obj.sysid = packet.sysid;
@@ -35,7 +34,6 @@ classdef msg_auth_key < mavlink_message
                 else
                     obj.key = key;
                 end
-            
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

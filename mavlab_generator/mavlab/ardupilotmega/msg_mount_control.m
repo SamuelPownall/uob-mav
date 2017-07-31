@@ -29,14 +29,13 @@ classdef msg_mount_control < mavlink_message
     methods
 
         function obj = msg_mount_control(input_a,input_b,input_c,target_system,target_component,save_position,varargin)
-        %Create a new mount_control message
+        %MSG_MOUNT_CONTROL: Create a new mount_control message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(input_a,'mavlink_packet')
                     packet = input_a;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_mount_control < mavlink_message
                 else
                     mavlink.throwTypeError('input_a','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.input_a = input_a;
                 obj.input_b = input_b;

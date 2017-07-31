@@ -39,14 +39,13 @@ classdef msg_command_long < mavlink_message
     methods
 
         function obj = msg_command_long(param1,param2,param3,param4,param5,param6,param7,command,target_system,target_component,confirmation,varargin)
-        %Create a new command_long message
+        %MSG_COMMAND_LONG: Create a new command_long message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(param1,'mavlink_packet')
                     packet = param1;
                     obj.sysid = packet.sysid;
@@ -55,7 +54,6 @@ classdef msg_command_long < mavlink_message
                 else
                     mavlink.throwTypeError('param1','mavlink_packet');
                 end
-            
             elseif nargin == 11
                 obj.param1 = param1;
                 obj.param2 = param2;

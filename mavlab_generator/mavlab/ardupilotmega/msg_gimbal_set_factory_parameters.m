@@ -48,14 +48,13 @@ classdef msg_gimbal_set_factory_parameters < mavlink_message
     methods
 
         function obj = msg_gimbal_set_factory_parameters(magic_1,magic_2,magic_3,serial_number_pt_1,serial_number_pt_2,serial_number_pt_3,assembly_year,target_system,target_component,assembly_month,assembly_day,assembly_hour,assembly_minute,assembly_second,varargin)
-        %Create a new gimbal_set_factory_parameters message
+        %MSG_GIMBAL_SET_FACTORY_PARAMETERS: Create a new gimbal_set_factory_parameters message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(magic_1,'mavlink_packet')
                     packet = magic_1;
                     obj.sysid = packet.sysid;
@@ -64,7 +63,6 @@ classdef msg_gimbal_set_factory_parameters < mavlink_message
                 else
                     mavlink.throwTypeError('magic_1','mavlink_packet');
                 end
-            
             elseif nargin == 14
                 obj.magic_1 = magic_1;
                 obj.magic_2 = magic_2;

@@ -45,14 +45,13 @@ classdef msg_mag_cal_report < mavlink_message
     methods
 
         function obj = msg_mag_cal_report(fitness,ofs_x,ofs_y,ofs_z,diag_x,diag_y,diag_z,offdiag_x,offdiag_y,offdiag_z,compass_id,cal_mask,cal_status,autosaved,varargin)
-        %Create a new mag_cal_report message
+        %MSG_MAG_CAL_REPORT: Create a new mag_cal_report message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(fitness,'mavlink_packet')
                     packet = fitness;
                     obj.sysid = packet.sysid;
@@ -61,7 +60,6 @@ classdef msg_mag_cal_report < mavlink_message
                 else
                     mavlink.throwTypeError('fitness','mavlink_packet');
                 end
-            
             elseif nargin == 14
                 obj.fitness = fitness;
                 obj.ofs_x = ofs_x;

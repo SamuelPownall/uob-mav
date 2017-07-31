@@ -43,14 +43,13 @@ classdef msg_command_int < mavlink_message
     methods
 
         function obj = msg_command_int(param1,param2,param3,param4,x,y,z,command,target_system,target_component,frame,current,autocontinue,varargin)
-        %Create a new command_int message
+        %MSG_COMMAND_INT: Create a new command_int message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(param1,'mavlink_packet')
                     packet = param1;
                     obj.sysid = packet.sysid;
@@ -59,7 +58,6 @@ classdef msg_command_int < mavlink_message
                 else
                     mavlink.throwTypeError('param1','mavlink_packet');
                 end
-            
             elseif nargin == 13
                 obj.param1 = param1;
                 obj.param2 = param2;

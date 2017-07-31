@@ -35,14 +35,13 @@ classdef msg_mag_cal_progress < mavlink_message
     methods
 
         function obj = msg_mag_cal_progress(direction_x,direction_y,direction_z,compass_id,cal_mask,cal_status,attempt,completion_pct,completion_mask,varargin)
-        %Create a new mag_cal_progress message
+        %MSG_MAG_CAL_PROGRESS: Create a new mag_cal_progress message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(direction_x,'mavlink_packet')
                     packet = direction_x;
                     obj.sysid = packet.sysid;
@@ -51,7 +50,6 @@ classdef msg_mag_cal_progress < mavlink_message
                 else
                     mavlink.throwTypeError('direction_x','mavlink_packet');
                 end
-            
             elseif nargin == 9
                 obj.direction_x = direction_x;
                 obj.direction_y = direction_y;

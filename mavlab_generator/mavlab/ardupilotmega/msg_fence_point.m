@@ -30,14 +30,13 @@ classdef msg_fence_point < mavlink_message
     methods
 
         function obj = msg_fence_point(lat,lng,target_system,target_component,idx,count,varargin)
-        %Create a new fence_point message
+        %MSG_FENCE_POINT: Create a new fence_point message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(lat,'mavlink_packet')
                     packet = lat;
                     obj.sysid = packet.sysid;
@@ -46,7 +45,6 @@ classdef msg_fence_point < mavlink_message
                 else
                     mavlink.throwTypeError('lat','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.lat = lat;
                 obj.lng = lng;

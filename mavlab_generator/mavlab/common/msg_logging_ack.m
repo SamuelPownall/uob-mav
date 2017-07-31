@@ -23,14 +23,13 @@ classdef msg_logging_ack < mavlink_message
     methods
 
         function obj = msg_logging_ack(sequence,target_system,target_component,varargin)
-        %Create a new logging_ack message
+        %MSG_LOGGING_ACK: Create a new logging_ack message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(sequence,'mavlink_packet')
                     packet = sequence;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_logging_ack < mavlink_message
                 else
                     mavlink.throwTypeError('sequence','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.sequence = sequence;
                 obj.target_system = target_system;

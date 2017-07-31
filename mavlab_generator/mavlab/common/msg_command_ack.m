@@ -21,14 +21,13 @@ classdef msg_command_ack < mavlink_message
     methods
 
         function obj = msg_command_ack(command,result,varargin)
-        %Create a new command_ack message
+        %MSG_COMMAND_ACK: Create a new command_ack message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(command,'mavlink_packet')
                     packet = command;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_command_ack < mavlink_message
                 else
                     mavlink.throwTypeError('command','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.command = command;
                 obj.result = result;

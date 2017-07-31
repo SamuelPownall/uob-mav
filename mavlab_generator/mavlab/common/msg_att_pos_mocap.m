@@ -27,14 +27,13 @@ classdef msg_att_pos_mocap < mavlink_message
     methods
 
         function obj = msg_att_pos_mocap(time_usec,q,x,y,z,varargin)
-        %Create a new att_pos_mocap message
+        %MSG_ATT_POS_MOCAP: Create a new att_pos_mocap message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_att_pos_mocap < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.time_usec = time_usec;
                 obj.q = q;

@@ -21,14 +21,13 @@ classdef msg_rangefinder < mavlink_message
     methods
 
         function obj = msg_rangefinder(distance,voltage,varargin)
-        %Create a new rangefinder message
+        %MSG_RANGEFINDER: Create a new rangefinder message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(distance,'mavlink_packet')
                     packet = distance;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_rangefinder < mavlink_message
                 else
                     mavlink.throwTypeError('distance','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.distance = distance;
                 obj.voltage = voltage;

@@ -39,14 +39,13 @@ classdef msg_follow_target < mavlink_message
     methods
 
         function obj = msg_follow_target(timestamp,custom_state,lat,lon,alt,vel,acc,attitude_q,rates,position_cov,est_capabilities,varargin)
-        %Create a new follow_target message
+        %MSG_FOLLOW_TARGET: Create a new follow_target message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(timestamp,'mavlink_packet')
                     packet = timestamp;
                     obj.sysid = packet.sysid;
@@ -55,7 +54,6 @@ classdef msg_follow_target < mavlink_message
                 else
                     mavlink.throwTypeError('timestamp','mavlink_packet');
                 end
-            
             elseif nargin == 11
                 obj.timestamp = timestamp;
                 obj.custom_state = custom_state;

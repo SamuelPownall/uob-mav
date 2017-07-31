@@ -31,14 +31,13 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
     methods
 
         function obj = msg_local_position_ned_system_global_offset(time_boot_ms,x,y,z,roll,pitch,yaw,varargin)
-        %Create a new local_position_ned_system_global_offset message
+        %MSG_LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET: Create a new local_position_ned_system_global_offset message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_local_position_ned_system_global_offset < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.time_boot_ms = time_boot_ms;
                 obj.x = x;

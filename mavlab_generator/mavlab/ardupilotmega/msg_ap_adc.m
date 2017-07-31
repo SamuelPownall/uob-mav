@@ -29,14 +29,13 @@ classdef msg_ap_adc < mavlink_message
     methods
 
         function obj = msg_ap_adc(adc1,adc2,adc3,adc4,adc5,adc6,varargin)
-        %Create a new ap_adc message
+        %MSG_AP_ADC: Create a new ap_adc message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(adc1,'mavlink_packet')
                     packet = adc1;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_ap_adc < mavlink_message
                 else
                     mavlink.throwTypeError('adc1','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.adc1 = adc1;
                 obj.adc2 = adc2;

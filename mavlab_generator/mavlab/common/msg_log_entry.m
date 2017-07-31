@@ -27,14 +27,13 @@ classdef msg_log_entry < mavlink_message
     methods
 
         function obj = msg_log_entry(time_utc,size,id,num_logs,last_log_num,varargin)
-        %Create a new log_entry message
+        %MSG_LOG_ENTRY: Create a new log_entry message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_utc,'mavlink_packet')
                     packet = time_utc;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_log_entry < mavlink_message
                 else
                     mavlink.throwTypeError('time_utc','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.time_utc = time_utc;
                 obj.size = size;

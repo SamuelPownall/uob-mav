@@ -25,14 +25,13 @@ classdef msg_flight_information < mavlink_message
     methods
 
         function obj = msg_flight_information(arming_time_utc,takeoff_time_utc,flight_uuid,time_boot_ms,varargin)
-        %Create a new flight_information message
+        %MSG_FLIGHT_INFORMATION: Create a new flight_information message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(arming_time_utc,'mavlink_packet')
                     packet = arming_time_utc;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_flight_information < mavlink_message
                 else
                     mavlink.throwTypeError('arming_time_utc','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.arming_time_utc = arming_time_utc;
                 obj.takeoff_time_utc = takeoff_time_utc;

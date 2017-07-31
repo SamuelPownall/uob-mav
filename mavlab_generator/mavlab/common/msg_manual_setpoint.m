@@ -31,14 +31,13 @@ classdef msg_manual_setpoint < mavlink_message
     methods
 
         function obj = msg_manual_setpoint(time_boot_ms,roll,pitch,yaw,thrust,mode_switch,manual_override_switch,varargin)
-        %Create a new manual_setpoint message
+        %MSG_MANUAL_SETPOINT: Create a new manual_setpoint message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_manual_setpoint < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.time_boot_ms = time_boot_ms;
                 obj.roll = roll;

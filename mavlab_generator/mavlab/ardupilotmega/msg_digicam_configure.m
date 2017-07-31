@@ -39,14 +39,13 @@ classdef msg_digicam_configure < mavlink_message
     methods
 
         function obj = msg_digicam_configure(extra_value,shutter_speed,target_system,target_component,mode,aperture,iso,exposure_type,command_id,engine_cut_off,extra_param,varargin)
-        %Create a new digicam_configure message
+        %MSG_DIGICAM_CONFIGURE: Create a new digicam_configure message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(extra_value,'mavlink_packet')
                     packet = extra_value;
                     obj.sysid = packet.sysid;
@@ -55,7 +54,6 @@ classdef msg_digicam_configure < mavlink_message
                 else
                     mavlink.throwTypeError('extra_value','mavlink_packet');
                 end
-            
             elseif nargin == 11
                 obj.extra_value = extra_value;
                 obj.shutter_speed = shutter_speed;

@@ -25,14 +25,13 @@ classdef msg_setup_signing < mavlink_message
     methods
 
         function obj = msg_setup_signing(initial_timestamp,target_system,target_component,secret_key,varargin)
-        %Create a new setup_signing message
+        %MSG_SETUP_SIGNING: Create a new setup_signing message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(initial_timestamp,'mavlink_packet')
                     packet = initial_timestamp;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_setup_signing < mavlink_message
                 else
                     mavlink.throwTypeError('initial_timestamp','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.initial_timestamp = initial_timestamp;
                 obj.target_system = target_system;

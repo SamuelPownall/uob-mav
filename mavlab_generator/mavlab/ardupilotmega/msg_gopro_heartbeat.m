@@ -19,14 +19,13 @@ classdef msg_gopro_heartbeat < mavlink_message
     methods
 
         function obj = msg_gopro_heartbeat(status,varargin)
-        %Create a new gopro_heartbeat message
+        %MSG_GOPRO_HEARTBEAT: Create a new gopro_heartbeat message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(status,'mavlink_packet')
                     packet = status;
                     obj.sysid = packet.sysid;
@@ -35,7 +34,6 @@ classdef msg_gopro_heartbeat < mavlink_message
                 else
                     obj.status = status;
                 end
-            
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

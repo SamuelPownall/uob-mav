@@ -23,14 +23,13 @@ classdef msg_data_stream < mavlink_message
     methods
 
         function obj = msg_data_stream(message_rate,stream_id,on_off,varargin)
-        %Create a new data_stream message
+        %MSG_DATA_STREAM: Create a new data_stream message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(message_rate,'mavlink_packet')
                     packet = message_rate;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_data_stream < mavlink_message
                 else
                     mavlink.throwTypeError('message_rate','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.message_rate = message_rate;
                 obj.stream_id = stream_id;

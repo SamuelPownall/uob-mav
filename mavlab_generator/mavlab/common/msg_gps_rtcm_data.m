@@ -23,14 +23,13 @@ classdef msg_gps_rtcm_data < mavlink_message
     methods
 
         function obj = msg_gps_rtcm_data(flags,len,data,varargin)
-        %Create a new gps_rtcm_data message
+        %MSG_GPS_RTCM_DATA: Create a new gps_rtcm_data message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(flags,'mavlink_packet')
                     packet = flags;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_gps_rtcm_data < mavlink_message
                 else
                     mavlink.throwTypeError('flags','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.flags = flags;
                 obj.len = len;

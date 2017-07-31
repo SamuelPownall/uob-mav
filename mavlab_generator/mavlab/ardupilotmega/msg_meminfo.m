@@ -21,14 +21,13 @@ classdef msg_meminfo < mavlink_message
     methods
 
         function obj = msg_meminfo(brkval,freemem,varargin)
-        %Create a new meminfo message
+        %MSG_MEMINFO: Create a new meminfo message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(brkval,'mavlink_packet')
                     packet = brkval;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_meminfo < mavlink_message
                 else
                     mavlink.throwTypeError('brkval','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.brkval = brkval;
                 obj.freemem = freemem;

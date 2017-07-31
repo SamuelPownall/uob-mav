@@ -19,14 +19,13 @@ classdef msg_mission_item_reached < mavlink_message
     methods
 
         function obj = msg_mission_item_reached(seq,varargin)
-        %Create a new mission_item_reached message
+        %MSG_MISSION_ITEM_REACHED: Create a new mission_item_reached message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(seq,'mavlink_packet')
                     packet = seq;
                     obj.sysid = packet.sysid;
@@ -35,7 +34,6 @@ classdef msg_mission_item_reached < mavlink_message
                 else
                     obj.seq = seq;
                 end
-            
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

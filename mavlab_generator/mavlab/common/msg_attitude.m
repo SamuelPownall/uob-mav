@@ -31,14 +31,13 @@ classdef msg_attitude < mavlink_message
     methods
 
         function obj = msg_attitude(time_boot_ms,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed,varargin)
-        %Create a new attitude message
+        %MSG_ATTITUDE: Create a new attitude message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_attitude < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.time_boot_ms = time_boot_ms;
                 obj.roll = roll;

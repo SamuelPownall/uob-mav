@@ -21,14 +21,13 @@ classdef msg_message_interval < mavlink_message
     methods
 
         function obj = msg_message_interval(interval_us,message_id,varargin)
-        %Create a new message_interval message
+        %MSG_MESSAGE_INTERVAL: Create a new message_interval message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(interval_us,'mavlink_packet')
                     packet = interval_us;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_message_interval < mavlink_message
                 else
                     mavlink.throwTypeError('interval_us','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.interval_us = interval_us;
                 obj.message_id = message_id;

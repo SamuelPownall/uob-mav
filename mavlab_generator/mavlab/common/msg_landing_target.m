@@ -33,14 +33,13 @@ classdef msg_landing_target < mavlink_message
     methods
 
         function obj = msg_landing_target(time_usec,angle_x,angle_y,distance,size_x,size_y,target_num,frame,varargin)
-        %Create a new landing_target message
+        %MSG_LANDING_TARGET: Create a new landing_target message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -49,7 +48,6 @@ classdef msg_landing_target < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 8
                 obj.time_usec = time_usec;
                 obj.angle_x = angle_x;

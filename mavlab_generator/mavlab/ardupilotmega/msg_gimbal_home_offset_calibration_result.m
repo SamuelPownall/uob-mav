@@ -19,14 +19,13 @@ classdef msg_gimbal_home_offset_calibration_result < mavlink_message
     methods
 
         function obj = msg_gimbal_home_offset_calibration_result(calibration_result,varargin)
-        %Create a new gimbal_home_offset_calibration_result message
+        %MSG_GIMBAL_HOME_OFFSET_CALIBRATION_RESULT: Create a new gimbal_home_offset_calibration_result message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(calibration_result,'mavlink_packet')
                     packet = calibration_result;
                     obj.sysid = packet.sysid;
@@ -35,7 +34,6 @@ classdef msg_gimbal_home_offset_calibration_result < mavlink_message
                 else
                     obj.calibration_result = calibration_result;
                 end
-            
             elseif nargin ~= 0
                 mavlink.throwCustomError('The number of constructer arguments is not valid');
             end

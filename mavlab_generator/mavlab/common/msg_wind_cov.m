@@ -35,14 +35,13 @@ classdef msg_wind_cov < mavlink_message
     methods
 
         function obj = msg_wind_cov(time_usec,wind_x,wind_y,wind_z,var_horiz,var_vert,wind_alt,horiz_accuracy,vert_accuracy,varargin)
-        %Create a new wind_cov message
+        %MSG_WIND_COV: Create a new wind_cov message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -51,7 +50,6 @@ classdef msg_wind_cov < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 9
                 obj.time_usec = time_usec;
                 obj.wind_x = wind_x;

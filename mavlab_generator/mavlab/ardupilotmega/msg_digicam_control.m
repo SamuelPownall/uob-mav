@@ -37,14 +37,13 @@ classdef msg_digicam_control < mavlink_message
     methods
 
         function obj = msg_digicam_control(extra_value,target_system,target_component,session,zoom_pos,zoom_step,focus_lock,shot,command_id,extra_param,varargin)
-        %Create a new digicam_control message
+        %MSG_DIGICAM_CONTROL: Create a new digicam_control message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(extra_value,'mavlink_packet')
                     packet = extra_value;
                     obj.sysid = packet.sysid;
@@ -53,7 +52,6 @@ classdef msg_digicam_control < mavlink_message
                 else
                     mavlink.throwTypeError('extra_value','mavlink_packet');
                 end
-            
             elseif nargin == 10
                 obj.extra_value = extra_value;
                 obj.target_system = target_system;

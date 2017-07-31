@@ -29,14 +29,13 @@ classdef msg_ekf_status_report < mavlink_message
     methods
 
         function obj = msg_ekf_status_report(velocity_variance,pos_horiz_variance,pos_vert_variance,compass_variance,terrain_alt_variance,flags,varargin)
-        %Create a new ekf_status_report message
+        %MSG_EKF_STATUS_REPORT: Create a new ekf_status_report message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(velocity_variance,'mavlink_packet')
                     packet = velocity_variance;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_ekf_status_report < mavlink_message
                 else
                     mavlink.throwTypeError('velocity_variance','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.velocity_variance = velocity_variance;
                 obj.pos_horiz_variance = pos_horiz_variance;

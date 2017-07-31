@@ -18,7 +18,7 @@ classdef msg_${name}$ < mavlink_message
     methods
 
         function obj = msg_${name}$(#{orderedFields<#>${name}$,}#varargin)
-        %%Create a new ${name}$ message
+        %%MSG_${nameUpper}$: Create a new ${name}$ message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;

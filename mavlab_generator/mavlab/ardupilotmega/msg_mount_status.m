@@ -27,14 +27,13 @@ classdef msg_mount_status < mavlink_message
     methods
 
         function obj = msg_mount_status(pointing_a,pointing_b,pointing_c,target_system,target_component,varargin)
-        %Create a new mount_status message
+        %MSG_MOUNT_STATUS: Create a new mount_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(pointing_a,'mavlink_packet')
                     packet = pointing_a;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_mount_status < mavlink_message
                 else
                     mavlink.throwTypeError('pointing_a','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.pointing_a = pointing_a;
                 obj.pointing_b = pointing_b;

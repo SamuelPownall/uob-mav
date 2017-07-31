@@ -29,14 +29,13 @@ classdef msg_vfr_hud < mavlink_message
     methods
 
         function obj = msg_vfr_hud(airspeed,groundspeed,alt,climb,heading,throttle,varargin)
-        %Create a new vfr_hud message
+        %MSG_VFR_HUD: Create a new vfr_hud message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(airspeed,'mavlink_packet')
                     packet = airspeed;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_vfr_hud < mavlink_message
                 else
                     mavlink.throwTypeError('airspeed','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.airspeed = airspeed;
                 obj.groundspeed = groundspeed;

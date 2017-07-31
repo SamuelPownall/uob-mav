@@ -23,14 +23,13 @@ classdef msg_data96 < mavlink_message
     methods
 
         function obj = msg_data96(type,len,data,varargin)
-        %Create a new data96 message
+        %MSG_DATA96: Create a new data96 message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(type,'mavlink_packet')
                     packet = type;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_data96 < mavlink_message
                 else
                     mavlink.throwTypeError('type','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.type = type;
                 obj.len = len;

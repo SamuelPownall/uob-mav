@@ -38,14 +38,13 @@ classdef msg_gps_raw_int < mavlink_message
     methods
 
         function obj = msg_gps_raw_int(time_usec,lat,lon,alt,eph,epv,vel,cog,fix_type,satellites_visible,varargin)
-        %Create a new gps_raw_int message
+        %MSG_GPS_RAW_INT: Create a new gps_raw_int message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -54,7 +53,6 @@ classdef msg_gps_raw_int < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 10
                 obj.time_usec = time_usec;
                 obj.lat = lat;

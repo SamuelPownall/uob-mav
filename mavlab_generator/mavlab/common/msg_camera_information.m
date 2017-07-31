@@ -37,14 +37,13 @@ classdef msg_camera_information < mavlink_message
     methods
 
         function obj = msg_camera_information(time_boot_ms,focal_length,sensor_size_h,sensor_size_v,resolution_h,resolution_v,camera_id,vendor_name,model_name,lense_id,varargin)
-        %Create a new camera_information message
+        %MSG_CAMERA_INFORMATION: Create a new camera_information message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -53,7 +52,6 @@ classdef msg_camera_information < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 10
                 obj.time_boot_ms = time_boot_ms;
                 obj.focal_length = focal_length;

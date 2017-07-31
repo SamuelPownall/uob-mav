@@ -29,14 +29,13 @@ classdef msg_led_control < mavlink_message
     methods
 
         function obj = msg_led_control(target_system,target_component,instance,pattern,custom_len,custom_bytes,varargin)
-        %Create a new led_control message
+        %MSG_LED_CONTROL: Create a new led_control message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(target_system,'mavlink_packet')
                     packet = target_system;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_led_control < mavlink_message
                 else
                     mavlink.throwTypeError('target_system','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.target_system = target_system;
                 obj.target_component = target_component;

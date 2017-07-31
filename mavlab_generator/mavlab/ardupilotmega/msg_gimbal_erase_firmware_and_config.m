@@ -27,14 +27,13 @@ classdef msg_gimbal_erase_firmware_and_config < mavlink_message
     methods
 
         function obj = msg_gimbal_erase_firmware_and_config(knock,target_system,target_component,varargin)
-        %Create a new gimbal_erase_firmware_and_config message
+        %MSG_GIMBAL_ERASE_FIRMWARE_AND_CONFIG: Create a new gimbal_erase_firmware_and_config message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(knock,'mavlink_packet')
                     packet = knock;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_gimbal_erase_firmware_and_config < mavlink_message
                 else
                     mavlink.throwTypeError('knock','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.knock = knock;
                 obj.target_system = target_system;

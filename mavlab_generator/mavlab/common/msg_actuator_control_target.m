@@ -23,14 +23,13 @@ classdef msg_actuator_control_target < mavlink_message
     methods
 
         function obj = msg_actuator_control_target(time_usec,controls,group_mlx,varargin)
-        %Create a new actuator_control_target message
+        %MSG_ACTUATOR_CONTROL_TARGET: Create a new actuator_control_target message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_actuator_control_target < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.time_usec = time_usec;
                 obj.controls = controls;

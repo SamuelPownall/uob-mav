@@ -43,14 +43,13 @@ classdef msg_adsb_vehicle < mavlink_message
     methods
 
         function obj = msg_adsb_vehicle(ICAO_address,lat,lon,altitude,heading,hor_velocity,ver_velocity,flags,squawk,altitude_type,callsign,emitter_type,tslc,varargin)
-        %Create a new adsb_vehicle message
+        %MSG_ADSB_VEHICLE: Create a new adsb_vehicle message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(ICAO_address,'mavlink_packet')
                     packet = ICAO_address;
                     obj.sysid = packet.sysid;
@@ -59,7 +58,6 @@ classdef msg_adsb_vehicle < mavlink_message
                 else
                     mavlink.throwTypeError('ICAO_address','mavlink_packet');
                 end
-            
             elseif nargin == 13
                 obj.ICAO_address = ICAO_address;
                 obj.lat = lat;

@@ -23,14 +23,13 @@ classdef msg_set_mode < mavlink_message
     methods
 
         function obj = msg_set_mode(custom_mode,target_system,base_mode,varargin)
-        %Create a new set_mode message
+        %MSG_SET_MODE: Create a new set_mode message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(custom_mode,'mavlink_packet')
                     packet = custom_mode;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_set_mode < mavlink_message
                 else
                     mavlink.throwTypeError('custom_mode','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.custom_mode = custom_mode;
                 obj.target_system = target_system;

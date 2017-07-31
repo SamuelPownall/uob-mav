@@ -31,14 +31,13 @@ classdef msg_ahrs < mavlink_message
     methods
 
         function obj = msg_ahrs(omegaIx,omegaIy,omegaIz,accel_weight,renorm_val,error_rp,error_yaw,varargin)
-        %Create a new ahrs message
+        %MSG_AHRS: Create a new ahrs message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(omegaIx,'mavlink_packet')
                     packet = omegaIx;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_ahrs < mavlink_message
                 else
                     mavlink.throwTypeError('omegaIx','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.omegaIx = omegaIx;
                 obj.omegaIy = omegaIy;

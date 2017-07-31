@@ -41,14 +41,13 @@ classdef msg_local_position_ned_cov < mavlink_message
     methods
 
         function obj = msg_local_position_ned_cov(time_usec,x,y,z,vx,vy,vz,ax,ay,az,covariance,estimator_type,varargin)
-        %Create a new local_position_ned_cov message
+        %MSG_LOCAL_POSITION_NED_COV: Create a new local_position_ned_cov message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -57,7 +56,6 @@ classdef msg_local_position_ned_cov < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 12
                 obj.time_usec = time_usec;
                 obj.x = x;

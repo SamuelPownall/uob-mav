@@ -29,14 +29,13 @@ classdef msg_serial_control < mavlink_message
     methods
 
         function obj = msg_serial_control(baudrate,timeout,device,flags,count,data,varargin)
-        %Create a new serial_control message
+        %MSG_SERIAL_CONTROL: Create a new serial_control message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(baudrate,'mavlink_packet')
                     packet = baudrate;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_serial_control < mavlink_message
                 else
                     mavlink.throwTypeError('baudrate','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.baudrate = baudrate;
                 obj.timeout = timeout;

@@ -23,14 +23,13 @@ classdef msg_gimbal_report_axis_calibration_status < mavlink_message
     methods
 
         function obj = msg_gimbal_report_axis_calibration_status(yaw_requires_calibration,pitch_requires_calibration,roll_requires_calibration,varargin)
-        %Create a new gimbal_report_axis_calibration_status message
+        %MSG_GIMBAL_REPORT_AXIS_CALIBRATION_STATUS: Create a new gimbal_report_axis_calibration_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(yaw_requires_calibration,'mavlink_packet')
                     packet = yaw_requires_calibration;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_gimbal_report_axis_calibration_status < mavlink_message
                 else
                     mavlink.throwTypeError('yaw_requires_calibration','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.yaw_requires_calibration = yaw_requires_calibration;
                 obj.pitch_requires_calibration = pitch_requires_calibration;

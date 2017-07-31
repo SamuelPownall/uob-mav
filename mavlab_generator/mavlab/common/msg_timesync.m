@@ -21,14 +21,13 @@ classdef msg_timesync < mavlink_message
     methods
 
         function obj = msg_timesync(tc1,ts1,varargin)
-        %Create a new timesync message
+        %MSG_TIMESYNC: Create a new timesync message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(tc1,'mavlink_packet')
                     packet = tc1;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_timesync < mavlink_message
                 else
                     mavlink.throwTypeError('tc1','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.tc1 = tc1;
                 obj.ts1 = ts1;

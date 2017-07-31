@@ -25,14 +25,13 @@ classdef msg_terrain_request < mavlink_message
     methods
 
         function obj = msg_terrain_request(mask,lat,lon,grid_spacing,varargin)
-        %Create a new terrain_request message
+        %MSG_TERRAIN_REQUEST: Create a new terrain_request message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(mask,'mavlink_packet')
                     packet = mask;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_terrain_request < mavlink_message
                 else
                     mavlink.throwTypeError('mask','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.mask = mask;
                 obj.lat = lat;

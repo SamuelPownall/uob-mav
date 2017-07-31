@@ -26,14 +26,13 @@ classdef msg_fence_status < mavlink_message
     methods
 
         function obj = msg_fence_status(breach_time,breach_count,breach_status,breach_type,varargin)
-        %Create a new fence_status message
+        %MSG_FENCE_STATUS: Create a new fence_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(breach_time,'mavlink_packet')
                     packet = breach_time;
                     obj.sysid = packet.sysid;
@@ -42,7 +41,6 @@ classdef msg_fence_status < mavlink_message
                 else
                     mavlink.throwTypeError('breach_time','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.breach_time = breach_time;
                 obj.breach_count = breach_count;

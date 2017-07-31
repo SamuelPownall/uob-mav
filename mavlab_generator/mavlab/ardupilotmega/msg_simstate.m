@@ -39,14 +39,13 @@ classdef msg_simstate < mavlink_message
     methods
 
         function obj = msg_simstate(roll,pitch,yaw,xacc,yacc,zacc,xgyro,ygyro,zgyro,lat,lng,varargin)
-        %Create a new simstate message
+        %MSG_SIMSTATE: Create a new simstate message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(roll,'mavlink_packet')
                     packet = roll;
                     obj.sysid = packet.sysid;
@@ -55,7 +54,6 @@ classdef msg_simstate < mavlink_message
                 else
                     mavlink.throwTypeError('roll','mavlink_packet');
                 end
-            
             elseif nargin == 11
                 obj.roll = roll;
                 obj.pitch = pitch;

@@ -27,14 +27,13 @@ classdef msg_gimbal_control < mavlink_message
     methods
 
         function obj = msg_gimbal_control(demanded_rate_x,demanded_rate_y,demanded_rate_z,target_system,target_component,varargin)
-        %Create a new gimbal_control message
+        %MSG_GIMBAL_CONTROL: Create a new gimbal_control message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(demanded_rate_x,'mavlink_packet')
                     packet = demanded_rate_x;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_gimbal_control < mavlink_message
                 else
                     mavlink.throwTypeError('demanded_rate_x','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.demanded_rate_x = demanded_rate_x;
                 obj.demanded_rate_y = demanded_rate_y;

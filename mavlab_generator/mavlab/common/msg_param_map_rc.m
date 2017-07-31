@@ -35,14 +35,13 @@ classdef msg_param_map_rc < mavlink_message
     methods
 
         function obj = msg_param_map_rc(param_value0,scale,param_value_min,param_value_max,param_index,target_system,target_component,param_id,parameter_rc_channel_index,varargin)
-        %Create a new param_map_rc message
+        %MSG_PARAM_MAP_RC: Create a new param_map_rc message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(param_value0,'mavlink_packet')
                     packet = param_value0;
                     obj.sysid = packet.sysid;
@@ -51,7 +50,6 @@ classdef msg_param_map_rc < mavlink_message
                 else
                     mavlink.throwTypeError('param_value0','mavlink_packet');
                 end
-            
             elseif nargin == 9
                 obj.param_value0 = param_value0;
                 obj.scale = scale;

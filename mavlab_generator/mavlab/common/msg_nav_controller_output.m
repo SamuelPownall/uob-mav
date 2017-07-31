@@ -33,14 +33,13 @@ classdef msg_nav_controller_output < mavlink_message
     methods
 
         function obj = msg_nav_controller_output(nav_roll,nav_pitch,alt_error,aspd_error,xtrack_error,nav_bearing,target_bearing,wp_dist,varargin)
-        %Create a new nav_controller_output message
+        %MSG_NAV_CONTROLLER_OUTPUT: Create a new nav_controller_output message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(nav_roll,'mavlink_packet')
                     packet = nav_roll;
                     obj.sysid = packet.sysid;
@@ -49,7 +48,6 @@ classdef msg_nav_controller_output < mavlink_message
                 else
                     mavlink.throwTypeError('nav_roll','mavlink_packet');
                 end
-            
             elseif nargin == 8
                 obj.nav_roll = nav_roll;
                 obj.nav_pitch = nav_pitch;

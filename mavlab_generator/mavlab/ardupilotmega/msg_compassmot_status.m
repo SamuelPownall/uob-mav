@@ -29,14 +29,13 @@ classdef msg_compassmot_status < mavlink_message
     methods
 
         function obj = msg_compassmot_status(current,CompensationX,CompensationY,CompensationZ,throttle,interference,varargin)
-        %Create a new compassmot_status message
+        %MSG_COMPASSMOT_STATUS: Create a new compassmot_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(current,'mavlink_packet')
                     packet = current;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_compassmot_status < mavlink_message
                 else
                     mavlink.throwTypeError('current','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.current = current;
                 obj.CompensationX = CompensationX;

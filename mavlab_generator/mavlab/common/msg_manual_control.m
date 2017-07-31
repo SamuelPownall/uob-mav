@@ -29,14 +29,13 @@ classdef msg_manual_control < mavlink_message
     methods
 
         function obj = msg_manual_control(x,y,z,r,buttons,target,varargin)
-        %Create a new manual_control message
+        %MSG_MANUAL_CONTROL: Create a new manual_control message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(x,'mavlink_packet')
                     packet = x;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_manual_control < mavlink_message
                 else
                     mavlink.throwTypeError('x','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.x = x;
                 obj.y = y;

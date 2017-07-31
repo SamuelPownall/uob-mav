@@ -49,14 +49,13 @@ classdef msg_hil_state_quaternion < mavlink_message
     methods
 
         function obj = msg_hil_state_quaternion(time_usec,attitude_quaternion,rollspeed,pitchspeed,yawspeed,lat,lon,alt,vx,vy,vz,ind_airspeed,true_airspeed,xacc,yacc,zacc,varargin)
-        %Create a new hil_state_quaternion message
+        %MSG_HIL_STATE_QUATERNION: Create a new hil_state_quaternion message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -65,7 +64,6 @@ classdef msg_hil_state_quaternion < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 16
                 obj.time_usec = time_usec;
                 obj.attitude_quaternion = attitude_quaternion;

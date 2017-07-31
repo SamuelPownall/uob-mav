@@ -51,14 +51,13 @@ classdef msg_control_system_state < mavlink_message
     methods
 
         function obj = msg_control_system_state(time_usec,x_acc,y_acc,z_acc,x_vel,y_vel,z_vel,x_pos,y_pos,z_pos,airspeed,vel_variance,pos_variance,q,roll_rate,pitch_rate,yaw_rate,varargin)
-        %Create a new control_system_state message
+        %MSG_CONTROL_SYSTEM_STATE: Create a new control_system_state message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -67,7 +66,6 @@ classdef msg_control_system_state < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 17
                 obj.time_usec = time_usec;
                 obj.x_acc = x_acc;

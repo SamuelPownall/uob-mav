@@ -39,14 +39,13 @@ classdef msg_autopilot_version < mavlink_message
     methods
 
         function obj = msg_autopilot_version(capabilities,uid,flight_sw_version,middleware_sw_version,os_sw_version,board_version,vendor_id,product_id,flight_custom_version,middleware_custom_version,os_custom_version,varargin)
-        %Create a new autopilot_version message
+        %MSG_AUTOPILOT_VERSION: Create a new autopilot_version message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(capabilities,'mavlink_packet')
                     packet = capabilities;
                     obj.sysid = packet.sysid;
@@ -55,7 +54,6 @@ classdef msg_autopilot_version < mavlink_message
                 else
                     mavlink.throwTypeError('capabilities','mavlink_packet');
                 end
-            
             elseif nargin == 11
                 obj.capabilities = capabilities;
                 obj.uid = uid;

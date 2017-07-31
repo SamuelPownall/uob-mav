@@ -21,14 +21,13 @@ classdef msg_hwstatus < mavlink_message
     methods
 
         function obj = msg_hwstatus(Vcc,I2Cerr,varargin)
-        %Create a new hwstatus message
+        %MSG_HWSTATUS: Create a new hwstatus message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(Vcc,'mavlink_packet')
                     packet = Vcc;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_hwstatus < mavlink_message
                 else
                     mavlink.throwTypeError('Vcc','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.Vcc = Vcc;
                 obj.I2Cerr = I2Cerr;

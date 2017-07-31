@@ -35,14 +35,13 @@ classdef msg_camera_status < mavlink_message
     methods
 
         function obj = msg_camera_status(time_usec,p1,p2,p3,p4,img_idx,target_system,cam_idx,event_id,varargin)
-        %Create a new camera_status message
+        %MSG_CAMERA_STATUS: Create a new camera_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -51,7 +50,6 @@ classdef msg_camera_status < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 9
                 obj.time_usec = time_usec;
                 obj.p1 = p1;

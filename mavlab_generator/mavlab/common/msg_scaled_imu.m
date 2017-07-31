@@ -37,14 +37,13 @@ classdef msg_scaled_imu < mavlink_message
     methods
 
         function obj = msg_scaled_imu(time_boot_ms,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,varargin)
-        %Create a new scaled_imu message
+        %MSG_SCALED_IMU: Create a new scaled_imu message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -53,7 +52,6 @@ classdef msg_scaled_imu < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 10
                 obj.time_boot_ms = time_boot_ms;
                 obj.xacc = xacc;

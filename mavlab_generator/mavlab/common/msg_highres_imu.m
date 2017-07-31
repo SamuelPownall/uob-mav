@@ -47,14 +47,13 @@ classdef msg_highres_imu < mavlink_message
     methods
 
         function obj = msg_highres_imu(time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,abs_pressure,diff_pressure,pressure_alt,temperature,fields_updated,varargin)
-        %Create a new highres_imu message
+        %MSG_HIGHRES_IMU: Create a new highres_imu message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -63,7 +62,6 @@ classdef msg_highres_imu < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 15
                 obj.time_usec = time_usec;
                 obj.xacc = xacc;

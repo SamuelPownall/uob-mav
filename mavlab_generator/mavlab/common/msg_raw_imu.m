@@ -37,14 +37,13 @@ classdef msg_raw_imu < mavlink_message
     methods
 
         function obj = msg_raw_imu(time_usec,xacc,yacc,zacc,xgyro,ygyro,zgyro,xmag,ymag,zmag,varargin)
-        %Create a new raw_imu message
+        %MSG_RAW_IMU: Create a new raw_imu message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -53,7 +52,6 @@ classdef msg_raw_imu < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 10
                 obj.time_usec = time_usec;
                 obj.xacc = xacc;

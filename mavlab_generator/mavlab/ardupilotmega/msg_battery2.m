@@ -21,14 +21,13 @@ classdef msg_battery2 < mavlink_message
     methods
 
         function obj = msg_battery2(voltage,current_battery,varargin)
-        %Create a new battery2 message
+        %MSG_BATTERY2: Create a new battery2 message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(voltage,'mavlink_packet')
                     packet = voltage;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_battery2 < mavlink_message
                 else
                     mavlink.throwTypeError('voltage','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.voltage = voltage;
                 obj.current_battery = current_battery;

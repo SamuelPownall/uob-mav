@@ -25,14 +25,13 @@ classdef msg_log_request_list < mavlink_message
     methods
 
         function obj = msg_log_request_list(start,end,target_system,target_component,varargin)
-        %Create a new log_request_list message
+        %MSG_LOG_REQUEST_LIST: Create a new log_request_list message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(start,'mavlink_packet')
                     packet = start;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_log_request_list < mavlink_message
                 else
                     mavlink.throwTypeError('start','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.start = start;
                 obj.end = end;

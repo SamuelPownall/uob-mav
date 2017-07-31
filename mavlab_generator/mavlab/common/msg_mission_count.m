@@ -23,14 +23,13 @@ classdef msg_mission_count < mavlink_message
     methods
 
         function obj = msg_mission_count(count,target_system,target_component,varargin)
-        %Create a new mission_count message
+        %MSG_MISSION_COUNT: Create a new mission_count message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(count,'mavlink_packet')
                     packet = count;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_mission_count < mavlink_message
                 else
                     mavlink.throwTypeError('count','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.count = count;
                 obj.target_system = target_system;

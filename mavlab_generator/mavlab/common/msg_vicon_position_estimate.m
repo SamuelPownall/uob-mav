@@ -31,14 +31,13 @@ classdef msg_vicon_position_estimate < mavlink_message
     methods
 
         function obj = msg_vicon_position_estimate(usec,x,y,z,roll,pitch,yaw,varargin)
-        %Create a new vicon_position_estimate message
+        %MSG_VICON_POSITION_ESTIMATE: Create a new vicon_position_estimate message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(usec,'mavlink_packet')
                     packet = usec;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_vicon_position_estimate < mavlink_message
                 else
                     mavlink.throwTypeError('usec','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.usec = usec;
                 obj.x = x;

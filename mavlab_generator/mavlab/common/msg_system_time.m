@@ -21,14 +21,13 @@ classdef msg_system_time < mavlink_message
     methods
 
         function obj = msg_system_time(time_unix_usec,time_boot_ms,varargin)
-        %Create a new system_time message
+        %MSG_SYSTEM_TIME: Create a new system_time message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_unix_usec,'mavlink_packet')
                     packet = time_unix_usec;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_system_time < mavlink_message
                 else
                     mavlink.throwTypeError('time_unix_usec','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.time_unix_usec = time_unix_usec;
                 obj.time_boot_ms = time_boot_ms;

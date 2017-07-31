@@ -35,14 +35,13 @@ classdef msg_camera_image_captured < mavlink_message
     methods
 
         function obj = msg_camera_image_captured(time_utc,time_boot_ms,lat,lon,alt,relative_alt,q,camera_id,file_path,varargin)
-        %Create a new camera_image_captured message
+        %MSG_CAMERA_IMAGE_CAPTURED: Create a new camera_image_captured message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_utc,'mavlink_packet')
                     packet = time_utc;
                     obj.sysid = packet.sysid;
@@ -51,7 +50,6 @@ classdef msg_camera_image_captured < mavlink_message
                 else
                     mavlink.throwTypeError('time_utc','mavlink_packet');
                 end
-            
             elseif nargin == 9
                 obj.time_utc = time_utc;
                 obj.time_boot_ms = time_boot_ms;

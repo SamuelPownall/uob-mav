@@ -33,14 +33,13 @@ classdef msg_optical_flow < mavlink_message
     methods
 
         function obj = msg_optical_flow(time_usec,flow_comp_m_x,flow_comp_m_y,ground_distance,flow_x,flow_y,sensor_id,quality,varargin)
-        %Create a new optical_flow message
+        %MSG_OPTICAL_FLOW: Create a new optical_flow message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -49,7 +48,6 @@ classdef msg_optical_flow < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 8
                 obj.time_usec = time_usec;
                 obj.flow_comp_m_x = flow_comp_m_x;

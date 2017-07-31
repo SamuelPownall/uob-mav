@@ -29,14 +29,13 @@ classdef msg_ahrs2 < mavlink_message
     methods
 
         function obj = msg_ahrs2(roll,pitch,yaw,altitude,lat,lng,varargin)
-        %Create a new ahrs2 message
+        %MSG_AHRS2: Create a new ahrs2 message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(roll,'mavlink_packet')
                     packet = roll;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_ahrs2 < mavlink_message
                 else
                     mavlink.throwTypeError('roll','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.roll = roll;
                 obj.pitch = pitch;

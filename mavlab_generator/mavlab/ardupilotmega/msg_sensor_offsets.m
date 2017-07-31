@@ -42,14 +42,13 @@ classdef msg_sensor_offsets < mavlink_message
     methods
 
         function obj = msg_sensor_offsets(mag_declination,raw_press,raw_temp,gyro_cal_x,gyro_cal_y,gyro_cal_z,accel_cal_x,accel_cal_y,accel_cal_z,mag_ofs_x,mag_ofs_y,mag_ofs_z,varargin)
-        %Create a new sensor_offsets message
+        %MSG_SENSOR_OFFSETS: Create a new sensor_offsets message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(mag_declination,'mavlink_packet')
                     packet = mag_declination;
                     obj.sysid = packet.sysid;
@@ -58,7 +57,6 @@ classdef msg_sensor_offsets < mavlink_message
                 else
                     mavlink.throwTypeError('mag_declination','mavlink_packet');
                 end
-            
             elseif nargin == 12
                 obj.mag_declination = mag_declination;
                 obj.raw_press = raw_press;

@@ -27,14 +27,13 @@ classdef msg_request_data_stream < mavlink_message
     methods
 
         function obj = msg_request_data_stream(req_message_rate,target_system,target_component,req_stream_id,start_stop,varargin)
-        %Create a new request_data_stream message
+        %MSG_REQUEST_DATA_STREAM: Create a new request_data_stream message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(req_message_rate,'mavlink_packet')
                     packet = req_message_rate;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_request_data_stream < mavlink_message
                 else
                     mavlink.throwTypeError('req_message_rate','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.req_message_rate = req_message_rate;
                 obj.target_system = target_system;

@@ -44,14 +44,13 @@ classdef msg_hil_gps < mavlink_message
     methods
 
         function obj = msg_hil_gps(time_usec,lat,lon,alt,eph,epv,vel,vn,ve,vd,cog,fix_type,satellites_visible,varargin)
-        %Create a new hil_gps message
+        %MSG_HIL_GPS: Create a new hil_gps message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -60,7 +59,6 @@ classdef msg_hil_gps < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 13
                 obj.time_usec = time_usec;
                 obj.lat = lat;

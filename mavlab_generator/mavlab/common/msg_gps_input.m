@@ -53,14 +53,13 @@ classdef msg_gps_input < mavlink_message
     methods
 
         function obj = msg_gps_input(time_usec,time_week_ms,lat,lon,alt,hdop,vdop,vn,ve,vd,speed_accuracy,horiz_accuracy,vert_accuracy,ignore_flags,time_week,gps_id,fix_type,satellites_visible,varargin)
-        %Create a new gps_input message
+        %MSG_GPS_INPUT: Create a new gps_input message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -69,7 +68,6 @@ classdef msg_gps_input < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 18
                 obj.time_usec = time_usec;
                 obj.time_week_ms = time_week_ms;

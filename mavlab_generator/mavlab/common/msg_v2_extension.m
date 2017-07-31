@@ -27,14 +27,13 @@ classdef msg_v2_extension < mavlink_message
     methods
 
         function obj = msg_v2_extension(message_type,target_network,target_system,target_component,payload,varargin)
-        %Create a new v2_extension message
+        %MSG_V2_EXTENSION: Create a new v2_extension message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(message_type,'mavlink_packet')
                     packet = message_type;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_v2_extension < mavlink_message
                 else
                     mavlink.throwTypeError('message_type','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.message_type = message_type;
                 obj.target_network = target_network;

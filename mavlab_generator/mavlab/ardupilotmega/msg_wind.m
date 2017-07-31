@@ -23,14 +23,13 @@ classdef msg_wind < mavlink_message
     methods
 
         function obj = msg_wind(direction,speed,speed_z,varargin)
-        %Create a new wind message
+        %MSG_WIND: Create a new wind message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(direction,'mavlink_packet')
                     packet = direction;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_wind < mavlink_message
                 else
                     mavlink.throwTypeError('direction','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.direction = direction;
                 obj.speed = speed;

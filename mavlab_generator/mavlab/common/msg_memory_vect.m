@@ -25,14 +25,13 @@ classdef msg_memory_vect < mavlink_message
     methods
 
         function obj = msg_memory_vect(address,ver,type,value,varargin)
-        %Create a new memory_vect message
+        %MSG_MEMORY_VECT: Create a new memory_vect message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(address,'mavlink_packet')
                     packet = address;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_memory_vect < mavlink_message
                 else
                     mavlink.throwTypeError('address','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.address = address;
                 obj.ver = ver;

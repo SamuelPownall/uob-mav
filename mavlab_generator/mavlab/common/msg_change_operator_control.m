@@ -25,14 +25,13 @@ classdef msg_change_operator_control < mavlink_message
     methods
 
         function obj = msg_change_operator_control(target_system,control_request,version,passkey,varargin)
-        %Create a new change_operator_control message
+        %MSG_CHANGE_OPERATOR_CONTROL: Create a new change_operator_control message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(target_system,'mavlink_packet')
                     packet = target_system;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_change_operator_control < mavlink_message
                 else
                     mavlink.throwTypeError('target_system','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.target_system = target_system;
                 obj.control_request = control_request;

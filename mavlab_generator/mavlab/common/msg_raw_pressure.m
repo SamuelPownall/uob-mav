@@ -27,14 +27,13 @@ classdef msg_raw_pressure < mavlink_message
     methods
 
         function obj = msg_raw_pressure(time_usec,press_abs,press_diff1,press_diff2,temperature,varargin)
-        %Create a new raw_pressure message
+        %MSG_RAW_PRESSURE: Create a new raw_pressure message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_raw_pressure < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.time_usec = time_usec;
                 obj.press_abs = press_abs;

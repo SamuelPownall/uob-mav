@@ -35,14 +35,13 @@ classdef msg_safety_set_allowed_area < mavlink_message
     methods
 
         function obj = msg_safety_set_allowed_area(p1x,p1y,p1z,p2x,p2y,p2z,target_system,target_component,frame,varargin)
-        %Create a new safety_set_allowed_area message
+        %MSG_SAFETY_SET_ALLOWED_AREA: Create a new safety_set_allowed_area message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(p1x,'mavlink_packet')
                     packet = p1x;
                     obj.sysid = packet.sysid;
@@ -51,7 +50,6 @@ classdef msg_safety_set_allowed_area < mavlink_message
                 else
                     mavlink.throwTypeError('p1x','mavlink_packet');
                 end
-            
             elseif nargin == 9
                 obj.p1x = p1x;
                 obj.p1y = p1y;

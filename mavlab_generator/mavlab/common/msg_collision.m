@@ -31,14 +31,13 @@ classdef msg_collision < mavlink_message
     methods
 
         function obj = msg_collision(id,time_to_minimum_delta,altitude_minimum_delta,horizontal_minimum_delta,src,action,threat_level,varargin)
-        %Create a new collision message
+        %MSG_COLLISION: Create a new collision message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(id,'mavlink_packet')
                     packet = id;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_collision < mavlink_message
                 else
                     mavlink.throwTypeError('id','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.id = id;
                 obj.time_to_minimum_delta = time_to_minimum_delta;

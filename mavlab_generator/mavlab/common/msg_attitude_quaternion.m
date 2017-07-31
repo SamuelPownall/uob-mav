@@ -33,14 +33,13 @@ classdef msg_attitude_quaternion < mavlink_message
     methods
 
         function obj = msg_attitude_quaternion(time_boot_ms,q1,q2,q3,q4,rollspeed,pitchspeed,yawspeed,varargin)
-        %Create a new attitude_quaternion message
+        %MSG_ATTITUDE_QUATERNION: Create a new attitude_quaternion message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -49,7 +48,6 @@ classdef msg_attitude_quaternion < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 8
                 obj.time_boot_ms = time_boot_ms;
                 obj.q1 = q1;

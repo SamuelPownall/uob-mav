@@ -27,14 +27,13 @@ classdef msg_set_mag_offsets < mavlink_message
     methods
 
         function obj = msg_set_mag_offsets(mag_ofs_x,mag_ofs_y,mag_ofs_z,target_system,target_component,varargin)
-        %Create a new set_mag_offsets message
+        %MSG_SET_MAG_OFFSETS: Create a new set_mag_offsets message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(mag_ofs_x,'mavlink_packet')
                     packet = mag_ofs_x;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_set_mag_offsets < mavlink_message
                 else
                     mavlink.throwTypeError('mag_ofs_x','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.mag_ofs_x = mag_ofs_x;
                 obj.mag_ofs_y = mag_ofs_y;

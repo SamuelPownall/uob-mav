@@ -31,14 +31,13 @@ classdef msg_data_transmission_handshake < mavlink_message
     methods
 
         function obj = msg_data_transmission_handshake(size,width,height,packets,type,payload,jpg_quality,varargin)
-        %Create a new data_transmission_handshake message
+        %MSG_DATA_TRANSMISSION_HANDSHAKE: Create a new data_transmission_handshake message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(size,'mavlink_packet')
                     packet = size;
                     obj.sysid = packet.sysid;
@@ -47,7 +46,6 @@ classdef msg_data_transmission_handshake < mavlink_message
                 else
                     mavlink.throwTypeError('size','mavlink_packet');
                 end
-            
             elseif nargin == 7
                 obj.size = size;
                 obj.width = width;

@@ -29,14 +29,13 @@ classdef msg_logging_data < mavlink_message
     methods
 
         function obj = msg_logging_data(sequence,target_system,target_component,length,first_message_offset,data,varargin)
-        %Create a new logging_data message
+        %MSG_LOGGING_DATA: Create a new logging_data message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(sequence,'mavlink_packet')
                     packet = sequence;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_logging_data < mavlink_message
                 else
                     mavlink.throwTypeError('sequence','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.sequence = sequence;
                 obj.target_system = target_system;

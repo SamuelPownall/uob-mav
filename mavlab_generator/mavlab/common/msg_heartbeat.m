@@ -29,14 +29,13 @@ classdef msg_heartbeat < mavlink_message
     methods
 
         function obj = msg_heartbeat(custom_mode,type,autopilot,base_mode,system_status,mavlink_version,varargin)
-        %Create a new heartbeat message
+        %MSG_HEARTBEAT: Create a new heartbeat message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(custom_mode,'mavlink_packet')
                     packet = custom_mode;
                     obj.sysid = packet.sysid;
@@ -45,7 +44,6 @@ classdef msg_heartbeat < mavlink_message
                 else
                     mavlink.throwTypeError('custom_mode','mavlink_packet');
                 end
-            
             elseif nargin == 6
                 obj.custom_mode = custom_mode;
                 obj.type = type;

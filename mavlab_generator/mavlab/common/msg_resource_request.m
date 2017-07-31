@@ -27,14 +27,13 @@ classdef msg_resource_request < mavlink_message
     methods
 
         function obj = msg_resource_request(request_id,uri_type,uri,transfer_type,storage,varargin)
-        %Create a new resource_request message
+        %MSG_RESOURCE_REQUEST: Create a new resource_request message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(request_id,'mavlink_packet')
                     packet = request_id;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_resource_request < mavlink_message
                 else
                     mavlink.throwTypeError('request_id','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.request_id = request_id;
                 obj.uri_type = uri_type;

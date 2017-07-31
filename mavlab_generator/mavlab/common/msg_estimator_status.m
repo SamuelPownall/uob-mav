@@ -37,14 +37,13 @@ classdef msg_estimator_status < mavlink_message
     methods
 
         function obj = msg_estimator_status(time_usec,vel_ratio,pos_horiz_ratio,pos_vert_ratio,mag_ratio,hagl_ratio,tas_ratio,pos_horiz_accuracy,pos_vert_accuracy,flags,varargin)
-        %Create a new estimator_status message
+        %MSG_ESTIMATOR_STATUS: Create a new estimator_status message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -53,7 +52,6 @@ classdef msg_estimator_status < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 10
                 obj.time_usec = time_usec;
                 obj.vel_ratio = vel_ratio;

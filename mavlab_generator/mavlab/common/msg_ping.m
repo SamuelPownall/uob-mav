@@ -25,14 +25,13 @@ classdef msg_ping < mavlink_message
     methods
 
         function obj = msg_ping(time_usec,seq,target_system,target_component,varargin)
-        %Create a new ping message
+        %MSG_PING: Create a new ping message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_ping < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.time_usec = time_usec;
                 obj.seq = seq;

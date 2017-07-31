@@ -41,14 +41,13 @@ classdef msg_gimbal_report < mavlink_message
     methods
 
         function obj = msg_gimbal_report(delta_time,delta_angle_x,delta_angle_y,delta_angle_z,delta_velocity_x,delta_velocity_y,delta_velocity_z,joint_roll,joint_el,joint_az,target_system,target_component,varargin)
-        %Create a new gimbal_report message
+        %MSG_GIMBAL_REPORT: Create a new gimbal_report message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(delta_time,'mavlink_packet')
                     packet = delta_time;
                     obj.sysid = packet.sysid;
@@ -57,7 +56,6 @@ classdef msg_gimbal_report < mavlink_message
                 else
                     mavlink.throwTypeError('delta_time','mavlink_packet');
                 end
-            
             elseif nargin == 12
                 obj.delta_time = delta_time;
                 obj.delta_angle_x = delta_angle_x;

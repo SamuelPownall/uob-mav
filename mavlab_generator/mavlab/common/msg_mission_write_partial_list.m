@@ -25,14 +25,13 @@ classdef msg_mission_write_partial_list < mavlink_message
     methods
 
         function obj = msg_mission_write_partial_list(start_index,end_index,target_system,target_component,varargin)
-        %Create a new mission_write_partial_list message
+        %MSG_MISSION_WRITE_PARTIAL_LIST: Create a new mission_write_partial_list message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(start_index,'mavlink_packet')
                     packet = start_index;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_mission_write_partial_list < mavlink_message
                 else
                     mavlink.throwTypeError('start_index','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.start_index = start_index;
                 obj.end_index = end_index;

@@ -23,14 +23,13 @@ classdef msg_gps_global_origin < mavlink_message
     methods
 
         function obj = msg_gps_global_origin(latitude,longitude,altitude,varargin)
-        %Create a new gps_global_origin message
+        %MSG_GPS_GLOBAL_ORIGIN: Create a new gps_global_origin message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(latitude,'mavlink_packet')
                     packet = latitude;
                     obj.sysid = packet.sysid;
@@ -39,7 +38,6 @@ classdef msg_gps_global_origin < mavlink_message
                 else
                     mavlink.throwTypeError('latitude','mavlink_packet');
                 end
-            
             elseif nargin == 3
                 obj.latitude = latitude;
                 obj.longitude = longitude;

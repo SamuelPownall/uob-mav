@@ -27,14 +27,13 @@ classdef msg_terrain_data < mavlink_message
     methods
 
         function obj = msg_terrain_data(lat,lon,grid_spacing,data,gridbit,varargin)
-        %Create a new terrain_data message
+        %MSG_TERRAIN_DATA: Create a new terrain_data message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(lat,'mavlink_packet')
                     packet = lat;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_terrain_data < mavlink_message
                 else
                     mavlink.throwTypeError('lat','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.lat = lat;
                 obj.lon = lon;

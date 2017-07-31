@@ -25,14 +25,13 @@ classdef msg_mount_orientation < mavlink_message
     methods
 
         function obj = msg_mount_orientation(time_boot_ms,roll,pitch,yaw,varargin)
-        %Create a new mount_orientation message
+        %MSG_MOUNT_ORIENTATION: Create a new mount_orientation message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_mount_orientation < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.time_boot_ms = time_boot_ms;
                 obj.roll = roll;

@@ -33,14 +33,13 @@ classdef msg_storage_information < mavlink_message
     methods
 
         function obj = msg_storage_information(time_boot_ms,total_capacity,used_capacity,available_capacity,read_speed,write_speed,storage_id,status,varargin)
-        %Create a new storage_information message
+        %MSG_STORAGE_INFORMATION: Create a new storage_information message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -49,7 +48,6 @@ classdef msg_storage_information < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 8
                 obj.time_boot_ms = time_boot_ms;
                 obj.total_capacity = total_capacity;

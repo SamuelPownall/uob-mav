@@ -25,14 +25,13 @@ classdef msg_file_transfer_protocol < mavlink_message
     methods
 
         function obj = msg_file_transfer_protocol(target_network,target_system,target_component,payload,varargin)
-        %Create a new file_transfer_protocol message
+        %MSG_FILE_TRANSFER_PROTOCOL: Create a new file_transfer_protocol message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(target_network,'mavlink_packet')
                     packet = target_network;
                     obj.sysid = packet.sysid;
@@ -41,7 +40,6 @@ classdef msg_file_transfer_protocol < mavlink_message
                 else
                     mavlink.throwTypeError('target_network','mavlink_packet');
                 end
-            
             elseif nargin == 4
                 obj.target_network = target_network;
                 obj.target_system = target_system;

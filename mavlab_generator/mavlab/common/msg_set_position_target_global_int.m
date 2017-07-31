@@ -49,14 +49,13 @@ classdef msg_set_position_target_global_int < mavlink_message
     methods
 
         function obj = msg_set_position_target_global_int(time_boot_ms,lat_int,lon_int,alt,vx,vy,vz,afx,afy,afz,yaw,yaw_rate,type_mask,target_system,target_component,coordinate_frame,varargin)
-        %Create a new set_position_target_global_int message
+        %MSG_SET_POSITION_TARGET_GLOBAL_INT: Create a new set_position_target_global_int message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_boot_ms,'mavlink_packet')
                     packet = time_boot_ms;
                     obj.sysid = packet.sysid;
@@ -65,7 +64,6 @@ classdef msg_set_position_target_global_int < mavlink_message
                 else
                     mavlink.throwTypeError('time_boot_ms','mavlink_packet');
                 end
-            
             elseif nargin == 16
                 obj.time_boot_ms = time_boot_ms;
                 obj.lat_int = lat_int;

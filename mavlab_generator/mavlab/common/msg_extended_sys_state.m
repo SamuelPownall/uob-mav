@@ -21,14 +21,13 @@ classdef msg_extended_sys_state < mavlink_message
     methods
 
         function obj = msg_extended_sys_state(vtol_state,landed_state,varargin)
-        %Create a new extended_sys_state message
+        %MSG_EXTENDED_SYS_STATE: Create a new extended_sys_state message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(vtol_state,'mavlink_packet')
                     packet = vtol_state;
                     obj.sysid = packet.sysid;
@@ -37,7 +36,6 @@ classdef msg_extended_sys_state < mavlink_message
                 else
                     mavlink.throwTypeError('vtol_state','mavlink_packet');
                 end
-            
             elseif nargin == 2
                 obj.vtol_state = vtol_state;
                 obj.landed_state = landed_state;

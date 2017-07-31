@@ -27,14 +27,13 @@ classdef msg_param_set < mavlink_message
     methods
 
         function obj = msg_param_set(param_value,target_system,target_component,param_id,param_type,varargin)
-        %Create a new param_set message
+        %MSG_PARAM_SET: Create a new param_set message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(param_value,'mavlink_packet')
                     packet = param_value;
                     obj.sysid = packet.sysid;
@@ -43,7 +42,6 @@ classdef msg_param_set < mavlink_message
                 else
                     mavlink.throwTypeError('param_value','mavlink_packet');
                 end
-            
             elseif nargin == 5
                 obj.param_value = param_value;
                 obj.target_system = target_system;

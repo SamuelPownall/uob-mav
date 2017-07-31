@@ -37,14 +37,13 @@ classdef msg_global_position_int_cov < mavlink_message
     methods
 
         function obj = msg_global_position_int_cov(time_usec,lat,lon,alt,relative_alt,vx,vy,vz,covariance,estimator_type,varargin)
-        %Create a new global_position_int_cov message
+        %MSG_GLOBAL_POSITION_INT_COV: Create a new global_position_int_cov message object
         
             obj.msgid = obj.ID;
             obj.sysid = mavlink.SYSID;
             obj.compid = mavlink.COMPID;
 
-            if nargin == 1
-            
+            if nargin == 1 
                 if isa(time_usec,'mavlink_packet')
                     packet = time_usec;
                     obj.sysid = packet.sysid;
@@ -53,7 +52,6 @@ classdef msg_global_position_int_cov < mavlink_message
                 else
                     mavlink.throwTypeError('time_usec','mavlink_packet');
                 end
-            
             elseif nargin == 10
                 obj.time_usec = time_usec;
                 obj.lat = lat;
