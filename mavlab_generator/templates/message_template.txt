@@ -1,10 +1,10 @@
-classdef msg_${name}$ < mavlink_message
-	%%MSG_${nameUpper}$: MAVLINK Message ID = ${msgid}$
+classdef msg_${name}$ < MAVLinkMessage
+	%%MSG_${nameUpper}$: MAVLink Message ID = ${msgid}$
     %%Description:
     %%    ${desc}$
-    %%    Can also be constructed by using a mavlink_packet as the only argument
+    %%    Can also be constructed by using a MAVLinkPacket as the only argument
 	%%Arguments:
-    %%    ${firstFieldName}$(mavlink_packet): Alternative way to construct a message using a mavlink_packet
+    %%    ${firstFieldName}$(MAVLinkPacket): Alternative way to construct a message using a MAVLinkPacket
 #{orderedFields<#>    %%    ${name}$(${type}$?{${size}$>1<?>[${size}$]<?>}?): ${desc}$
 }#	
 	properties(Constant)
@@ -15,43 +15,68 @@ classdef msg_${name}$ < mavlink_message
 	properties
 #{orderedFields<#>        ${name}$	%%${desc}$	|	(${type}$?{${size}$>1<?>[${size}$]<?>}?)\n}#    end
 
+    methods(Static)
+
+        function send(out,#{orderedFields<#>${name}$,}#varargin)
+
+            if nargin == ${numFields}$ + 1
+                msg = msg_${name}$(#{orderedFields<#>${name}$,}#varargin);
+            elseif nargin == 2
+                msg = msg_${name}$(${firstFieldName}$);
+            else
+                MAVLink.throwCustomError('The number of function arguments is not valid');
+                return;
+            end
+
+            packet = msg.pack();
+            if ~isempty(packet)
+                buffer = packet.encode();
+                write(out,buffer);
+            else
+                MAVLink.throwCustomError('The packet could not be verified');
+            end
+        
+        end
+
+    end
+
     methods
 
         function obj = msg_${name}$(#{orderedFields<#>${name}$,}#varargin)
         %%MSG_${nameUpper}$: Create a new ${name}$ message object
         
             obj.msgid = obj.ID;
-            obj.sysid = mavlink.SYSID;
-            obj.compid = mavlink.COMPID;
+            obj.sysid = MAVLink.SYSID;
+            obj.compid = MAVLink.COMPID;
 
             if nargin == 1 
-                if isa(${firstFieldName}$,'mavlink_packet')
+                if isa(${firstFieldName}$,'MAVLinkPacket')
                     packet = ${firstFieldName}$;
                     obj.sysid = packet.sysid;
                     obj.compid = packet.compid;
                     obj.unpack(packet.payload);
                 else
-                    ?{${numFields}$==1<?>obj.${firstFieldName}$ = ${firstFieldName}$;<?>mavlink.throwTypeError('${firstFieldName}$','mavlink_packet');}?
+                    ?{${numFields}$==1<?>obj.${firstFieldName}$ = ${firstFieldName}$;<?>MAVLink.throwTypeError('${firstFieldName}$','MAVLinkPacket');}?
                 end
-?{${numFields}$==1<?><?>            elseif nargin == ${numFields}$
+?{${numFields}$==1<?><?>            elseif nargin >= ${numFields}$ && isempty(varargin{1})
 #{orderedFields<#>                obj.${name}$ = ${name}$;\n}#}?            elseif nargin ~= 0
-                mavlink.throwCustomError('The number of constructer arguments is not valid');
+                MAVLink.throwCustomError('The number of constructer arguments is not valid');
             end
 
         end
 
         function packet = pack(obj)
-        %%PACK: Packs this MAVLINK message into a mavlink_packet
+        %%PACK: Packs this MAVLink message into a MAVLinkPacket
         %%Description:
-        %%    Packs the fields of a message into a mavlink_packet which can be encoded
+        %%    Packs the fields of a message into a MAVLinkPacket which can be encoded
         %%    for transmission.
 
             errorField = obj.verify();
             if errorField == 0
 
-                packet = mavlink_packet(msg_${name}$.LEN);
-                packet.sysid = mavlink.SYSID;
-                packet.compid = mavlink.COMPID;
+                packet = MAVLinkPacket(msg_${name}$.LEN);
+                packet.sysid = MAVLink.SYSID;
+                packet.compid = MAVLink.COMPID;
                 packet.msgid = msg_${name}$.ID;
                 #{orderedFields<#>?{${size}$>1<?>
                 for i=1:1:${size}$
@@ -61,18 +86,18 @@ classdef msg_${name}$ < mavlink_message
 
             else
                 packet = [];
-                mavlink.throwPackingError(errorField);
+                MAVLink.throwPackingError(errorField);
             end
 
         end
 
         function unpack(obj, payload)
-        %%UNPACK: Unpacks a mavlink_payload into this MAVLINK message
+        %%UNPACK: Unpacks a MAVLinkPayload into this MAVLink message
         %%Description:
-        %%    Extracts the data from a mavlink_payload and attempts to store it in the fields
+        %%    Extracts the data from a MAVLinkPayload and attempts to store it in the fields
         %%    of this message.
         %%Arguments:
-        %%    payload(mavlink_payload): The payload to be unpacked into this MAVLINK message
+        %%    payload(MAVLinkPayload): The payload to be unpacked into this MAVLink message
 
             payload.resetIndex();
             #{orderedFields<#>?{${size}$>1<?>
@@ -106,7 +131,7 @@ classdef msg_${name}$ < mavlink_message
             if value == ${type}$(value)
                 obj.${name}$ = ${type}$(value);
             else
-                mavlink.throwTypeError('value','${type}$');
+                MAVLink.throwTypeError('value','${type}$');
             end
         end
         }?}#
