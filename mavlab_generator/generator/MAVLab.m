@@ -1,4 +1,4 @@
-classdef mavlab
+classdef MAVLab
 %MAVLAB: MATLAB implementation of the MAVLINK 1 message marshalling library
 %Description:
 %    This library is used for communicating between MATLAB and a MAVLINK enabled autopilot. It
@@ -10,7 +10,7 @@ classdef mavlab
         %GENERATE: Generates a MATLAB implementation of the MAVLINK 1 library
         %Description:
         %    Generates a MATLAB implemenation of the MAVLINK 1.0 library from a set of XML dialect
-        %    files. The MAVLAB library allows communication between MATLAB and MAVLINK enabled
+        %    files. The MAVLab library allows communication between MATLAB and MAVLINK enabled
         %    autopilots.
         %Arguments:
         %    xmlPath(string): Path to the folder containing XML dialect files
@@ -20,13 +20,13 @@ classdef mavlab
             timer = tic();
         
             %Handle varying numbers of input arguments
-            if nargin == 1
+            if nargin == 0
+                xmlPath = 'data';
+                outputPath = '.';
+            elseif nargin == 1
                 outputPath = '.';
             elseif nargin > 2
                 disp('ERROR: Too many input arguments!');
-                return;
-            elseif nargin == 0
-                disp('ERROR: Path to XML files must be specified!');
                 return;
             end
 
@@ -58,8 +58,8 @@ classdef mavlab
                 fullname = [xmlPath '/' xmlList(i).name];
                 f = fopen(fullname,'r');
 
-                %Load the MAVLINK message definition XML document as a mavstruct
-                root = mavstruct(fullname);
+                %Load the MAVLINK message definition XML document as a MAVStruct
+                root = MAVStruct(fullname);
                 xmlName = strrep(xmlList(i).name, '.xml', '');
 
                 %Create a folder for this dialect
@@ -70,11 +70,11 @@ classdef mavlab
 
                 %Find the message definitions and generate a MATLINK class for each
                 msgList = root.find('mavlink').find('messages').findAll('message');
-                parsedMsgList = mavlab.generateMessageClasses(messagePath, msgList);
+                parsedMsgList = MAVLab.generateMessageClasses(messagePath, msgList);
 
                 %Generate the enumeration class for this dialect
                 enumList = root.find('mavlink').find('enums').findAll('enum');
-                mavlab.generateEnumClass(messagePath, xmlName, enumList);
+                MAVLab.generateEnumClass(messagePath, xmlName, enumList);
 
                 %Combine message lists from each dialect
                 fullParsedMsgList = [fullParsedMsgList parsedMsgList];
@@ -85,14 +85,14 @@ classdef mavlab
             %Reformat the parsed message list to support the template engine
             parsedMsgList = struct('message',fullParsedMsgList);
             %Generate the MAVLINK packet class
-            mavlab.generatePacketClass(mainPath, parsedMsgList);
+            MAVLab.generatePacketClass(mainPath, parsedMsgList);
             %Generate the MAVLINK CRC class
-            mavlab.generateCRCClass(mainPath, parsedMsgList);
+            MAVLab.generateCRCClass(mainPath, parsedMsgList);
             %Copy fixed files
-            mavlab.copyFixedClasses(mainPath);
-            mavlab.copyFixedHelpers(helperPath);
+            MAVLab.copyFixedClasses(mainPath);
+            MAVLab.copyFixedHelpers(helperPath);
             
-            disp(['MAVLAB Implementation generated successfully! (' num2str(toc(timer)) ' seconds)']);
+            disp(['MAVLab Implementation generated successfully! (' num2str(toc(timer)) ' seconds)']);
 
         end
         
@@ -106,7 +106,7 @@ classdef mavlab
         %    Generates a class file per message in msgList in the folder specified by messagePath.
         %Arguments:
         %    msgPath(string): Path to the folder where message files will be generated
-        %    msgList(mavstruct): Array of messages to generate classes from
+        %    msgList(MAVStruct): Array of messages to generate classes from
 
 
             %Create an empty cell array for parsed messages
@@ -119,7 +119,7 @@ classdef mavlab
 
             %Generate a MAVLINK class file for each MAVLINK 1 message in the XML file
             for i = 1:1:size(msgList,2)
-                parsedMsg = mavlab.generateClassFromMsg(msgPath, msgList(i), template);
+                parsedMsg = MAVLab.generateClassFromMsg(msgPath, msgList(i), template);
                 if ~isempty(parsedMsg)
                     parsedMsgList = cat(2,parsedMsgList,parsedMsg);
                 end
@@ -133,8 +133,8 @@ classdef mavlab
         %    Generates a class file by injecting the data stored in msg into a template.
         %Arguments:
         %    msgPath(string): Path to the folder where the message file will be generated
-        %    msg(mavstruct): Message to generate the class file from
-        %    template(string): Template used with mavstring to produce a message class
+        %    msg(MAVStruct): Message to generate the class file from
+        %    template(string): Template used with MAVString to produce a message class
 
             parsedMsg = [];
 
@@ -197,19 +197,19 @@ classdef mavlab
             end
 
             %Sort the fields of this message into data type order and store the name of the first
-            parsedMsg.orderedFields = mavlab.fieldSort(parsedFields, typeSize);
+            parsedMsg.orderedFields = MAVLab.fieldSort(parsedFields, typeSize);
             parsedMsg.firstFieldName = parsedMsg.orderedFields(1).name;
             %Find the number of fields in this message
             parsedMsg.numFields = size(parsedMsg.orderedFields,2);
 
             %Calculate the checksum for this message
             crc = uint16(hex2dec('ffff'));
-            crc = mavlab.accumulate(crc,[upper(parsedMsg.name) ' ']);
+            crc = MAVLab.accumulate(crc,[upper(parsedMsg.name) ' ']);
             for i = 1:1:size(parsedMsg.orderedFields,2)
-                crc = mavlab.accumulate(crc,[parsedMsg.orderedFields(i).type ' ']);
-                crc = mavlab.accumulate(crc,[parsedMsg.orderedFields(i).name ' ']);
+                crc = MAVLab.accumulate(crc,[parsedMsg.orderedFields(i).type ' ']);
+                crc = MAVLab.accumulate(crc,[parsedMsg.orderedFields(i).name ' ']);
                 if parsedMsg.orderedFields(i).size > 1
-                    crc = mavlab.accumulate(crc,char(parsedMsg.orderedFields(i).size));
+                    crc = MAVLab.accumulate(crc,char(parsedMsg.orderedFields(i).size));
                 end
             end
             bytes = typecast(crc,'uint8');
@@ -236,7 +236,7 @@ classdef mavlab
             messageFilename = [msgPath '/msg_' parsedMsg.name '.m'];
             disp(['Generating: ' messageFilename]);
             messageFile = fopen(messageFilename,'w');
-            fprintf(messageFile,mavstring(template,parsedMsg));
+            fprintf(messageFile,MAVString(template,parsedMsg));
             fclose(messageFile); 
 
         end
@@ -248,7 +248,7 @@ classdef mavlab
         %Arguments:
         %    msgPath(string): Path to the folder where the enum file will be generated
         %    xmlName(string): Name of the source XML dialect for this enum list 
-        %    enumList(mavstruct): List of enums to generate the enum class from
+        %    enumList(MAVStruct): List of enums to generate the enum class from
 
             %Load the template for MAVLINK enum classes
             templateFile = fopen('enum_template.txt','r');
@@ -293,7 +293,7 @@ classdef mavlab
             enumFilename = [msgPath '/' xmlName '.m'];
             disp(['Generating: ' enumFilename]);
             enumFile = fopen(enumFilename,'w');
-            fprintf(enumFile,mavstring(template,parsedEnumList));
+            fprintf(enumFile,MAVString(template,parsedEnumList));
             fclose(enumFile); 
 
         end
@@ -316,7 +316,7 @@ classdef mavlab
             mavlinkPacketFilename = [mainPath '/MAVLinkPacket.m'];
             disp(['Generating: ' mavlinkPacketFilename]);
             mavlinkPacketFile = fopen(mavlinkPacketFilename,'w');
-            fprintf(mavlinkPacketFile,mavstring(template,parsedMsgList));
+            fprintf(mavlinkPacketFile,MAVString(template,parsedMsgList));
             fclose(mavlinkPacketFile); 
 
         end
@@ -356,15 +356,15 @@ classdef mavlab
             mavlinkCRCFilename = [mainPath '/MAVLinkCRC.m'];
             disp(['Generating: ' mavlinkCRCFilename]);
             mavlinkCRCFile = fopen(mavlinkCRCFilename,'w');
-            fprintf(mavlinkCRCFile,mavstring(template,crcList));
+            fprintf(mavlinkCRCFile,MAVString(template,crcList));
             fclose(mavlinkCRCFile);
 
         end
         
         function copyFixedClasses(mainPath)
-        %COPYFIXEDCLASSES: Copy master class files into the MAVLAB implementation
+        %COPYFIXEDCLASSES: Copy master class files into the MAVLab implementation
         %Description: 
-        %    Copies one of each class master file into the MAVLAB implementation. These files do not need to be
+        %    Copies one of each class master file into the MAVLab implementation. These files do not need to be
         %    generated and are the same for any set of XML files.
         %Arguments:
         %    mainPath(string): Path to the folder that the class master classes will be copied to
@@ -379,9 +379,9 @@ classdef mavlab
         end
         
         function copyFixedHelpers(helperPath)
-        %COPYFIXEDHELPERS: Copy master helper files into the MAVLAB implementation
+        %COPYFIXEDHELPERS: Copy master helper files into the MAVLab implementation
         %Description: 
-        %    Copies one of each helper master file into the MAVLAB implementation. These files do not need to be
+        %    Copies one of each helper master file into the MAVLab implementation. These files do not need to be
         %    generated and are the same for any set of XML files.
         %Arguments:
         %    helperPath(string): Path to the folder that the helper master classes will be copied to

@@ -1,4 +1,4 @@
-function [outString,exitChar] = mavstring(inString,schema)
+function [outString,exitChar] = MAVString(inString,schema)
 %MAVSTRING: The MAVLAB templating engine
 %Description:
 %    Parses a string and injects data from a schema into it using a simple templating system. Error
@@ -108,7 +108,7 @@ function [outString,exitChar] = repetition(inString,schema)
     else
         newSchema = schema.(varName);
         for j=1:1:size(newSchema,2)
-            [returnedString,exitChar] = mavstring(inString(tagStart(1)+3:end),newSchema(j));
+            [returnedString,exitChar] = MAVString(inString(tagStart(1)+3:end),newSchema(j));
             outString = [outString returnedString];
             exitChar = exitChar + tagStart(1) + 3;
         end
@@ -125,16 +125,16 @@ function [outString,exitChar] = conditional(inString,schema)
 %    schema(struct): Source of the data used by any nested tags
     outString = []; evaluation = -1;
     tagStart = strfind(inString,'<?>');
-    [condition,~] = mavstring(inString(1:tagStart(1)-1),schema);
+    [condition,~] = MAVString(inString(1:tagStart(1)-1),schema);
     try
         eval(sprintf('if %s,evaluation=1;,else,evaluation=0;,end',condition));
     catch
         disp('ERROR: Condition is not valid!');
     end
     if evaluation == 1
-        [outString,~] = mavstring(inString(tagStart(1)+3:end),schema);
+        [outString,~] = MAVString(inString(tagStart(1)+3:end),schema);
     elseif evaluation == 0
-        [outString,~] = mavstring(inString(tagStart(2)+3:end),schema);
+        [outString,~] = MAVString(inString(tagStart(2)+3:end),schema);
     end
     tagStart = strfind(inString,'}?');
     exitChar = tagStart(1) + 2;

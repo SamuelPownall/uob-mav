@@ -1,4 +1,4 @@
-classdef mavstruct
+classdef MAVStruct
 %MAVSTRUCT: The MAVLAB XML toolbox
 %Description:
 %    Reads XML files and parses the nodes into a structure. Includes convenience functions that
@@ -7,7 +7,7 @@ classdef mavstruct
     properties
         name;           %Name of this node
         text;           %Text field of the node
-        children;       %Array of child mavstructs
+        children;       %Array of child MAVStructs
         attributes;             %Attributes of this node
         hasChildren = 0;        %Does the children field exist
         hasText = 0;            %Does the text field exist
@@ -16,18 +16,18 @@ classdef mavstruct
     
     methods
         
-        function obj = mavstruct(filename,name,text,children,attributes, hasText, hasChildren, hasAttributes)
+        function obj = MAVStruct(filename,name,text,children,attributes, hasText, hasChildren, hasAttributes)
         %MAVSTRUCT: Generates a searchable structure from XML
         %Description:
-        %    The constructor for creating a new mavstruct object from an XML file.
+        %    The constructor for creating a new MAVStruct object from an XML file.
         %Arguments:
         %    filename(string): Path to the XML file to be parsed
-        %    name(string): Name of this mavstruct
-        %    text(text): Text content of this mavstruct
-        %    children(mavstruct): Array of child mavstructs
+        %    name(string): Name of this MAVStruct
+        %    text(text): Text content of this MAVStruct
+        %    children(MAVStruct): Array of child MAVStructs
         %    attributes(struct): Array of attribute structs
             
-            %If there is 1 input argument create a mavstruct from an XML file
+            %If there is 1 input argument create a MAVStruct from an XML file
             if nargin == 1
                 
                 %Display console message and start timer
@@ -40,12 +40,12 @@ classdef mavstruct
                    error('Failed to read XML file %s.',filename);
                 end
                 %Create a structure by parsing the DOM tree
-                [children,~,~,~] = mavstruct.parseChildNodes(tree);
-                obj = mavstruct([],'root','This is the root of the XML file',children,[],1,1,0);
+                [children,~,~,~] = MAVStruct.parseChildNodes(tree);
+                obj = MAVStruct([],'root','This is the root of the XML file',children,[],1,1,0);
                 %Display time taken to parse
                 disp(['Parsing completed in: ' num2str(toc(timer)) ' seconds']);
                 
-            %Otherwise if there are 8 arguments create a new mavstruct using fields
+            %Otherwise if there are 8 arguments create a new MAVStruct using fields
             elseif nargin == 8
                 obj.name = name;
                 obj.text = text;
@@ -147,14 +147,14 @@ classdef mavstruct
                 while i <= numChildNodes
                     theChild = childNodes.item(i-1);
                     %If the child node name is '#text' and not whitespace, found text field of the parent node
-                    newChild = mavstruct.makeStructFromNode(theChild);
+                    newChild = MAVStruct.makeStructFromNode(theChild);
                     if strcmp(newChild.name, '#text')
                         newText = strtrim(char(getTextContent(theChild)));
                         if newChild.hasChildren == 0 && ~strcmp(newText,'')
                             text = newText;
                             hasText = 1;
                         end 
-                    %Otherwise, create a mavstruct from the child and add to the child array.
+                    %Otherwise, create a MAVStruct from the child and add to the child array.
                     else
                         hasChildren = 1;
                         children{count} = newChild;
@@ -168,17 +168,17 @@ classdef mavstruct
         function newStruct = makeStructFromNode(theNode)
         %MAKESTRUCTFROMNODE: Generates a structure from the current node
         %Description:
-        %    Reads all of the data from the current node and returns it as a new mavstruct
+        %    Reads all of the data from the current node and returns it as a new MAVStruct
         %Arguments:
         %    theNode(DOM): The XML node to be parsed into a structure
             
             %Obtain children and attributes of this node
-            [children, text, hasText, hasChildren] = mavstruct.parseChildNodes(theNode);
-            [attributes, hasAttributes] = mavstruct.parseAttributes(theNode);
+            [children, text, hasText, hasChildren] = MAVStruct.parseChildNodes(theNode);
+            [attributes, hasAttributes] = MAVStruct.parseAttributes(theNode);
             %Set the name of this node
             name = char(getNodeName(theNode));
             
-            newStruct = mavstruct([],name,text,children,attributes,hasText,hasChildren,hasAttributes);
+            newStruct = MAVStruct([],name,text,children,attributes,hasText,hasChildren,hasAttributes);
 
         end
 
